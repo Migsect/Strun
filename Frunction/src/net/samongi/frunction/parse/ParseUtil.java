@@ -50,10 +50,11 @@ public class ParseUtil
 	 * @param pattern The pattern to test the match against
 	 * @return
 	 */
-	private static boolean matchesAt(String text, int start, String pattern)
+	public static boolean matchesAt(String text, int start, String pattern)
 	{
 		// Iterating through the pattern.
-		if(pattern.length() < pattern.length()) return false;
+		if(pattern.length() == 0) return true;
+		if(text.length() - start < pattern.length()) return false; // remaining is less than the pattern
 		for(int i = 0; i < pattern.length(); i++)
 		{
 			int text_i = start + i; // The text index to compare against
