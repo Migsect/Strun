@@ -21,11 +21,14 @@ public class ParseUtil
 	 */
 	public static String getSection(String text, int start, String seperator, String scope_up, String scope_down)
 	{
+		boolean has_scope_up = scope_up != null &&  scope_up.length() > 0;
+		boolean has_scope_down = scope_down != null && scope_down.length() > 0;;
+		
 		int scope = 0; // The scope incrementor
-		for(int i = 0; i < text.length(); i++)
+		for(int i = start; i < text.length(); i++)
 		{
-			if(scope_up != null && ParseUtil.matchesAt(text, i, scope_up) && scope_up.length() > 0) scope++;
-			if(scope_down != null && ParseUtil.matchesAt(text, i, scope_down) && scope_down.length() > 0) scope--;
+			if(has_scope_up && ParseUtil.matchesAt(text, i, scope_up)) scope++;
+			if(has_scope_down && ParseUtil.matchesAt(text, i, scope_down)) scope--;
 			if(ParseUtil.matchesAt(text, i, seperator) && scope == 0)
 			{
 				int end = i + seperator.length(); 

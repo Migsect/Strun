@@ -1,4 +1,4 @@
-package net.samongi.frunction.main;
+package net.samongi.frunction;
 
 public class Main
 {
