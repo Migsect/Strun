@@ -4,9 +4,5 @@ import net.samongi.frunction.frunction.Frunction;
 
 public interface Expression
 {
-	/**Evaluates the expression
-	 * 
-	 * @return
-	 */
-	public Frunction evaluate();
+	public Frunction evaluate(Frunction environment);
 }
