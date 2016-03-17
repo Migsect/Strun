@@ -29,12 +29,13 @@ public class ParseUtil
 		for(int i = start; i < text.length(); i++)
 		{
 			if(has_scope_up && ParseUtil.matchesAt(text, i, scope_up)) scope++;
-			if(has_scope_down && ParseUtil.matchesAt(text, i, scope_down)) scope--;
 			if(ParseUtil.matchesAt(text, i, seperator) && scope == 0)
 			{
 				int end = i + seperator.length(); 
 				return text.substring(start, end);
 			}
+			// Scoping down after
+			if(has_scope_down && ParseUtil.matchesAt(text, i, scope_down)) scope--;
 		}
 		
 		// TODO scoping exceptions?
@@ -53,7 +54,15 @@ public class ParseUtil
 	 */
 	public static String getSection(String text, int start, String seperator, String scope_up, String scope_down)
 	{
-		return ParseUtil.getSection(text, start, seperator, new String[]{scope_up}, new String[]{scope_down});
+		String[] scope_up_array = null;
+		if(scope_up.length() == 0) scope_up_array = new String[0];
+		else scope_up_array = new String[]{scope_up};
+		
+		String[] scope_down_array = null;
+		if(scope_down.length() == 0) scope_down_array = new String[0];
+		else scope_down_array = new String[]{scope_down};
+		
+		return ParseUtil.getSection(text, start, seperator, scope_up_array, scope_down_array);
 	}
 	/**Reduced and simplified form of getSection
 	 * 

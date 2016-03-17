@@ -125,6 +125,24 @@ public class ParseTest
 		String output = ParseUtil.getSection(input, 0, ";", "", "");
 		assertEquals(expected, output);
 	}
+	@Test
+	public void section_ignore_3()
+	{
+		String input = "foo{;}bar;sho"; 
+		String expected = "foo{;}bar;sho";
+		
+		String output = ParseUtil.getSection(input, 0, "}", "{", "}");
+		assertEquals(expected, output);
+	}
+	@Test
+	public void section_ignore_4()
+	{
+		String input = "foo;}bar;sho"; 
+		String expected = "foo;}";
+		
+		String output = ParseUtil.getSection(input, 0, "}", "{", "}");
+		assertEquals(expected, output);
+	}
 	
 	
 	@Test

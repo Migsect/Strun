@@ -11,6 +11,29 @@ import net.samongi.frunction.parse.ParseUtil;
  */
 public class GroupToken implements Token
 {
+	/**Gets the scope openers
+	 * 
+	 * @return A list of strings that identify scope openers
+	 */
+	public static final String[] getScopeOpenIdentifiers()
+	{
+		return new String[]{
+				FrunctionToken.OPEN,
+				InputToken.OPEN
+		};
+	}
+	/**Gets the scope closers
+	 * 
+	 * @return A list of strings that identify scope closers
+	 */
+	public static final String[] getScopeCloseIdentifiers()
+	{
+		return new String[]{
+				FrunctionToken.CLOSE,
+				InputToken.CLOSE
+		};
+	}
+
 	private final String source;
 	private List<Token> tokens = null;
 	
@@ -35,7 +58,24 @@ public class GroupToken implements Token
 				i += AccessorToken.OPERATOR.length();
 			}
 			// Creating input tokens
-			if(ParseUtil.matchesAt(source, i, "("))
+			if(ParseUtil.matchesAt(source, i, InputToken.OPEN))
+			{
+				i += InputToken.OPEN.length();
+				// Getting the section until the close identifier
+				// This will start after the open identifier
+				String section = ParseUtil.getSection(source, i, InputToken.CLOSE, 
+						GroupToken.getScopeOpenIdentifiers(), GroupToken.getScopeCloseIdentifiers());
+				// Incrementing the next index based on the section length found
+				i += section.length();
+				
+				// Checking to see if the section end correctlys.
+				if(ParseUtil.matchesAt(section, section.length() - InputToken.CLOSE.length(), InputToken.CLOSE))
+				{
+					// TODO Throw an exception, this means something is wrong because the section didn't end right
+				}
+			}
+			// Creating frunction tokens
+			if(ParseUtil.matchesAt(source, i, FrunctionToken.OPEN))
 			{
 				
 			}
