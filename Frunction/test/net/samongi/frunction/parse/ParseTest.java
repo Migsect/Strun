@@ -67,20 +67,11 @@ public class ParseTest
 		String input = ""; 
 		String expected = "";
 		
-		String output = ParseUtil.getSection(input, 0, ";", null, null);
+		String output = ParseUtil.getSection(input, 0, ";");
 		assertEquals(expected, output);
 	}
 	@Test
 	public void section_empty_1()
-	{
-		String input = ""; 
-		String expected = "";
-		
-		String output = ParseUtil.getSection(input, 0, ";", "", "");
-		assertEquals(expected, output);
-	}
-	@Test
-	public void section_empty_2()
 	{
 		String input = ""; 
 		String expected = "";
@@ -95,7 +86,7 @@ public class ParseTest
 		String input = "foo;bar"; 
 		String expected = "foo;";
 		
-		String output = ParseUtil.getSection(input, 0, ";", null, null);
+		String output = ParseUtil.getSection(input, 0, ";");
 		assertEquals(expected, output);
 	}
 	@Test
@@ -104,7 +95,7 @@ public class ParseTest
 		String input = "foo;bar"; 
 		String expected = "bar";
 		
-		String output = ParseUtil.getSection(input, 4, ";", null, null);
+		String output = ParseUtil.getSection(input, 4, ";");
 		assertEquals(expected, output);
 	}
 	@Test
@@ -113,7 +104,7 @@ public class ParseTest
 		String input = "foo;bar;sho"; 
 		String expected = "bar;";
 		
-		String output = ParseUtil.getSection(input, 4, ";", null, null);
+		String output = ParseUtil.getSection(input, 4, ";");
 		assertEquals(expected, output);
 	}
 	@Test
@@ -134,4 +125,52 @@ public class ParseTest
 		String output = ParseUtil.getSection(input, 0, ";", "", "");
 		assertEquals(expected, output);
 	}
+	
+	
+	@Test
+	public void section_multiple_scope_0()
+	{
+		String input = "foo{;}bar;sho"; 
+		String expected = "foo{;}bar;";
+		
+		String output = ParseUtil.getSection(input, 0, ";", new String[]{"(","{"}, new String[]{")","}"});
+		assertEquals(expected, output);
+	}
+	@Test
+	public void section_multiple_scope_1()
+	{
+		String input = "foo(;)bar;sho"; 
+		String expected = "foo(;)bar;";
+		
+		String output = ParseUtil.getSection(input, 0, ";", new String[]{"(","{"}, new String[]{")","}"});
+		assertEquals(expected, output);
+	}
+	@Test
+	public void section_multiple_scope_2()
+	{
+		String input = "foo{(;)}bar;sho"; 
+		String expected = "foo{(;)}bar;";
+		
+		String output = ParseUtil.getSection(input, 0, ";", new String[]{"(","{"}, new String[]{")","}"});
+		assertEquals(expected, output);
+	}
+	@Test
+	public void section_multiple_scope_3()
+	{
+		String input = "foo({;})bar;sho"; 
+		String expected = "foo({;})bar;";
+		
+		String output = ParseUtil.getSection(input, 0, ";", new String[]{"(","{"}, new String[]{")","}"});
+		assertEquals(expected, output);
+	}
+	@Test
+	public void section_multiple_scope_4()
+	{
+		String input = "foo{(;})bar;sho"; 
+		String expected = "foo{(;})bar;";
+		
+		String output = ParseUtil.getSection(input, 0, ";", new String[]{"(","{"}, new String[]{")","}"});
+		assertEquals(expected, output);
+	}
+	
 }

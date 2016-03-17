@@ -19,10 +19,11 @@ public class ParseUtil
 	 * @param scope_down Will scope down if this is matched
 	 * @return The section found
 	 */
-	public static String getSection(String text, int start, String seperator, String scope_up, String scope_down)
+	public static String getSection(String text, int start, String seperator, String[] scope_up, String[] scope_down)
 	{
-		boolean has_scope_up = scope_up != null &&  scope_up.length() > 0;
-		boolean has_scope_down = scope_down != null && scope_down.length() > 0;;
+		// Checking to see if we have any scope up methods
+		boolean has_scope_up = scope_up != null &&  scope_up.length > 0;
+		boolean has_scope_down = scope_down != null && scope_down.length > 0;;
 		
 		int scope = 0; // The scope incrementor
 		for(int i = start; i < text.length(); i++)
@@ -41,10 +42,31 @@ public class ParseUtil
 		
 		return text.substring(start);
 	}
+	/**Gets section for a singular string.
+	 * 
+	 * @param text
+	 * @param start
+	 * @param seperator
+	 * @param scope_up
+	 * @param scope_down
+	 * @return
+	 */
+	public static String getSection(String text, int start, String seperator, String scope_up, String scope_down)
+	{
+		return ParseUtil.getSection(text, start, seperator, new String[]{scope_up}, new String[]{scope_down});
+	}
+	/**Reduced and simplified form of getSection
+	 * 
+	 * @param text
+	 * @param start
+	 * @param seperator
+	 * @return
+	 */
 	public static String getSection(String text, int start, String seperator)
 	{
-		return ParseUtil.getSection(text, start, seperator, null, null);
+		return ParseUtil.getSection(text, start, seperator, new String[0], new String[0]);
 	}
+	
 	/**Tests to see if the index of the string matches the pattern
 	 * This goes character by character for matching.
 	 * 
@@ -65,5 +87,10 @@ public class ParseUtil
 			if(pattern.charAt(i) != text.charAt(text_i)) return false;
 		}
 		return true;
+	}
+	public static boolean matchesAt(String text, int start, String[] patterns)
+	{
+		for(String s : patterns) if(matchesAt(text, start, s)) return true;
+		return false;
 	}
 }
