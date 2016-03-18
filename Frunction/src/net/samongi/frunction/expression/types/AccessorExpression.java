@@ -3,7 +3,8 @@ package net.samongi.frunction.expression.types;
 import net.samongi.frunction.binding.SymbolBinding;
 import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.tokens.SymbolToken;
-import net.samongi.frunction.frunction.Frunction;
+import net.samongi.frunction.frunction.Container;
+import net.samongi.frunction.frunction.DynamicFrunction;
 
 public class AccessorExpression implements Expression
 {
@@ -16,11 +17,11 @@ public class AccessorExpression implements Expression
     this.token = token;
   }
   
-  @Override public Frunction evaluate(Frunction environment)
+  @Override public DynamicFrunction evaluate(Container environment)
   {
     // Evaluating the left expression that is going to be accessed
     //   We are evaluating based on the current environment.
-    Frunction l_frunction = left.evaluate(environment);
+    DynamicFrunction l_frunction = left.evaluate(environment);
     
     // The symbol that is going to be expressed from the right expression.
     String symbol = token.getSource();
@@ -28,7 +29,7 @@ public class AccessorExpression implements Expression
     SymbolBinding l_binding = null;
     
     // Starting a loop, peeling back scopes as neccessary
-    Frunction current_scope = l_frunction;
+    Container current_scope = l_frunction;
     l_binding = current_scope.getSymbol(symbol);
     while(l_binding == null)
     {
@@ -49,7 +50,7 @@ public class AccessorExpression implements Expression
     
     // We can now evaluate the expression.
     //   This is using the environment of the frunction it is apart of.
-    Frunction accessed = l_expr.evaluate(l_frunction);
+    DynamicFrunction accessed = l_expr.evaluate(l_frunction);
     
     // Returning the accessed expression
     return accessed;

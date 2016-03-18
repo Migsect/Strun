@@ -1,7 +1,8 @@
 package net.samongi.frunction.expression.types;
 
 import net.samongi.frunction.expression.tokens.FrunctionToken;
-import net.samongi.frunction.frunction.Frunction;
+import net.samongi.frunction.frunction.Container;
+import net.samongi.frunction.frunction.DynamicFrunction;
 
 public class FrunctionExpression implements Expression
 {
@@ -12,9 +13,9 @@ public class FrunctionExpression implements Expression
     this.token = token;
   }
   
-  @Override public Frunction evaluate(Frunction environment)
+  @Override public DynamicFrunction evaluate(Container environment)
   {
-    Frunction frunction = new Frunction(environment, token.getSource());
+    DynamicFrunction frunction = new DynamicFrunction(environment, token.getSource());
     return frunction;
   }
 

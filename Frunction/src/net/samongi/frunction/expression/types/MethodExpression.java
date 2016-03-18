@@ -3,6 +3,7 @@ package net.samongi.frunction.expression.types;
 import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.tokens.GroupToken;
 import net.samongi.frunction.expression.tokens.InputToken;
+import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
 import net.samongi.frunction.frunction.MethodContainer;
 
@@ -17,7 +18,7 @@ public class MethodExpression implements Expression
     this.right_token = right_token;
   }
   
-  @Override public Frunction evaluate(Frunction environment)
+  @Override public Frunction evaluate(Container environment)
   {
     GroupToken[] tokens = null;
     try{tokens = this.right_token.getTokens();}
@@ -40,6 +41,8 @@ public class MethodExpression implements Expression
       exprs[i] = expr;
     }
     Frunction eval = left_expression.evaluate(environment);
+    
+    // Evaluating all the inputs because it is needed to get the types.
     Frunction[] r_evals = new Frunction[exprs.length];
     for(int i = 0; i < exprs.length; i++)
     {
@@ -49,6 +52,7 @@ public class MethodExpression implements Expression
       r_evals[i] = i_eval;
     }
     // The left expression is the container
+    //   This method container will be used by a method to evaluate.
     MethodContainer container = new MethodContainer(eval);
     
     

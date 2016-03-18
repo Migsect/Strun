@@ -6,7 +6,8 @@ import net.samongi.frunction.expression.tokens.GroupToken;
 import net.samongi.frunction.expression.tokens.InputToken;
 import net.samongi.frunction.expression.tokens.SymbolToken;
 import net.samongi.frunction.expression.tokens.Token;
-import net.samongi.frunction.frunction.Frunction;
+import net.samongi.frunction.frunction.Container;
+import net.samongi.frunction.frunction.DynamicFrunction;
 
 public interface Expression
 {
@@ -19,7 +20,7 @@ public interface Expression
    * @return
    * @throws TokenException
    */
-  public static Expression parseString(String source, Frunction environment) throws TokenException
+  public static Expression parseString(String source, Container environment) throws TokenException
   {
     GroupToken token = Token.parseTokens(source);
     return Expression.parseTokens(token.getTokens(), environment);
@@ -31,7 +32,7 @@ public interface Expression
    * @return
    * @throws TokenException
    */
-  public static Expression parseTokens(Token[] tokens, Frunction environment) throws TokenException
+  public static Expression parseTokens(Token[] tokens, Container environment) throws TokenException
   {
     Expression left_expr = null;
     int i = 0;
@@ -44,7 +45,8 @@ public interface Expression
       if(t.getType().equals(Token.Type.SYMBOL))
       {
         if(i != 0) return null; // must be first
-        AccessorExpression expr = new AccessorExpression(environment, (SymbolToken) t);
+        if(!(environment instanceof DynamicFrunction)) return null; // TODO make this a valid exception
+        AccessorExpression expr = new AccessorExpression((DynamicFrunction) environment, (SymbolToken) t);
         left_expr = expr; // Setting it to be the left expression
         i += 1;
       }
@@ -98,5 +100,5 @@ public interface Expression
     return left_expr;
   }
   
-	public Frunction evaluate(Frunction environment);
+	public DynamicFrunction evaluate(Container environment);
 }

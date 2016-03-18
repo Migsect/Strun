@@ -14,9 +14,9 @@ import net.samongi.frunction.binding.SymbolBinding;
 public class MethodContainer implements Container
 {
   private Map<String, SymbolBinding> override_symbols = new HashMap<>();;
-  private final Frunction environment;
+  private final Container environment;
   
-  public MethodContainer(Frunction environment)
+  public MethodContainer(Container environment)
   {
     this.environment = environment;
   }
@@ -27,18 +27,20 @@ public class MethodContainer implements Container
    * @param symbol
    * @param frunction
    */
-  public void addSymbol(String symbol, Frunction frunction)
+  public void addSymbol(String symbol, DynamicFrunction frunction)
   {
     SymbolBinding s_binding = new SymbolBinding(symbol, frunction, this.environment);
     this.override_symbols.put(symbol, s_binding);
   }
 
   // Shouldn't do anything yet
-  @Override public MethodBinding getMethod(String[] types, Frunction[] inputs){return null;}
+  @Override public MethodBinding getMethod(String[] types, DynamicFrunction[] inputs){return null;}
   
   @Override public SymbolBinding getSymbol(String symbol)
   {
     if(override_symbols.containsKey(symbol)) return override_symbols.get(symbol);
     return this.environment.getSymbol(symbol);
   }
+
+	@Override public Container getEnvironment(){return this.environment;}
 }
