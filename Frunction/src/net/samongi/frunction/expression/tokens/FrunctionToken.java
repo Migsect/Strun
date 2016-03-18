@@ -13,4 +13,5 @@ public class FrunctionToken implements Token
 	}
 	
 	@Override public String getSource(){return this.source;}
+  @Override public Token.Type getType(){return Token.Type.FRUNCTION;}
 }

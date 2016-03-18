@@ -1,6 +1,6 @@
 package net.samongi.frunction.binding;
 
-import net.samongi.frunction.expression.Expression;
+import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Frunction;
 
 /**Method bindings bind a set of inputs to an expression.
@@ -13,7 +13,6 @@ public class MethodBinding implements Binding
 	private final Frunction container;
 	private final String[] input_symbols;
 	private final String[][] input_types;
-	
 	
 	private final String source;
 	
@@ -28,7 +27,26 @@ public class MethodBinding implements Binding
 		this.source = source;
 	}
 	
-	
+	public void generateCondition()
+	{
+    if(this.expression != null) return;
+	  
+	}
+	public Expression getConditional()
+	{
+	  if(this.condition == null) this.generateCondition();
+	  return this.condition;
+	}
+	public void generateExpression()
+	{
+    if(this.expression != null) return;
+	  
+	}
+	public Expression getExpression()
+	{
+	  if(this.expression == null) this.generateCondition();
+	  return this.expression;
+	}
 	
 	@Override public String getSource(){return this.source;}
 

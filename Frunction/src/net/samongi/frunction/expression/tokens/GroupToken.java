@@ -3,6 +3,7 @@ package net.samongi.frunction.expression.tokens;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.parse.ParseUtil;
 
 /**The main building block of tokens
@@ -11,51 +12,30 @@ import net.samongi.frunction.parse.ParseUtil;
  */
 public class GroupToken implements Token
 {
-	/**Gets the scope openers
-	 * 
-	 * @return A list of strings that identify scope openers
-	 */
-	public static final String[] getScopeOpenIdentifiers()
-	{
-		return new String[]{
-				FrunctionToken.OPEN,
-				InputToken.OPEN
-		};
-	}
-	/**Gets the scope closers
-	 * 
-	 * @return A list of strings that identify scope closers
-	 */
-	public static final String[] getScopeCloseIdentifiers()
-	{
-		return new String[]{
-				FrunctionToken.CLOSE,
-				InputToken.CLOSE
-		};
-	}
+	
 
 	private final String source;
 	private List<Token> tokens = null;
 	
-	GroupToken(String source)
+	public GroupToken(String source)
 	{
 		this.source = source;
 	}
 	
-	public void evaluate()
+	public void evaluate() throws TokenException
 	{
 		if(this.tokens != null) return;
 		this.tokens = new ArrayList<>();
 		
-		boolean do_parse = true;
 		int i = 0;
-	  while(do_parse)
+	  while(i < this.source.length())
 		{
 	  	// Creating accessor tokens
 			if(ParseUtil.matchesAt(source, i, AccessorToken.OPERATOR))
 			{
+        i += AccessorToken.OPERATOR.length();
+        
 				tokens.add(new AccessorToken());
-				i += AccessorToken.OPERATOR.length();
 			}
 			// Creating input tokens
 			if(ParseUtil.matchesAt(source, i, InputToken.OPEN))
@@ -64,20 +44,53 @@ public class GroupToken implements Token
 				// Getting the section until the close identifier
 				// This will start after the open identifier
 				String section = ParseUtil.getSection(source, i, InputToken.CLOSE, 
-						GroupToken.getScopeOpenIdentifiers(), GroupToken.getScopeCloseIdentifiers());
+				    Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers());
 				// Incrementing the next index based on the section length found
 				i += section.length();
 				
 				// Checking to see if the section end correctlys.
-				if(ParseUtil.matchesAt(section, section.length() - InputToken.CLOSE.length(), InputToken.CLOSE))
+				if(!ParseUtil.matchesAt(section, section.length() - InputToken.CLOSE.length(), InputToken.CLOSE))
 				{
-					// TODO Throw an exception, this means something is wrong because the section didn't end right
+				  throw new TokenException(); // Throwing the exception
 				}
+				
+				// Creating the actual token
+				InputToken token = new InputToken(section.substring(0, section.length() - InputToken.CLOSE.length()));
+				this.tokens.add(token);
 			}
 			// Creating frunction tokens
 			if(ParseUtil.matchesAt(source, i, FrunctionToken.OPEN))
 			{
-				
+			  i += FrunctionToken.OPEN.length();
+        // Getting the section until the close identifier
+        // This will start after the open identifier
+        String section = ParseUtil.getSection(source, i, FrunctionToken.CLOSE, 
+            Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers());
+        // Incrementing the next index based on the section length found
+        i += section.length();
+        
+        // Checking to see if the section end correctlys.
+        if(!ParseUtil.matchesAt(section, section.length() - FrunctionToken.CLOSE.length(), FrunctionToken.CLOSE))
+        {
+          throw new TokenException(); // Throwing the exception
+        }
+        
+        // Creating the actual token
+        FrunctionToken token = new FrunctionToken(section.substring(0, section.length() - FrunctionToken.CLOSE.length()));
+        this.tokens.add(token);
+			}
+			
+			// otherwise its the start of a symbol
+			int sym_start = i;
+			String[] not_sym = new String[]{InputToken.OPEN, InputToken.CLOSE, FrunctionToken.OPEN, FrunctionToken.CLOSE, AccessorToken.OPERATOR};
+			// going while the character can still be part of a symbol
+			while(!ParseUtil.matchesAt(source, i, not_sym) && i < source.length()) i++;
+			// If the sym_i ends at an index, that means it matches an identifier
+			String section = source.substring(sym_start, i);
+			if(section.length() > 0)
+			{
+			  SymbolToken token = new SymbolToken(section);
+			  this.tokens.add(token);
 			}
 		}
 	}
@@ -86,12 +99,13 @@ public class GroupToken implements Token
 	 * 
 	 * @return An array of tokens contained within this group token.
 	 */
-	public Token[] getTokens()
+	public Token[] getTokens() throws TokenException
 	{
 		if(this.tokens == null) this.evaluate();
 		return this.tokens.toArray(new Token[this.tokens.size()]);
 	}
 	
 	@Override public String getSource(){return this.source;}
+  @Override public Token.Type getType(){return Token.Type.GROUP;}
 	
 }
