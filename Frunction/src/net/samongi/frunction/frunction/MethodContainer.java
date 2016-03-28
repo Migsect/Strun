@@ -35,7 +35,7 @@ public class MethodContainer implements Container
   }
 
   // Shouldn't do anything yet
-  @Override public MethodBinding getMethod(String[] types, DynamicFrunction[] inputs){return null;}
+  @Override public MethodBinding getMethod(String[] types, Frunction[] inputs){return null;}
   
   @Override public SymbolBinding getSymbol(String symbol)
   {

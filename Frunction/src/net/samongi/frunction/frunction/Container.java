@@ -10,7 +10,7 @@ public interface Container
    * @param types THe types to get a method for
    * @return A MethodBinding, otherwise null
    */
-  public MethodBinding getMethod(String[] types, DynamicFrunction[] inputs);
+  public MethodBinding getMethod(String[] types, Frunction[] inputs);
   
   /**Gets the symbol binding for the corresponding symbol
    * 

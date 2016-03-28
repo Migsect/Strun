@@ -72,7 +72,7 @@ public class DynamicFrunction implements Expression, Frunction
 	 * @param types THe types to get a method for
 	 * @return A MethodBinding, otherwise null
 	 */
-	@Override public MethodBinding getMethod(String[] types, DynamicFrunction[] inputs)
+	@Override public MethodBinding getMethod(String[] types, Frunction[] inputs)
 	{
 	  if(types.length != inputs.length)
 	  {
