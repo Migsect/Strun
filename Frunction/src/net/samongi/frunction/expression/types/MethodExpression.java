@@ -5,6 +5,7 @@ import net.samongi.frunction.expression.tokens.GroupToken;
 import net.samongi.frunction.expression.tokens.InputToken;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.DynamicFrunction;
+import net.samongi.frunction.frunction.Frunction;
 import net.samongi.frunction.frunction.MethodContainer;
 
 public class MethodExpression implements Expression
@@ -18,7 +19,7 @@ public class MethodExpression implements Expression
     this.right_token = right_token;
   }
   
-  @Override public DynamicFrunction evaluate(Container environment)
+  @Override public Frunction evaluate(Container environment)
   {
     GroupToken[] tokens = null;
     try{tokens = this.right_token.getTokens();}
@@ -40,14 +41,14 @@ public class MethodExpression implements Expression
       if(expr == null) return null;
       exprs[i] = expr;
     }
-    DynamicFrunction eval = left_expression.evaluate(environment);
+    Frunction eval = left_expression.evaluate(environment);
     
     // Evaluating all the inputs because it is needed to get the types.
-    DynamicFrunction[] r_evals = new DynamicFrunction[exprs.length];
+    Frunction[] r_evals = new DynamicFrunction[exprs.length];
     for(int i = 0; i < exprs.length; i++)
     {
       // These are being evaluated on the normal environment that is called the expression.
-      DynamicFrunction i_eval = r_evals[i].evaluate(environment);
+    	Frunction i_eval = r_evals[i].evaluate(environment);
       if(i_eval == null) return null;
       r_evals[i] = i_eval;
     }

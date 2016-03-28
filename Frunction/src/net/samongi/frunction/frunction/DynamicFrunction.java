@@ -5,6 +5,8 @@ import java.util.Map;
 
 import net.samongi.frunction.binding.DynamicMethodBinding;
 import net.samongi.frunction.binding.DynamicSymbolBinding;
+import net.samongi.frunction.binding.MethodBinding;
+import net.samongi.frunction.binding.SymbolBinding;
 import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.types.Expression;
 
@@ -70,7 +72,7 @@ public class DynamicFrunction implements Expression, Frunction
 	 * @param types THe types to get a method for
 	 * @return A MethodBinding, otherwise null
 	 */
-	@Override public DynamicMethodBinding getMethod(String[] types, DynamicFrunction[] inputs)
+	@Override public MethodBinding getMethod(String[] types, DynamicFrunction[] inputs)
 	{
 	  if(types.length != inputs.length)
 	  {
@@ -92,9 +94,11 @@ public class DynamicFrunction implements Expression, Frunction
 			}
 			// Adding the input symbols to the container
 			for(int i = 0; i < input_symbols.length; i++){m_container.addSymbol(input_symbols[i], inputs[i]);}
-			DynamicFrunction result = null;
+			Frunction result = null;
 			try{result = b.getConditional().evaluate(m_container);}
 			catch (TokenException e){return null;}
+			
+			// TODO use the result
 		}
 		
 		
@@ -105,7 +109,7 @@ public class DynamicFrunction implements Expression, Frunction
 	 * @param symbol The symbol to retrieve
 	 * @return A SymbolBinding, otherwise null
 	 */
-	@Override public DynamicSymbolBinding getSymbol(String symbol)
+	@Override public SymbolBinding getSymbol(String symbol)
 	{
 		if(!this.isEvaluated()) this.evaluate();
 		return this.symbol_bindings.get(symbol);

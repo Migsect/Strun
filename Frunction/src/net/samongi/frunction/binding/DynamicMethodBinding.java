@@ -2,7 +2,7 @@ package net.samongi.frunction.binding;
 
 import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.types.Expression;
-import net.samongi.frunction.frunction.DynamicFrunction;
+import net.samongi.frunction.frunction.Container;
 
 /**Method bindings bind a set of inputs to an expression.
  * 
@@ -11,7 +11,7 @@ import net.samongi.frunction.frunction.DynamicFrunction;
  */
 public class DynamicMethodBinding implements MethodBinding
 {
-	private final DynamicFrunction container;
+	private final Container container;
 	
 	private final String[] input_symbols;
 	private final String[] input_types; // TODO type checking
@@ -22,7 +22,7 @@ public class DynamicMethodBinding implements MethodBinding
 	private Expression condition = null;
 	private Expression expression = null;
 
-	public DynamicMethodBinding(DynamicFrunction container, String[] input_symbols, String[] input_types, String cond_source, String source)
+	public DynamicMethodBinding(Container container, String[] input_symbols, String[] input_types, String cond_source, String source)
 	{
 		this.container = container;
 		this.input_symbols = input_symbols;
@@ -66,6 +66,6 @@ public class DynamicMethodBinding implements MethodBinding
 	
 	@Override public String getSource(){return this.source;}
 
-	@Override public DynamicFrunction getContainer(){return this.container;}
+	@Override public Container getContainer(){return this.container;}
 
 }

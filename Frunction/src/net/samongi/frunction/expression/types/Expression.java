@@ -8,6 +8,7 @@ import net.samongi.frunction.expression.tokens.SymbolToken;
 import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.DynamicFrunction;
+import net.samongi.frunction.frunction.Frunction;
 
 public interface Expression
 {
@@ -100,5 +101,5 @@ public interface Expression
     return left_expr;
   }
   
-	public DynamicFrunction evaluate(Container environment);
+	public Frunction evaluate(Container environment);
 }
