@@ -1,6 +1,6 @@
 package net.samongi.frunction.expression.types;
 
-import net.samongi.frunction.binding.SymbolBinding;
+import net.samongi.frunction.binding.DynamicSymbolBinding;
 import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.tokens.SymbolToken;
 import net.samongi.frunction.frunction.Container;
@@ -26,7 +26,7 @@ public class AccessorExpression implements Expression
     // The symbol that is going to be expressed from the right expression.
     String symbol = token.getSource();
     // Getting the binding associated with the symbol.
-    SymbolBinding l_binding = null;
+    DynamicSymbolBinding l_binding = null;
     
     // Starting a loop, peeling back scopes as neccessary
     Container current_scope = l_frunction;

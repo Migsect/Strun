@@ -3,8 +3,8 @@ package net.samongi.frunction.frunction;
 import java.util.List;
 import java.util.Map;
 
-import net.samongi.frunction.binding.MethodBinding;
-import net.samongi.frunction.binding.SymbolBinding;
+import net.samongi.frunction.binding.DynamicMethodBinding;
+import net.samongi.frunction.binding.DynamicSymbolBinding;
 import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.types.Expression;
 
@@ -12,14 +12,14 @@ public class DynamicFrunction implements Expression, Frunction
 {
 	/**A frunction consists of a Map of symbol bindings
 	 */
-	private Map<String, SymbolBinding> symbol_bindings = null;
+	private Map<String, DynamicSymbolBinding> symbol_bindings = null;
 	/**A frunction cosists of a Map of String[] to method bindings.
 	 * The strings in this array are types and not pure symbols.
 	 * Generally an empty type will be used.
 	 * 
 	 * There can be multiple method bindings to a set of types.
 	 */
-	private Map<String[], List<MethodBinding>> method_bindings = null;
+	private Map<String[], List<DynamicMethodBinding>> method_bindings = null;
 	
 	/**A set will represent the type that a frunction is.
 	 */
@@ -70,7 +70,7 @@ public class DynamicFrunction implements Expression, Frunction
 	 * @param types THe types to get a method for
 	 * @return A MethodBinding, otherwise null
 	 */
-	@Override public MethodBinding getMethod(String[] types, DynamicFrunction[] inputs)
+	@Override public DynamicMethodBinding getMethod(String[] types, DynamicFrunction[] inputs)
 	{
 	  if(types.length != inputs.length)
 	  {
@@ -78,10 +78,10 @@ public class DynamicFrunction implements Expression, Frunction
 	    return null;
 	  }
 		if(!this.isEvaluated()) this.evaluate();
-		List<MethodBinding> methods = this.method_bindings.get(types);
+		List<DynamicMethodBinding> methods = this.method_bindings.get(types);
 		if(methods.isEmpty()) return null; // We didn't find a method
 		
-		for(MethodBinding b : methods)
+		for(DynamicMethodBinding b : methods)
 		{
 			MethodContainer m_container = new MethodContainer(this);
 			String[] input_symbols = b.getInputSymbols();
@@ -105,7 +105,7 @@ public class DynamicFrunction implements Expression, Frunction
 	 * @param symbol The symbol to retrieve
 	 * @return A SymbolBinding, otherwise null
 	 */
-	@Override public SymbolBinding getSymbol(String symbol)
+	@Override public DynamicSymbolBinding getSymbol(String symbol)
 	{
 		if(!this.isEvaluated()) this.evaluate();
 		return this.symbol_bindings.get(symbol);

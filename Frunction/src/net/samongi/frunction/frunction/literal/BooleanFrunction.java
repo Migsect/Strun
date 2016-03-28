@@ -1,7 +1,7 @@
 package net.samongi.frunction.frunction.literal;
 
-import net.samongi.frunction.binding.MethodBinding;
-import net.samongi.frunction.binding.SymbolBinding;
+import net.samongi.frunction.binding.DynamicMethodBinding;
+import net.samongi.frunction.binding.DynamicSymbolBinding;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.DynamicFrunction;
 
@@ -16,14 +16,14 @@ public class BooleanFrunction implements NativeFrunction
 	}
 
 	@Override
-	public MethodBinding getMethod(String[] types, DynamicFrunction[] inputs)
+	public DynamicMethodBinding getMethod(String[] types, DynamicFrunction[] inputs)
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public SymbolBinding getSymbol(String symbol)
+	public DynamicSymbolBinding getSymbol(String symbol)
 	{
 		// TODO Auto-generated method stub
 		return null;
