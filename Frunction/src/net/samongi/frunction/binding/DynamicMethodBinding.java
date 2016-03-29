@@ -22,11 +22,23 @@ public class DynamicMethodBinding implements MethodBinding
 	private Expression condition = null;
 	private Expression expression = null;
 
+	public DynamicMethodBinding(Container container, String[] input_symbols, String[] input_types, Expression condition, Expression expression)
+	{
+		this.container = container;
+		this.input_symbols = input_symbols;
+		this.input_types = input_types;
+		
+		this.source = null;
+		this.condition_source = null;
+		this.condition = condition;
+		this.expression = expression;
+	}
 	public DynamicMethodBinding(Container container, String[] input_symbols, String[] input_types, String cond_source, String source)
 	{
 		this.container = container;
 		this.input_symbols = input_symbols;
 		this.input_types = input_types;
+		
 		this.source = source;
 		this.condition_source = cond_source;
 	}
