@@ -44,4 +44,10 @@ public class MethodContainer implements Container
   }
 
 	@Override public Container getEnvironment(){return this.environment;}
+
+	@Override public void addMethod(String[] types, MethodBinding binding){}
+	@Override public void addSymbol(String symbol, SymbolBinding binding)
+	{
+		this.override_symbols.put(symbol, binding);
+	}
 }

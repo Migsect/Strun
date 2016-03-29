@@ -25,7 +25,7 @@ public class MethodFrunction implements Frunction
 	
 	@Override
 	public MethodBinding getMethod(String[] types, Frunction[] inputs){return this.inner.getMethod(types, inputs);}
-
+	
 	@Override
 	public SymbolBinding getSymbol(String symbol){return null;}
 
@@ -39,32 +39,21 @@ public class MethodFrunction implements Frunction
 		return null;
 	}
 
+	// Expression is already evaluated since it is a native expression
 	@Override
-	public void evaluate()
-	{
-		// TODO Auto-generated method stub
-		
-	}
+	public void evaluate(){}
+
+	@Override public boolean isEvaluated(){return true;}
+	@Override public void setType(String type){this.inner.setType(type);}
+
+	@Override public String getType(){return this.inner.getType();}
 
 	@Override
-	public boolean isEvaluated()
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public void addMethod(String[] types, MethodBinding binding){}
 
 	@Override
-	public void setType(String type)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+	public void addSymbol(String symbol, SymbolBinding binding){}
 
-	@Override
-	public String getType()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+	@Override public String getSource(){return null;}
 
 }

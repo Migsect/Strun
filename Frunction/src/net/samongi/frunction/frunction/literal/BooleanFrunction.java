@@ -50,7 +50,7 @@ public class BooleanFrunction implements Frunction
 
 	@Override public Container getEnvironment(){return this.environment;}
 
-	@Override public void setType(String type){} // Cannot change coolean type
+	@Override public void setType(String type){} // Cannot change type
 
 	@Override public String getType(){return BooleanFrunction.TYPE;}
 
@@ -62,4 +62,9 @@ public class BooleanFrunction implements Frunction
 	
 	public boolean getNative(){return this.state;}
 
+	@Override public void addMethod(String[] types, MethodBinding binding){this.inner.addMethod(types, binding);}
+
+	@Override public void addSymbol(String symbol, SymbolBinding binding){} // Do nothing
+
+	@Override public String getSource(){return null;}
 }
