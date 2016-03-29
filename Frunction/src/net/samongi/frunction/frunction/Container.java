@@ -1,5 +1,7 @@
 package net.samongi.frunction.frunction;
 
+import java.util.List;
+
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
 
@@ -17,7 +19,13 @@ public interface Container
    * @param types The types of arguments the binding takes.
    * @param binding The binding to add
    */
-  public void addMethod(String[] types, MethodBinding binding);
+  public void addMethod(MethodBinding binding);
+  
+  /**Returns a list of lists of methodbindings.
+   * 
+   * @return A list of all the methods in the frunction
+   */
+  public List<MethodBinding> getMethods();
   
   /**Gets the symbol binding for the corresponding symbol
    * 
@@ -31,7 +39,14 @@ public interface Container
    * @param symbol The symbol's string to add
    * @param binding The binding to add
    */
-  public void addSymbol(String symbol, SymbolBinding binding);
+  public void addSymbol(SymbolBinding binding);
+  
+  /**Returns all the symbols stored in the container
+   * This returns all of the symbols sorted.
+   * 
+   * @return All the symbols.
+   */
+  public List<SymbolBinding> getSymbols();
   
   /**Returns the environment that the container is contained within.
    * This may be null if the container is a top level container

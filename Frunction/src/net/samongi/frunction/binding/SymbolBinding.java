@@ -25,4 +25,10 @@ public interface SymbolBinding extends Binding
 	 */
 	public Expression getExpression() throws TokenException;
 	
+	/**Returns a string representation of the binding that is more human readable.
+	 * 
+	 * @return
+	 */
+	public String toDisplay();
+	
 }

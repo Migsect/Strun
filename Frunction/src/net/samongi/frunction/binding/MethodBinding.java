@@ -25,4 +25,13 @@ public interface MethodBinding extends Binding
 	 * @throws TokenException
 	 */
 	public Expression getExpression() throws TokenException;
+	
+	public String[] getTypes();
+	
+	/**Returns a string representation of the method binding
+	 * that is easier for humans to read.
+	 * 
+	 * @return
+	 */
+	public String toDisplay();
 }

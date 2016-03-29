@@ -1,6 +1,7 @@
 package net.samongi.frunction.frunction;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.samongi.frunction.binding.DynamicSymbolBinding;
@@ -45,9 +46,21 @@ public class MethodContainer implements Container
 
 	@Override public Container getEnvironment(){return this.environment;}
 
-	@Override public void addMethod(String[] types, MethodBinding binding){}
-	@Override public void addSymbol(String symbol, SymbolBinding binding)
+	@Override public void addMethod(MethodBinding binding){}
+	@Override public void addSymbol(SymbolBinding binding)
 	{
-		this.override_symbols.put(symbol, binding);
+		this.override_symbols.put(binding.getKey(), binding);
+	}
+
+	@Override public List<MethodBinding> getMethods()
+	{
+		// TODO 
+		return null;
+	}
+
+	@Override public List<SymbolBinding> getSymbols()
+	{
+		// TODO 
+		return null;
 	}
 }

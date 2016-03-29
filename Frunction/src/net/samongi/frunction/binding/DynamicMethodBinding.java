@@ -79,5 +79,17 @@ public class DynamicMethodBinding implements MethodBinding
 	@Override public String getSource(){return this.source;}
 
 	@Override public Container getContainer(){return this.container;}
+	@Override public String toDisplay()
+	{
+		String inputs = "( ";
+		for(String i : this.input_symbols) inputs += i + " ";
+		inputs += ")";
+		
+		String types = "[";
+		for(String t : this.input_types) types += t + " ";
+		types += "]";
+		return inputs + types;
+	}
+	@Override public String[] getTypes(){return this.input_types;}
 
 }

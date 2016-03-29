@@ -3,7 +3,6 @@ package net.samongi.frunction.binding;
 import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
-import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.frunction.Frunction;
 
 public class DynamicSymbolBinding implements SymbolBinding
@@ -83,5 +82,11 @@ public class DynamicSymbolBinding implements SymbolBinding
 	}
 	
 	@Override public Container getContainer(){return this.environment;}
+	@Override
+	public String toDisplay()
+	{
+		String display = this.key + ":" + this.source;
+		return display;
+	}
 	
 }

@@ -1,5 +1,7 @@
 package net.samongi.frunction.frunction.literal;
 
+import java.util.List;
+
 import net.samongi.frunction.binding.DynamicMethodBinding;
 import net.samongi.frunction.binding.DynamicSymbolBinding;
 import net.samongi.frunction.binding.MethodBinding;
@@ -62,6 +64,9 @@ public class BooleanFrunction implements Frunction
 		
 		// Setting the state of the boolean.
 		this.state = state;
+		
+		// Adding the methods
+		this.addSymbol(this.methodEquals());
 	}
 	
 	/**Will generate a method binding for determining if another method is equal.
@@ -106,6 +111,7 @@ public class BooleanFrunction implements Frunction
 			
 		};
 		MethodBinding method_0 = new DynamicMethodBinding(this, input_0, types_0, condition_0, expression_0);
+		method_holder.addMethod(method_0);
 		
 		// Creating the binding
 		SymbolBinding binding = new DynamicSymbolBinding("eq", method_holder, this);
@@ -131,9 +137,9 @@ public class BooleanFrunction implements Frunction
 	
 	public boolean getNative(){return this.state;}
 
-	@Override public void addMethod(String[] types, MethodBinding binding){this.inner.addMethod(types, binding);}
-
-	@Override public void addSymbol(String symbol, SymbolBinding binding){} // Do nothing
-
+	@Override public void addMethod(MethodBinding binding){this.inner.addMethod(binding);}
+	@Override public void addSymbol(SymbolBinding binding){} // Do nothing
 	@Override public String getSource(){return null;}
+	@Override public List<MethodBinding> getMethods(){return this.inner.getMethods();}
+	@Override public List<SymbolBinding> getSymbols(){return this.inner.getSymbols();}
 }

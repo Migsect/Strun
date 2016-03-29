@@ -3,6 +3,7 @@ package net.samongi.frunction.frunction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
@@ -49,29 +50,17 @@ public class DynamicFrunction implements Expression, Frunction
 		this.source = source;
 	}
 	
-	/**Will evaluate the source of this frunction and construct the
-	 * bindings for it.
-	 */
 	@Override public void evaluate()
 	{
 		if(this.isEvaluated()) return;
 		// ELSE TODO Evaluation of source
 	}
 	
-	/**Checks to see if the frunction is evaluated.
-	 * 
-	 * @return True if the frunction is already evaluated
-	 */
 	@Override public boolean isEvaluated()
 	{
 		return false;
 	}
 	
-	/**Gets the method binding for the corresponding types
-	 * 
-	 * @param types THe types to get a method for
-	 * @return A MethodBinding, otherwise null
-	 */
 	@Override public MethodBinding getMethod(String[] types, Frunction[] inputs)
 	{
 	  if(types.length != inputs.length)
@@ -121,8 +110,9 @@ public class DynamicFrunction implements Expression, Frunction
 		return null; // We didn't find the method for the types
 	}
 	
-	@Override public void addMethod(String[] types, MethodBinding binding)
+	@Override public void addMethod(MethodBinding binding)
 	{
+		String[] types = binding.getTypes();
 		// Generating the list if it doesn't exist
 		if(!this.method_bindings.containsKey(types)) this.method_bindings.put(types, new ArrayList<MethodBinding>());
 		// Retrieving the list
@@ -137,11 +127,11 @@ public class DynamicFrunction implements Expression, Frunction
 		return this.symbol_bindings.get(symbol);
 	}
 	
-	@Override public void addSymbol(String symbol, SymbolBinding binding)
+	@Override public void addSymbol(SymbolBinding binding)
 	{
 		// Simply adding the symbol
 		// This will override any existing symbols in that place, but it is expected
-		this.symbol_bindings.put(symbol, binding);
+		this.symbol_bindings.put(binding.getKey(), binding);
 	}
 	
 	@Override public void setType(String type){this.type = type;}
@@ -153,4 +143,29 @@ public class DynamicFrunction implements Expression, Frunction
   @Override public Frunction evaluate(Container environment){return this;}
   
   @Override public String getSource(){return this.source;}
+
+	@Override public List<MethodBinding> getMethods()
+	{
+		TreeMap<String[], List<MethodBinding>> sorted_bindings = new TreeMap<>();
+		sorted_bindings.putAll(this.method_bindings);
+
+		List<List<MethodBinding>> sorted_list = new ArrayList<>();
+		sorted_list.addAll(sorted_bindings.values());
+		
+		List<MethodBinding> squished_list = new ArrayList<>();
+		for(List<MethodBinding> l : sorted_list) squished_list.addAll(l);
+		
+		return squished_list;
+	}
+
+	@Override public List<SymbolBinding> getSymbols()
+	{
+
+		TreeMap<String, SymbolBinding> sorted_bindings = new TreeMap<>();
+		sorted_bindings.putAll(this.symbol_bindings);
+		
+		List<SymbolBinding> sorted_list = new ArrayList<>();
+		sorted_list.addAll(sorted_bindings.values());
+		return sorted_list;
+	}
 }
