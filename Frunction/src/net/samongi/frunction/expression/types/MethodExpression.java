@@ -21,6 +21,7 @@ public class MethodExpression implements Expression
   
   @Override public Frunction evaluate(Container environment)
   {
+  	// Getting group tokens included in the input token.
     GroupToken[] tokens = null;
     try{tokens = this.right_token.getTokens();}
     catch (TokenException e1)
@@ -28,6 +29,7 @@ public class MethodExpression implements Expression
       // TODO add proper error
       return null;
     }
+    // Now we will translate the group tokens into expressions
     Expression[] exprs = new Expression[tokens.length];
     for(int i = 0; i < tokens.length; i++)
     {
@@ -41,6 +43,9 @@ public class MethodExpression implements Expression
       if(expr == null) return null;
       exprs[i] = expr;
     }
+    
+    // evaluating the left expression
+    // This is where we will attempt to get the method from.
     Frunction eval = left_expression.evaluate(environment);
     
     // Evaluating all the inputs because it is needed to get the types.
@@ -53,12 +58,9 @@ public class MethodExpression implements Expression
       r_evals[i] = i_eval;
     }
     
-    
-    
     // The left expression is the container
     //   This method container will be used by a method to evaluate.
     MethodContainer container = new MethodContainer(eval);
-    
     
     return null;
   }

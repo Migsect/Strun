@@ -1,7 +1,5 @@
 package net.samongi.frunction.frunction.literal;
 
-import java.util.List;
-
 import net.samongi.frunction.binding.DynamicMethodBinding;
 import net.samongi.frunction.binding.DynamicSymbolBinding;
 import net.samongi.frunction.binding.MethodBinding;
@@ -12,7 +10,7 @@ import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.frunction.Frunction;
 
-public class BooleanFrunction implements Frunction
+public class BooleanFrunction extends NativeFrunction
 {
 	private static final String TYPE = "Boolean";
 	
@@ -51,16 +49,13 @@ public class BooleanFrunction implements Frunction
 		};
 	}
 	
-	private final Container environment;
 	// This is a frunction that the boolean frunction wraps.
-	private final Frunction inner;
 	private final boolean state;
 	
 	public BooleanFrunction(Container environment, boolean state)
 	{
-		this.environment = environment;
-		// Creating the frunction that the boolean frunction will wrap.
-		this.inner = new DynamicFrunction(this.environment, "");
+		// 
+		super(environment);
 		
 		// Setting the state of the boolean.
 		this.state = state;
@@ -119,27 +114,8 @@ public class BooleanFrunction implements Frunction
 		return binding;
 	}
 
-	@Override public MethodBinding getMethod(String[] types, Frunction[] inputs){return this.inner.getMethod(types, inputs);}
-
-	@Override public SymbolBinding getSymbol(String symbol){return this.inner.getSymbol(symbol);}
-
-	@Override public Container getEnvironment(){return this.environment;}
-
-	@Override public void setType(String type){} // Cannot change type
 
 	@Override public String getType(){return BooleanFrunction.TYPE;}
 
-	@Override public void evaluate(){}
-
-	@Override public boolean isEvaluated(){return true;}
-
-	@Override public Frunction evaluate(Container environment){return this;}
-	
 	public boolean getNative(){return this.state;}
-
-	@Override public void addMethod(MethodBinding binding){this.inner.addMethod(binding);}
-	@Override public void addSymbol(SymbolBinding binding){} // Do nothing
-	@Override public String getSource(){return null;}
-	@Override public List<MethodBinding> getMethods(){return this.inner.getMethods();}
-	@Override public List<SymbolBinding> getSymbols(){return this.inner.getSymbols();}
 }
