@@ -19,7 +19,7 @@ public class GroupToken implements Token
 	
 	public GroupToken(String source)
 	{
-		this.source = source;
+		this.source = source.trim();
 	}
 	
 	public void evaluate() throws TokenException
@@ -33,6 +33,7 @@ public class GroupToken implements Token
 	  	// Creating accessor tokens
 			if(ParseUtil.matchesAt(source, i, AccessorToken.OPERATOR))
 			{
+			  // TODO make it so REALS are not split up by this operator
         i += AccessorToken.OPERATOR.length();
         
 				tokens.add(new AccessorToken());

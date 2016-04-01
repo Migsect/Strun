@@ -9,7 +9,7 @@ public class FrunctionToken implements Token
 	
 	public FrunctionToken(String source)
 	{
-		this.source = source;
+		this.source = source.trim();
 	}
 	
 	@Override public String getSource(){return this.source;}

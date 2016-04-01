@@ -8,7 +8,7 @@ public class SymbolToken implements Token
 	
 	public SymbolToken(String source)
 	{
-		this.source = source;
+		this.source = source.trim();
 	}
 	
 	@Override public String getSource(){return this.source;}

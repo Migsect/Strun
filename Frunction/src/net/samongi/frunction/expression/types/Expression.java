@@ -40,6 +40,7 @@ public interface Expression
     while(i < tokens.length)
     {
       Token t = tokens[i];
+      // System.out.println("Token is of type: " + t.getType().toString() + " with source '" + t.getSource() + "'");
       // Case 1: We have a token without an accessor before it.
       //   This means that it is accessing the current environment
       //   This only occurs if we start on a symbol
@@ -97,6 +98,7 @@ public interface Expression
         // TODO unknown token
         return null;
       }
+      // System.out.println(" - Left expression is now : " + left_expr.getClass().toGenericString());
     }
     return left_expr;
   }

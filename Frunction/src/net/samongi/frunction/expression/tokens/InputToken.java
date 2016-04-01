@@ -19,7 +19,7 @@ public class InputToken implements Token
   
   public InputToken(String source)
   {
-  	this.source = source;
+  	this.source = source.trim();
   }
   
   public void evaluate() throws TokenException

@@ -8,7 +8,7 @@ import net.samongi.frunction.frunction.Frunction;
 public class DynamicSymbolBinding implements SymbolBinding
 {
 	private static final String DEF_KEY = "_"; 
-	private static final String BINDING_PUBLIC = ":";
+	private static final String BINDING = ":";
 	
 	/**Parse a section of text and returns a symbol binding
 	 * 
@@ -19,18 +19,19 @@ public class DynamicSymbolBinding implements SymbolBinding
 	public static DynamicSymbolBinding parseBinding(String text_section, Container environment)
 	{
 		// Splitting the section based on the first bound binding operator
-		String[] split_section = text_section.split(BINDING_PUBLIC, 1);
+		String[] split_section = text_section.split(BINDING, 2);
+		// System.out.println("Split_section length: " + split_section.length);
 		String key = null;
 		String source = null;
 		if(split_section.length < 2) // This means that the second expression isn't being binding to an actual key
 		{
 			key = DEF_KEY;
-			source = split_section[0]; // The text is all there is.
+			source = split_section[0].trim(); // The text is all there is.
 		}
 		else
 		{
-			key = split_section[0]; // Getting the first element of the split_section
-			source = split_section[1]; // The text is second in this case
+			key = split_section[0].trim(); // Getting the first element of the split_section
+			source = split_section[1].trim(); // The text is second in this case
 		}
 		
 		if(key == null) return null;
@@ -97,14 +98,14 @@ public class DynamicSymbolBinding implements SymbolBinding
 	}
   @Override public void evaluate() throws TokenException
   {
-    this.generateExpression();
+    if(this.expression == null) this.generateExpression();
   }
   @Override public void collapse()
   {
     try{this.evaluate();}
     catch (TokenException e){return;}
     if(this.expression == null) return;
-    this.collapsed = this.expression.evaluate(this.environment);
+    if(this.collapsed == null) this.collapsed = this.expression.evaluate(this.environment);
   }
   @Override public Frunction get()
   {
