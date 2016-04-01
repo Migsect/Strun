@@ -1,8 +1,5 @@
 package net.samongi.frunction.binding;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.expression.types.Expression;
@@ -39,6 +36,7 @@ public class DynamicMethodBinding implements MethodBinding
 	 */
 	public static DynamicMethodBinding parseBinding(String section, Container environment)
 	{
+	  //System.out.println("Parsing for method: " + section);
 		int i = 0; // indexer for the whole section
 		// Getting the section prior to the binding.
 	  String prior = ParseUtil.getSection(section, i, BINDING, 
@@ -46,11 +44,13 @@ public class DynamicMethodBinding implements MethodBinding
 	  		Token.getScopeCloseIdentifiers(), 
 	  		Token.getScopeeToggleIdentifiers());
 	  i += prior.length(); // Adding to the index length to get the expression
+	  //System.out.println("  prior: " + prior);
 	  // Removing the binding operator
 	  if(prior.endsWith(BINDING)) prior.substring(0, prior.length() - BINDING.length());
+    //System.out.println("  prior-c: " + prior);
 	  
 	  // Getting the expression section
-	  if(section.length() >= i) return null; // This means there is no expression
+	  if(section.length() <= i) return null; // This means there is no expression
 	  String expression = section.substring(i).trim(); // getting the remainder
 	  
 	  int j = 0; // indexer for the prior section
@@ -73,16 +73,24 @@ public class DynamicMethodBinding implements MethodBinding
 	  	// Now we should have the condition expression;
 	  }
 	  
+	  if(input_section.length() == 0) return new DynamicMethodBinding(environment, new String[0], new String[0], condition, expression);
+	  
 	  // Splitting the input
 	  String[] split_input = input_section.split(INPUT_SPLITTER);
 	  String[] input_symbols = new String[split_input.length];
 	  String[] input_types = new String[split_input.length];
 	  for(int k = 0; k < split_input.length; k++)
 	  {
-	  	String part = split_input[k];
-	  	// TODO
+	  	String part = split_input[k]; // removing whitespace as well as squeezing
+	  	String[] parts = part.split(" +"); // splitting the part, this is how types are specified.
+	  	
+	  	input_symbols[k] = parts[0]; // first is going to be the symbol
+	  	if(parts.length > 1) input_types[k] = parts[1]; // second might be the type if it exists
+	  	else input_types[k] = "";;
 	  }
-	  return null;
+	  
+	  // Time to return 
+	  return new DynamicMethodBinding(environment, input_symbols, input_types, condition, expression);
 	}
 	
 	public DynamicMethodBinding(Container container, String[] input_symbols, String[] input_types, Expression condition, Expression expression)

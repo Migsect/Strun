@@ -1,12 +1,14 @@
-coord1 : {
+!coord1 : {
   x : 10;
   y : 20;
 };
-coord2 : {
+!coord2 : {
   x : 30;
   y : 40;
 };
 relation : {
   c1 : coord1;
   c2 : coord2;
-}
+  () -> c1;
+  () -> c2;
+};

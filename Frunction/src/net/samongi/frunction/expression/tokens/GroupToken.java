@@ -49,10 +49,10 @@ public class GroupToken implements Token
 				// Incrementing the next index based on the section length found
 				i += section.length();
 				
-				// Checking to see if the section end correctlys.
+				// Checking to see if the section end correctly.
 				if(!ParseUtil.matchesAt(section, section.length() - InputToken.CLOSE.length(), InputToken.CLOSE))
 				{
-				  throw new TokenException(); // Throwing the exception
+				  throw new TokenException(section); // Throwing the exception
 				}
 				
 				// Creating the actual token
@@ -73,7 +73,7 @@ public class GroupToken implements Token
         // Checking to see if the section end correctlys.
         if(!ParseUtil.matchesAt(section, section.length() - FrunctionToken.CLOSE.length(), FrunctionToken.CLOSE))
         {
-          throw new TokenException(); // Throwing the exception
+          throw new TokenException(section); // Throwing the exception
         }
         
         // Creating the actual token

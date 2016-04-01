@@ -35,13 +35,13 @@ public interface SymbolBinding extends Binding
 	/**This will collapse the symbol to have its expression forced to 
 	 * evaluate to a frunction.
 	 */
-	public void collapse();
+	public void collapse() throws TokenException;
 	
 	/**Returns a frunction that this symbol may be representing.
 	 * This will force a collapse as well as an evaluation of symbol binding.
 	 * 
 	 * @return
 	 */
-	public Frunction get();
+	public Frunction get() throws TokenException;
 	
 }

@@ -19,8 +19,6 @@ import net.samongi.frunction.parse.ParseUtil;
 
 public class DynamicFrunction implements Expression, Frunction
 {
-  private static final boolean DO_EVAL = true;
-  
 	/**A frunction consists of a Map of symbol bindings
 	 */
 	private Map<String, SymbolBinding> symbol_bindings = null;
@@ -79,38 +77,23 @@ public class DynamicFrunction implements Expression, Frunction
 		  if(section.endsWith(Binding.BINDING_SEPERATOR)) section = section.substring(0, section.length() - Binding.BINDING_SEPERATOR.length());
 		  // Now we have a clean binding defintion.
 		  
-		  
+		  MethodBinding met_binding = DynamicMethodBinding.parseBinding(section, this);
+      if(met_binding != null)
+      {
+        System.out.println("Found met_b in: '" + section.trim() + "'");
+        
+        this.addMethod(met_binding);
+        continue;
+      }
 		  SymbolBinding sym_binding = DynamicSymbolBinding.parseBinding(section, this);
 		  if(sym_binding != null)
 		  {
-		    System.out.println("Found sym_b in: '" + section + "'");
-		    // Attempting to evaluate
-		    if(DO_EVAL)
-		    {
-		      sym_binding.collapse();
-          if(sym_binding.get() == null)System.out.println(" - Warning, the expression could not be collapsed!");
-        }
+		    System.out.println("Found sym_b in: '" + section.trim() + "'");
 		    
 		    this.addSymbol(sym_binding);
 		    continue;
 		  }
-		  MethodBinding met_binding = DynamicMethodBinding.parseBinding(section, this);
-		  if(met_binding != null)
-		  {
-        System.out.println("Found met_b in: '" + section + "'");
-        // Attempting to evaluate
-        if(DO_EVAL) try
-        {
-          met_binding.evaluate();
-        }
-        catch (TokenException e)
-        {
-          System.out.println(" - Warning, the expression could nopt be evaluated");
-        }
-        
-		    this.addMethod(met_binding);
-		    continue;
-		  }
+		  
 		  
 		  // Here is here we throw an exception or a warning that a binding couldn't be found in a section
 		  // TODO error messages

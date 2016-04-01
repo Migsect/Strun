@@ -9,6 +9,7 @@ public class DynamicSymbolBinding implements SymbolBinding
 {
 	private static final String DEF_KEY = "_"; 
 	private static final String BINDING = ":";
+	private static final String DELAY_EVAL = "!";
 	
 	/**Parse a section of text and returns a symbol binding
 	 * 
@@ -18,6 +19,7 @@ public class DynamicSymbolBinding implements SymbolBinding
 	 */
 	public static DynamicSymbolBinding parseBinding(String text_section, Container environment)
 	{
+	  
 		// Splitting the section based on the first bound binding operator
 		String[] split_section = text_section.split(BINDING, 2);
 		// System.out.println("Split_section length: " + split_section.length);
@@ -37,7 +39,17 @@ public class DynamicSymbolBinding implements SymbolBinding
 		if(key == null) return null;
 		if(source == null) return null;
 		
-		return new DynamicSymbolBinding(key, source, environment);
+		boolean do_eval = !key.startsWith(DELAY_EVAL);
+		if(!do_eval) key.replaceFirst(DELAY_EVAL, "");
+		
+		DynamicSymbolBinding binding = new DynamicSymbolBinding(key, source, environment);
+		if(do_eval)
+		{
+		  try{binding.collapse();}
+		  catch(TokenException e){e.printError();}
+		}
+		
+		return binding;
 	}
 	
 	private final String key;
@@ -100,14 +112,13 @@ public class DynamicSymbolBinding implements SymbolBinding
   {
     if(this.expression == null) this.generateExpression();
   }
-  @Override public void collapse()
+  @Override public void collapse() throws TokenException
   {
-    try{this.evaluate();}
-    catch (TokenException e){return;}
+    this.evaluate();
     if(this.expression == null) return;
     if(this.collapsed == null) this.collapsed = this.expression.evaluate(this.environment);
   }
-  @Override public Frunction get()
+  @Override public Frunction get() throws TokenException
   {
     this.collapse();
     return this.collapsed;
