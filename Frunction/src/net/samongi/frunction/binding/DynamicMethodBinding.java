@@ -1,8 +1,13 @@
 package net.samongi.frunction.binding;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.samongi.frunction.expression.exceptions.TokenException;
+import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
+import net.samongi.frunction.parse.ParseUtil;
 
 /**Method bindings bind a set of inputs to an expression.
  * 
@@ -11,6 +16,10 @@ import net.samongi.frunction.frunction.Container;
  */
 public class DynamicMethodBinding implements MethodBinding
 {
+	private static final String BINDING = "->";
+	private static final String COND_OPERATOR = "?";
+	private static final String INPUT_SPLITTER = ",";
+	
 	private final Container container;
 	
 	private final String[] input_symbols;
@@ -28,8 +37,51 @@ public class DynamicMethodBinding implements MethodBinding
 	 * @param environment The environment the binding will be defined in
 	 * @return A dynamic symbol binding
 	 */
-	public static DynamicMethodBinding parseBinding(String text_section, Container environment)
+	public static DynamicMethodBinding parseBinding(String section, Container environment)
 	{
+		int i = 0; // indexer for the whole section
+		// Getting the section prior to the binding.
+	  String prior = ParseUtil.getSection(section, i, BINDING, 
+	  		Token.getScopeOpenIdentifiers(), 
+	  		Token.getScopeCloseIdentifiers(), 
+	  		Token.getScopeeToggleIdentifiers());
+	  i += prior.length(); // Adding to the index length to get the expression
+	  // Removing the binding operator
+	  if(prior.endsWith(BINDING)) prior.substring(0, prior.length() - BINDING.length());
+	  
+	  // Getting the expression section
+	  if(section.length() >= i) return null; // This means there is no expression
+	  String expression = section.substring(i).trim(); // getting the remainder
+	  
+	  int j = 0; // indexer for the prior section
+	  String input_section = ParseUtil.getSection(prior, j, COND_OPERATOR, 
+	  		Token.getScopeOpenIdentifiers(), 
+	  		Token.getScopeCloseIdentifiers(), 
+	  		Token.getScopeeToggleIdentifiers());
+	  j += input_section.length();
+	  if(prior.endsWith(COND_OPERATOR)) prior.substring(0, prior.length() - COND_OPERATOR.length());
+	  boolean input_enclosed = input_section.startsWith("(") && input_section.endsWith(")");
+  	if(input_enclosed) input_section = input_section.substring(1, input_section.length() - 1).trim();
+	  
+	  // Creating the condition expression
+	  String condition = null;
+	  if(prior.length() < j) // checking to see if there is a conditional clause.
+	  {
+	  	condition = prior.substring(j);
+	  	boolean cond_enclosed = condition.startsWith("(") && condition.endsWith(")");
+	  	if(cond_enclosed) condition = condition.substring(1, condition.length() - 1).trim();
+	  	// Now we should have the condition expression;
+	  }
+	  
+	  // Splitting the input
+	  String[] split_input = input_section.split(INPUT_SPLITTER);
+	  String[] input_symbols = new String[split_input.length];
+	  String[] input_types = new String[split_input.length];
+	  for(int k = 0; k < split_input.length; k++)
+	  {
+	  	String part = split_input[k];
+	  	// TODO
+	  }
 	  return null;
 	}
 	
