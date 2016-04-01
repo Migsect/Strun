@@ -22,6 +22,17 @@ public class DynamicMethodBinding implements MethodBinding
 	private Expression condition = null;
 	private Expression expression = null;
 
+	/**Parse a section of text and returns a method binding
+	 * 
+	 * @param text_section The section of text to parse
+	 * @param environment The environment the binding will be defined in
+	 * @return A dynamic symbol binding
+	 */
+	public static DynamicMethodBinding parseBinding(String text_section, Container environment)
+	{
+	  return null;
+	}
+	
 	public DynamicMethodBinding(Container container, String[] input_symbols, String[] input_types, Expression condition, Expression expression)
 	{
 		this.container = container;
@@ -91,5 +102,11 @@ public class DynamicMethodBinding implements MethodBinding
 		return inputs + types;
 	}
 	@Override public String[] getTypes(){return this.input_types;}
+
+  @Override public void evaluate() throws TokenException
+  {
+    this.generateCondition();
+    this.generateExpression();
+  }
 
 }

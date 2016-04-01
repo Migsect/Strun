@@ -2,6 +2,7 @@ package net.samongi.frunction.binding;
 
 import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.types.Expression;
+import net.samongi.frunction.frunction.Frunction;
 
 public interface SymbolBinding extends Binding
 {
@@ -30,5 +31,17 @@ public interface SymbolBinding extends Binding
 	 * @return
 	 */
 	public String toDisplay();
+	
+	/**This will collapse the symbol to have its expression forced to 
+	 * evaluate to a frunction.
+	 */
+	public void collapse();
+	
+	/**Returns a frunction that this symbol may be representing.
+	 * This will force a collapse as well as an evaluation of symbol binding.
+	 * 
+	 * @return
+	 */
+	public Frunction get();
 	
 }

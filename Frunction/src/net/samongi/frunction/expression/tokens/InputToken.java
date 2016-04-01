@@ -29,7 +29,7 @@ public class InputToken implements Token
   	List<String> section_list = new ArrayList<>();
   	while(i < source.length())
   	{
-  	  String section = ParseUtil.getSection(this.source, i, SEPERATOR, Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers());
+  	  String section = ParseUtil.getSection(this.source, i, SEPERATOR, Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers(), Token.getScopeeToggleIdentifiers());
   	  i += section.length();
   	  
   	  // if it ends with the seperator, remove it.

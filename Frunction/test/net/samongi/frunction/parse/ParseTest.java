@@ -76,7 +76,7 @@ public class ParseTest
 		String input = ""; 
 		String expected = "";
 		
-		String output = ParseUtil.getSection(input, 0, ";", "{", "}");
+		String output = ParseUtil.getSection(input, 0, ";", "{", "}", "");
 		assertEquals(expected, output);
 	}
 	
@@ -113,7 +113,7 @@ public class ParseTest
 		String input = "foo{;}bar;sho"; 
 		String expected = "foo{;}bar;";
 		
-		String output = ParseUtil.getSection(input, 0, ";", "{", "}");
+		String output = ParseUtil.getSection(input, 0, ";", "{", "}", "");
 		assertEquals(expected, output);
 	}
 	@Test
@@ -122,7 +122,7 @@ public class ParseTest
 		String input = "foo{;}bar;sho"; 
 		String expected = "foo{;";
 		
-		String output = ParseUtil.getSection(input, 0, ";", "", "");
+		String output = ParseUtil.getSection(input, 0, ";", "", "", "");
 		assertEquals(expected, output);
 	}
 	@Test
@@ -131,7 +131,7 @@ public class ParseTest
 		String input = "foo{;}bar;sho"; 
 		String expected = "foo{;}bar;sho";
 		
-		String output = ParseUtil.getSection(input, 0, "}", "{", "}");
+		String output = ParseUtil.getSection(input, 0, "}", "{", "}", "");
 		assertEquals(expected, output);
 	}
 	@Test
@@ -140,9 +140,45 @@ public class ParseTest
 		String input = "foo;}bar;sho"; 
 		String expected = "foo;}";
 		
-		String output = ParseUtil.getSection(input, 0, "}", "{", "}");
+		String output = ParseUtil.getSection(input, 0, "}", "{", "}", "");
 		assertEquals(expected, output);
 	}
+	@Test
+  public void section_ignore_5()
+  {
+    String input    = "foo\"bar;\";sho"; 
+    String expected = "foo\"bar;\";";
+    
+    String output = ParseUtil.getSection(input, 0, ";", "", "", "\"");
+    assertEquals(expected, output);
+  }
+	@Test
+  public void section_ignore_6()
+  {
+    String input    = "foo\";\"\";\";sho"; 
+    String expected = "foo\";\"\";\";";
+    
+    String output = ParseUtil.getSection(input, 0, ";", "", "", "\"");
+    assertEquals(expected, output);
+  }
+	@Test
+  public void section_ignore_7()
+  {
+    String input    = "foo\"{;}\";sho"; 
+    String expected = "foo\"{;}\";";
+    
+    String output = ParseUtil.getSection(input, 0, ";", "{", "}", "\"");
+    assertEquals(expected, output);
+  }
+	@Test
+  public void section_ignore_8()
+  {
+    String input    = "foo{\";\"};sho"; 
+    String expected = "foo{\";\"};";
+    
+    String output = ParseUtil.getSection(input, 0, ";", "{", "}", "\"");
+    assertEquals(expected, output);
+  }
 	
 	
 	@Test
@@ -151,7 +187,7 @@ public class ParseTest
 		String input = "foo{;}bar;sho"; 
 		String expected = "foo{;}bar;";
 		
-		String output = ParseUtil.getSection(input, 0, ";", new String[]{"(","{"}, new String[]{")","}"});
+		String output = ParseUtil.getSection(input, 0, ";", new String[]{"(","{"}, new String[]{")","}"}, new String[0]);
 		assertEquals(expected, output);
 	}
 	@Test
@@ -160,7 +196,7 @@ public class ParseTest
 		String input = "foo(;)bar;sho"; 
 		String expected = "foo(;)bar;";
 		
-		String output = ParseUtil.getSection(input, 0, ";", new String[]{"(","{"}, new String[]{")","}"});
+		String output = ParseUtil.getSection(input, 0, ";", new String[]{"(","{"}, new String[]{")","}"}, new String[0]);
 		assertEquals(expected, output);
 	}
 	@Test
@@ -169,7 +205,7 @@ public class ParseTest
 		String input = "foo{(;)}bar;sho"; 
 		String expected = "foo{(;)}bar;";
 		
-		String output = ParseUtil.getSection(input, 0, ";", new String[]{"(","{"}, new String[]{")","}"});
+		String output = ParseUtil.getSection(input, 0, ";", new String[]{"(","{"}, new String[]{")","}"}, new String[0]);
 		assertEquals(expected, output);
 	}
 	@Test
@@ -178,7 +214,7 @@ public class ParseTest
 		String input = "foo({;})bar;sho"; 
 		String expected = "foo({;})bar;";
 		
-		String output = ParseUtil.getSection(input, 0, ";", new String[]{"(","{"}, new String[]{")","}"});
+		String output = ParseUtil.getSection(input, 0, ";", new String[]{"(","{"}, new String[]{")","}"}, new String[0]);
 		assertEquals(expected, output);
 	}
 	@Test
@@ -187,7 +223,7 @@ public class ParseTest
 		String input = "foo{(;})bar;sho"; 
 		String expected = "foo{(;})bar;";
 		
-		String output = ParseUtil.getSection(input, 0, ";", new String[]{"(","{"}, new String[]{")","}"});
+		String output = ParseUtil.getSection(input, 0, ";", new String[]{"(","{"}, new String[]{")","}"}, new String[0]);
 		assertEquals(expected, output);
 	}
 	

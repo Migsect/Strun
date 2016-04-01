@@ -37,6 +37,16 @@ public interface Token
         InputToken.CLOSE
     };
   }
+  /**Gets the scope toggles
+   * 
+   * @return
+   */
+  public static String[] getScopeeToggleIdentifiers()
+  {
+    return new String[]{
+        "\""
+    };
+  }
   
   public static Token.Type[] arrayToTypeArray(Token[] tokens)
   {

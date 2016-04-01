@@ -44,7 +44,7 @@ public class GroupToken implements Token
 				// Getting the section until the close identifier
 				// This will start after the open identifier
 				String section = ParseUtil.getSection(source, i, InputToken.CLOSE, 
-				    Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers());
+				    Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers(), Token.getScopeeToggleIdentifiers());
 				// Incrementing the next index based on the section length found
 				i += section.length();
 				
@@ -65,7 +65,7 @@ public class GroupToken implements Token
         // Getting the section until the close identifier
         // This will start after the open identifier
         String section = ParseUtil.getSection(source, i, FrunctionToken.CLOSE, 
-            Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers());
+            Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers(), Token.getScopeeToggleIdentifiers());
         // Incrementing the next index based on the section length found
         i += section.length();
         

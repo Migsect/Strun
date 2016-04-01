@@ -1,14 +1,16 @@
 package net.samongi.frunction.frunction;
 
+import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.types.Expression;
 
 public interface Frunction extends Container, Expression
 {
+  
 	/**Evaluates the frunction if it needs to be evaluated
 	 * This will do nothing on native frunctions but on source-based frunctions
 	 * this will parse the source to generate the frunction
 	 */
-	public void evaluate();
+	public void evaluate() throws TokenException;
 	/**This will return the evaluation state of the frunction
 	 * If the frunction is native then this will generally return true
 	 * 

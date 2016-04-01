@@ -19,23 +19,31 @@ public class ParseUtil
 	 * @param scope_down Will scope down if this is matched
 	 * @return The section found
 	 */
-	public static String getSection(String text, int start, String seperator, String[] scope_up, String[] scope_down)
+	public static String getSection(String text, int start, String seperator, String[] scope_up, String[] scope_down, String[] scope_toggle)
 	{
 		// Checking to see if we have any scope up methods
 		boolean has_scope_up = scope_up != null &&  scope_up.length > 0;
-		boolean has_scope_down = scope_down != null && scope_down.length > 0;;
+		boolean has_scope_down = scope_down != null && scope_down.length > 0;
+    boolean has_scope_toggle = scope_toggle != null && scope_toggle.length > 0;
 		
 		int scope = 0; // The scope incrementor
+		boolean toggle_scope = false;
 		for(int i = start; i < text.length(); i++)
 		{
-			if(has_scope_up && ParseUtil.matchesAt(text, i, scope_up)) scope++;
-			if(ParseUtil.matchesAt(text, i, seperator) && scope == 0)
+      if(has_scope_toggle && ParseUtil.matchesAt(text, i, scope_toggle))
+      {
+        if(toggle_scope) toggle_scope = false;
+        else toggle_scope = true;
+      }
+      if(has_scope_up && ParseUtil.matchesAt(text, i, scope_up) && !toggle_scope) scope++;
+      
+			if(ParseUtil.matchesAt(text, i, seperator) && scope == 0 && !toggle_scope)
 			{
 				int end = i + seperator.length(); 
 				return text.substring(start, end);
 			}
 			// Scoping down after
-			if(has_scope_down && ParseUtil.matchesAt(text, i, scope_down)) scope--;
+			if(has_scope_down && ParseUtil.matchesAt(text, i, scope_down) && !toggle_scope) scope--;
 		}
 		
 		// TODO scoping exceptions?
@@ -52,7 +60,7 @@ public class ParseUtil
 	 * @param scope_down
 	 * @return
 	 */
-	public static String getSection(String text, int start, String seperator, String scope_up, String scope_down)
+	public static String getSection(String text, int start, String seperator, String scope_up, String scope_down, String scope_toggle)
 	{
 		String[] scope_up_array = null;
 		if(scope_up.length() == 0) scope_up_array = new String[0];
@@ -62,7 +70,11 @@ public class ParseUtil
 		if(scope_down.length() == 0) scope_down_array = new String[0];
 		else scope_down_array = new String[]{scope_down};
 		
-		return ParseUtil.getSection(text, start, seperator, scope_up_array, scope_down_array);
+		String[] scope_toggle_array = null;
+    if(scope_toggle.length() == 0) scope_toggle_array = new String[0];
+    else scope_toggle_array = new String[]{scope_toggle};
+		
+		return ParseUtil.getSection(text, start, seperator, scope_up_array, scope_down_array, scope_toggle_array);
 	}
 	/**Reduced and simplified form of getSection
 	 * 
@@ -73,7 +85,7 @@ public class ParseUtil
 	 */
 	public static String getSection(String text, int start, String seperator)
 	{
-		return ParseUtil.getSection(text, start, seperator, new String[0], new String[0]);
+		return ParseUtil.getSection(text, start, seperator, new String[0], new String[0], new String[0]);
 	}
 	
 	/**Tests to see if the index of the string matches the pattern
@@ -101,5 +113,15 @@ public class ParseUtil
 	{
 		for(String s : patterns) if(matchesAt(text, start, s)) return true;
 		return false;
+	}
+	
+	public static String removeNextLines(String text)
+	{
+	  return text.replaceAll("\\r\\n|\\r|\\n", "");
+	}
+	
+	public static String squeeze(String text)
+	{
+	  return text.trim().replaceAll(" +", " ");
 	}
 }

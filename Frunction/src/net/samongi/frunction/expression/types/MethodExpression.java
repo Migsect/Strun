@@ -1,5 +1,6 @@
 package net.samongi.frunction.expression.types;
 
+import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.tokens.GroupToken;
 import net.samongi.frunction.expression.tokens.InputToken;
@@ -58,13 +59,34 @@ public class MethodExpression implements Expression
       r_evals[i] = i_eval;
     }
     
+    // Getting the types of the evaluated expression.
+    String[] types = new String[r_evals.length];
+    for(int i = 0; i < types.length; i++) types[i] = r_evals[i].getType(); // type may become null?
+    // TODO see if we need to check if the types include a null string
+    
+    MethodBinding binding = eval.getMethod(types, r_evals);
+    if(binding == null)
+    {
+      // TODO throw a proper exception.
+      return null;
+    }
+    
     // The left expression is the container
     //   This method container will be used by a method to evaluate.
+    //   We need to add the inputs to this container.
     MethodContainer container = new MethodContainer(eval);
+    String[] input_symbols = binding.getInputSymbols();
+    // Adding all the frunction inputs.
+    for(int i = 0; i < input_symbols.length; i++) container.addSymbol(input_symbols[i], r_evals[i]);
     
+    // Getting the expression
+    Expression expr = null;
+    try { expr = binding.getExpression();}
+    catch (TokenException e){}
+    if(expr == null) return null;
     
-    
-    return null;
+    // Evaluating the expression
+    return expr.evaluate(container);
   }
   
 }

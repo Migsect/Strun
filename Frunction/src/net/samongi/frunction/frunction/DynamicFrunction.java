@@ -1,18 +1,26 @@
 package net.samongi.frunction.frunction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import net.samongi.frunction.binding.Binding;
+import net.samongi.frunction.binding.DynamicMethodBinding;
+import net.samongi.frunction.binding.DynamicSymbolBinding;
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
 import net.samongi.frunction.expression.exceptions.TokenException;
+import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
+import net.samongi.frunction.parse.ParseUtil;
 
 public class DynamicFrunction implements Expression, Frunction
 {
+  private static final boolean DO_EVAL = true;
+  
 	/**A frunction consists of a Map of symbol bindings
 	 */
 	private Map<String, SymbolBinding> symbol_bindings = null;
@@ -53,13 +61,64 @@ public class DynamicFrunction implements Expression, Frunction
 	@Override public void evaluate()
 	{
 		if(this.isEvaluated()) return;
-		// ELSE TODO Evaluation of source
+		
+		// Creating the hashmaps
+    this.symbol_bindings = new HashMap<>();
+		this.method_bindings = new HashMap<>();
+		
+		int i = 0;
+		
+		while(i < source.length())
+		{
+		  // Getting the first section.
+		  String section = ParseUtil.getSection(source, i, Binding.BINDING_SEPERATOR, 
+		      Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers(), Token.getScopeeToggleIdentifiers());
+		  // Increating the index variable for the next section grab
+		  i += section.length();
+		  // Removing the binding seperator from the end.
+		  if(section.endsWith(Binding.BINDING_SEPERATOR)) section = section.substring(0, section.length() - Binding.BINDING_SEPERATOR.length());
+		  // Now we have a clean binding defintion.
+		  
+		  
+		  SymbolBinding sym_binding = DynamicSymbolBinding.parseBinding(section, this);
+		  if(sym_binding != null)
+		  {
+		    System.out.println("Found sym_b in: '" + section + "'");
+		    // Attempting to evaluate
+		    if(DO_EVAL)
+		    {
+		      sym_binding.collapse();
+          if(sym_binding.get() == null)System.out.println(" - Warning, the expression could not be collapsed!");
+        }
+		    
+		    this.addSymbol(sym_binding);
+		    continue;
+		  }
+		  MethodBinding met_binding = DynamicMethodBinding.parseBinding(section, this);
+		  if(met_binding != null)
+		  {
+        System.out.println("Found met_b in: '" + section + "'");
+        // Attempting to evaluate
+        if(DO_EVAL) try
+        {
+          met_binding.evaluate();
+        }
+        catch (TokenException e)
+        {
+          System.out.println(" - Warning, the expression could nopt be evaluated");
+        }
+        
+		    this.addMethod(met_binding);
+		    continue;
+		  }
+		  
+		  // Here is here we throw an exception or a warning that a binding couldn't be found in a section
+		  // TODO error messages
+		  System.out.println("Didn't find binding in: '" + section + "'");
+		}
 	}
 	
-	@Override public boolean isEvaluated()
-	{
-		return false;
-	}
+	@Override public boolean isEvaluated(){return symbol_bindings != null && method_bindings != null;}
 	
 	@Override public MethodBinding getMethod(String[] types, Frunction[] inputs)
 	{

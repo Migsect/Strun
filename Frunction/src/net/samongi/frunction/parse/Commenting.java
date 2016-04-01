@@ -3,7 +3,7 @@ package net.samongi.frunction.parse;
 public class Commenting
 {
 	private static final String LINE_COMMENT_STR = "#";
-	private static final String LINE_COMMENT_REGEX = LINE_COMMENT_STR + ".*" + "($|\n)";
+	private static final String LINE_COMMENT_REGEX = LINE_COMMENT_STR + ".*" + "($|\\r\\n|\\r|\\n)";
 	
 	private static final String INLINE_COMMENT_STR_OPEN = "#<";
 	private static final String INLINE_COMMENT_STR_CLOSE = ">#";

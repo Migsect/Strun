@@ -10,6 +10,12 @@ public class DynamicSymbolBinding implements SymbolBinding
 	private static final String DEF_KEY = "_"; 
 	private static final String BINDING_PUBLIC = ":";
 	
+	/**Parse a section of text and returns a symbol binding
+	 * 
+	 * @param text_section The section of text to parse
+	 * @param environment The environment of which the binding will be made
+	 * @return A dynamic symbol bidning
+	 */
 	public static DynamicSymbolBinding parseBinding(String text_section, Container environment)
 	{
 		// Splitting the section based on the first bound binding operator
@@ -38,6 +44,7 @@ public class DynamicSymbolBinding implements SymbolBinding
 	private final boolean is_private = false; // TODO implement binding privacy
 	
 	private Expression expression = null;
+	private Frunction collapsed = null;
 	
 	// The container of this
 	private final Container environment;
@@ -82,11 +89,27 @@ public class DynamicSymbolBinding implements SymbolBinding
 	}
 	
 	@Override public Container getContainer(){return this.environment;}
-	@Override
-	public String toDisplay()
+	
+	@Override public String toDisplay()
 	{
 		String display = this.key + ":" + this.source;
 		return display;
 	}
+  @Override public void evaluate() throws TokenException
+  {
+    this.generateExpression();
+  }
+  @Override public void collapse()
+  {
+    try{this.evaluate();}
+    catch (TokenException e){return;}
+    if(this.expression == null) return;
+    this.collapsed = this.expression.evaluate(this.environment);
+  }
+  @Override public Frunction get()
+  {
+    this.collapse();
+    return this.collapsed;
+  }
 	
 }
