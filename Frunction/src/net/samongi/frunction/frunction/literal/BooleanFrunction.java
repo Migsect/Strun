@@ -70,6 +70,7 @@ public class BooleanFrunction extends NativeFrunction
 	 */
 	private SymbolBinding methodEquals()
 	{
+	  // The frunction that will hold the method
 		Frunction method_holder = new DynamicFrunction(this, null);
 		
 		// Generating the first method
@@ -82,7 +83,7 @@ public class BooleanFrunction extends NativeFrunction
 			{
 				// Getting the left argument which should be the "@" self binding.
 				Frunction left = null;
-				try{left = environment.getSymbol("@").getExpression().evaluate(environment);}
+				try{left = environment.getSymbol("^@").getExpression().evaluate(environment);}
 				catch (TokenException e){return null;}
 				
 				// Getting the right argument which should be the "other" argument as defined

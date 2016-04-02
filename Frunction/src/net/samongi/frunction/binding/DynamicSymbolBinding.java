@@ -55,6 +55,7 @@ public class DynamicSymbolBinding implements SymbolBinding
 	private final String key;
 	private final String source;
 	private final boolean is_private = false; // TODO implement binding privacy
+  private boolean countable = true;
 	
 	private Expression expression = null;
 	private Frunction collapsed = null;
@@ -77,7 +78,9 @@ public class DynamicSymbolBinding implements SymbolBinding
 	}
 	
 	@Override public String getKey(){return this.key;}
+	
 	@Override public String getSource(){return this.source;}
+	
 	@Override public boolean isPrivate(){return this.is_private;}
 	
 	/**Returns the expression this binding relates to
@@ -123,5 +126,9 @@ public class DynamicSymbolBinding implements SymbolBinding
     this.collapse();
     return this.collapsed;
   }
+  
+  @Override public boolean isCountable(){return this.countable;}
+  
+  @Override public void setCountable(boolean is_countable){this.countable = is_countable;}
 	
 }

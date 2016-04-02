@@ -44,4 +44,16 @@ public interface SymbolBinding extends Binding
 	 */
 	public Frunction get() throws TokenException;
 	
+	/**Determines if the symbol is countable for certain methods
+	 * 
+	 * @return True if it can be counted
+	 */
+	public boolean isCountable();
+	
+	/**Sets the countability state of the symbol
+	 * 
+	 * @param is_countable The state to set it to
+	 */
+	public void setCountable(boolean is_countable);
+	
 }

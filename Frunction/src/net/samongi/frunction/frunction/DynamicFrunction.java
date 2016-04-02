@@ -15,10 +15,14 @@ import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
+import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
 import net.samongi.frunction.parse.ParseUtil;
 
 public class DynamicFrunction implements Expression, Frunction
 {
+  private static final String SELF_SYMBOL = "@";
+  private static final String CONTAINER_ENV_SYMBOL = "^";
+  
 	/**A frunction consists of a Map of symbol bindings
 	 */
 	private Map<String, SymbolBinding> symbol_bindings = null;
@@ -42,6 +46,7 @@ public class DynamicFrunction implements Expression, Frunction
 	/**Source is the body of the frunction.
 	 */
 	private final String source;
+	
 	
 	/**Constructor of the frunction
 	 * Consists of the frunction the frunction is defined within (its environment)
@@ -166,7 +171,27 @@ public class DynamicFrunction implements Expression, Frunction
 	@Override public SymbolBinding getSymbol(String symbol)
 	{
 		if(!this.isEvaluated()) this.evaluate();
-		return this.symbol_bindings.get(symbol);
+		
+		// First step is to consult if the symbol is a literal
+		if(LiteralDictionary.getInstance().isLiteral(symbol)) return LiteralDictionary.getInstance().getSymbol(symbol);
+		
+		if(symbol.equals(SELF_SYMBOL)) // time to create the self binding that will need to be accessed.
+		{
+		  SymbolBinding self_bind = new DynamicSymbolBinding(SELF_SYMBOL, this, this);
+		  self_bind.setCountable(false); // it shouldn't be countable
+		  this.addSymbol(self_bind); // creating the new self-binded symbol;
+		}
+		
+		SymbolBinding binding = null;
+		// First case is to check if it will force an environment pop-up
+		if(symbol.startsWith(CONTAINER_ENV_SYMBOL)) binding = this.environment.getSymbol(symbol.replaceFirst(CONTAINER_ENV_SYMBOL, ""));
+		else 
+		{
+		  binding = this.symbol_bindings.get(symbol);
+		  if(binding == null) binding = this.environment.getSymbol(symbol);
+		}
+		
+		return binding;
 	}
 	
 	@Override public void addSymbol(SymbolBinding binding)
