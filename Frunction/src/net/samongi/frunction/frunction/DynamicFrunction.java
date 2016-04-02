@@ -191,6 +191,7 @@ public class DynamicFrunction implements Expression, Frunction
 		  if(binding == null) binding = this.environment.getSymbol(symbol);
 		}
 		
+		// Returning the binding, it may be null
 		return binding;
 	}
 	
