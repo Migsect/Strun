@@ -31,7 +31,10 @@ public class GroupToken implements Token
 	  while(i < this.source.length())
 		{
 	  	// Creating accessor tokens
-			if(ParseUtil.matchesAt(source, i, AccessorToken.OPERATOR))
+	    // This will check to see if the accessor can be a real symbol
+	    boolean prev_is_num = (i > 0) && (source.substring(i - 1, i).matches("\\d"));
+	    boolean next_is_num = (i < source.length() - 1) && (source.substring(i + 1, i + 2).matches("\\d"));
+			if(ParseUtil.matchesAt(source, i, AccessorToken.OPERATOR) && !(prev_is_num && next_is_num))
 			{
 			  // TODO make it so REALS are not split up by this operator
         i += AccessorToken.OPERATOR.length();

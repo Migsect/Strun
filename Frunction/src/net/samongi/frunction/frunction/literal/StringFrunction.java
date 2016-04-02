@@ -4,6 +4,8 @@ import net.samongi.frunction.frunction.Container;
 
 public class StringFrunction extends NativeFrunction
 {
+  public static final String STRING_CAPSULE = "\"";
+  
   private static final String TYPE = "String";
   
   private final String state;

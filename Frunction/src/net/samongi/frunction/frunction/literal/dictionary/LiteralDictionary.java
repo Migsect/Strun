@@ -6,6 +6,8 @@ import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
+import net.samongi.frunction.frunction.literal.BooleanFrunction;
+import net.samongi.frunction.frunction.literal.StringFrunction;
 
 /**Represents a container that stores and creates all instances of literals
  * Literals are native frunctions that are generally defined in their simplistic literla
@@ -81,6 +83,19 @@ public class LiteralDictionary implements Container
    */
   public boolean isLiteral(String symbol)
   {
+    if(symbol.startsWith(StringFrunction.STRING_CAPSULE) && symbol.endsWith(StringFrunction.STRING_CAPSULE)) return true;
+    if(symbol.equals(BooleanFrunction.TRUE_LITERAL) || symbol.equals(BooleanFrunction.FALSE_LITERAL)) return true;
+    
+    // testing for double
+    Double double_test = null;
+    try{double_test = Double.parseDouble(symbol);}catch(NumberFormatException e){}
+    if(double_test != null) return true;
+    
+    // testing for integer
+    Integer integer_test = null;
+    try{integer_test = Integer.parseInt(symbol);}catch(NumberFormatException e){}
+    if(integer_test != null) return true;
+    
     return false;
   }
 

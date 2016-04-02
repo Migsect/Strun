@@ -12,6 +12,9 @@ import net.samongi.frunction.frunction.Frunction;
 
 public class BooleanFrunction extends NativeFrunction
 {
+  public static final String TRUE_LITERAL = "true";
+  public static final String FALSE_LITERAL = "false";
+  
 	private static final String TYPE = "Boolean";
 	
 	/**Returns an expression that is a tautology which means
