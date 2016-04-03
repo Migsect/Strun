@@ -124,4 +124,16 @@ public class ParseUtil
 	{
 	  return text.trim().replaceAll(" +", " ");
 	}
+	
+	public static String concatStringArray(String[] array)
+	{
+	  String concat = "[";
+	  for(String s : array) 
+	  { 
+	    if(concat.length() == 1) concat += s;
+	    else concat += ", " + s;
+	  }
+	  concat += "]";
+	  return concat;
+	}
 }

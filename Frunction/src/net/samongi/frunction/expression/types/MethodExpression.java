@@ -27,7 +27,7 @@ public class MethodExpression implements Expression
     try{tokens = this.right_token.getTokens();}
     catch (TokenException e1)
     {
-      // TODO add proper error
+      // TODO proper exception
       return null;
     }
     // Now we will translate the group tokens into expressions
@@ -48,6 +48,7 @@ public class MethodExpression implements Expression
     // evaluating the left expression
     // This is where we will attempt to get the method from.
     Frunction eval = left_expression.evaluate(environment);
+    //System.out.println("Left Expression Type: " + left_expression.getClass().toGenericString());
     
     // Evaluating all the inputs because it is needed to get the types.
     Frunction[] r_evals = new DynamicFrunction[exprs.length];

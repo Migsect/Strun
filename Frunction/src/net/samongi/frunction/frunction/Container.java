@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
+import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
 
 public interface Container
 {
@@ -32,7 +33,7 @@ public interface Container
    * @param symbol The symbol to retrieve
    * @return A SymbolBinding, otherwise null
    */
-  public SymbolBinding getSymbol(String symbol);
+  public SymbolBinding getSymbol(String symbol) throws SymbolNotFoundException;
   
   /**Adds the binding to this container
    * 

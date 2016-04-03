@@ -9,6 +9,7 @@ import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.frunction.Frunction;
+import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
 
 public class BooleanFrunction extends NativeFrunction
 {
@@ -88,11 +89,13 @@ public class BooleanFrunction extends NativeFrunction
 				Frunction left = null;
 				try{left = environment.getSymbol("^@").getExpression().evaluate(environment);}
 				catch (TokenException e){return null;}
+				catch (SymbolNotFoundException e){return null;}
 				
 				// Getting the right argument which should be the "other" argument as defined
 				Frunction right = null;
 				try{right = environment.getSymbol("other").getExpression().evaluate(environment);}
 				catch (TokenException e){return null;}
+        catch (SymbolNotFoundException e){return null;}
 				
 				if(!left.getType().equals(BooleanFrunction.TYPE) || !(left instanceof BooleanFrunction))
 				{

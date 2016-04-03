@@ -4,6 +4,7 @@ import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
+import net.samongi.frunction.frunction.literal.BooleanFrunction;
 import net.samongi.frunction.parse.ParseUtil;
 
 /**Method bindings bind a set of inputs to an expression.
@@ -38,16 +39,20 @@ public class DynamicMethodBinding implements MethodBinding
 	{
 	  //System.out.println("Parsing for method: " + section);
 		int i = 0; // indexer for the whole section
+		
+		
 		// Getting the section prior to the binding.
 	  String prior = ParseUtil.getSection(section, i, BINDING, 
 	  		Token.getScopeOpenIdentifiers(), 
 	  		Token.getScopeCloseIdentifiers(), 
 	  		Token.getScopeeToggleIdentifiers());
 	  i += prior.length(); // Adding to the index length to get the expression
-	  //System.out.println("  prior: " + prior);
+    prior = prior.trim(); // Trimming the prior
+
+	  System.out.println("  prior: " + prior);
 	  // Removing the binding operator
-	  if(prior.endsWith(BINDING)) prior.substring(0, prior.length() - BINDING.length());
-    //System.out.println("  prior-c: " + prior);
+	  if(prior.endsWith(BINDING)) prior = prior.substring(0, prior.length() - BINDING.length()).trim();
+    System.out.println("  prior-c: " + prior);
 	  
 	  // Getting the expression section
 	  if(section.length() <= i) return null; // This means there is no expression
@@ -59,9 +64,13 @@ public class DynamicMethodBinding implements MethodBinding
 	  		Token.getScopeCloseIdentifiers(), 
 	  		Token.getScopeeToggleIdentifiers());
 	  j += input_section.length();
-	  if(prior.endsWith(COND_OPERATOR)) prior.substring(0, prior.length() - COND_OPERATOR.length());
+	  
+	  // Removing the conditional operator
+	  if(prior.endsWith(COND_OPERATOR)) prior = prior.substring(0, prior.length() - COND_OPERATOR.length());
 	  boolean input_enclosed = input_section.startsWith("(") && input_section.endsWith(")");
-  	if(input_enclosed) input_section = input_section.substring(1, input_section.length() - 1).trim();
+    System.out.println("Enclosed Input: " + prior);
+  	if(input_enclosed) prior = prior.substring(1, prior.length() - 1).trim();
+  	System.out.println("Declosed Input: " + prior);
 	  
 	  // Creating the condition expression
 	  String condition = null;
@@ -124,6 +133,7 @@ public class DynamicMethodBinding implements MethodBinding
 	{
     if(this.expression != null) return;
 	  this.condition = Expression.parseString(condition_source, container);
+	  if(this.condition.equals(null)) this.condition = BooleanFrunction.getTautology();
 	}
 	
 	@Override public Expression getConditional() throws TokenException

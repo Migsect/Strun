@@ -40,7 +40,7 @@ public class DynamicSymbolBinding implements SymbolBinding
 		if(source == null) return null;
 		
 		boolean do_eval = !key.startsWith(DELAY_EVAL);
-		if(!do_eval) key.replaceFirst(DELAY_EVAL, "");
+		if(!do_eval) key = key.replaceFirst(DELAY_EVAL, "");
 		
 		DynamicSymbolBinding binding = new DynamicSymbolBinding(key, source, environment);
 		if(do_eval)

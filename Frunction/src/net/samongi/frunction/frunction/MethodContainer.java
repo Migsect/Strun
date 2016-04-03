@@ -7,6 +7,7 @@ import java.util.Map;
 import net.samongi.frunction.binding.DynamicSymbolBinding;
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
+import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
 
 /**Used as an intermeditary for methods to contain the extra symbols.
  * 
@@ -38,7 +39,7 @@ public class MethodContainer implements Container
   // Shouldn't do anything yet
   @Override public MethodBinding getMethod(String[] types, Frunction[] inputs){return null;}
   
-  @Override public SymbolBinding getSymbol(String symbol)
+  @Override public SymbolBinding getSymbol(String symbol) throws SymbolNotFoundException
   {
     if(override_symbols.containsKey(symbol)) return override_symbols.get(symbol);
     return this.environment.getSymbol(symbol);

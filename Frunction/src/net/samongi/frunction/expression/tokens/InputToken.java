@@ -43,11 +43,12 @@ public class InputToken implements Token
   	{
   	  this.input_tokens[i] = new GroupToken(section_list.get(i));
   	}
+  	if(this.input_tokens == null) this.input_tokens = new GroupToken[0]; // Empty array if it doesn't have any.
   }
   
   public GroupToken[] getTokens() throws TokenException
   {
-    if(this.input_tokens != null) this.evaluate();
+    if(this.input_tokens == null) this.evaluate();
     return this.input_tokens;
   }
   

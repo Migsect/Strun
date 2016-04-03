@@ -5,6 +5,7 @@ import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.tokens.SymbolToken;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
+import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
 
 public class AccessorExpression implements Expression
 {
@@ -30,13 +31,29 @@ public class AccessorExpression implements Expression
     
     // Starting a loop, peeling back scopes as neccessary
     Container current_scope = l_frunction;
-    l_binding = current_scope.getSymbol(symbol);
+    try
+    {
+      l_binding = current_scope.getSymbol(symbol);
+    }
+    catch (SymbolNotFoundException e)
+    {
+      e.displayError();
+      return null;
+    }
     while(l_binding == null)
     {
       current_scope = current_scope.getEnvironment();
       // TODO actually make exceptions?
       if(current_scope == null) return null; // We have failed to evaluate this expression
-      l_binding = current_scope.getSymbol(symbol);
+      try
+      {
+        l_binding = current_scope.getSymbol(symbol);
+      }
+      catch (SymbolNotFoundException e)
+      {
+        e.displayError();
+        return null;
+      }
     }
     
     // Getting the binded expression

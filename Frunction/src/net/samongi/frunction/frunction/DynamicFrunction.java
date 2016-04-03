@@ -14,6 +14,7 @@ import net.samongi.frunction.binding.SymbolBinding;
 import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.expression.types.Expression;
+import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
 import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
 import net.samongi.frunction.parse.ParseUtil;
@@ -93,7 +94,7 @@ public class DynamicFrunction implements Expression, Frunction
 		  SymbolBinding sym_binding = DynamicSymbolBinding.parseBinding(section, this);
 		  if(sym_binding != null)
 		  {
-		    System.out.println("Found sym_b in: '" + section.trim() + "'");
+		    System.out.println("Found sym_b '" + sym_binding.getKey() + "' in: '" + section.trim() + "'");
 		    
 		    this.addSymbol(sym_binding);
 		    continue;
@@ -117,7 +118,7 @@ public class DynamicFrunction implements Expression, Frunction
 	  }
 		if(!this.isEvaluated()) this.evaluate();
 		List<MethodBinding> methods = this.method_bindings.get(types);
-		if(methods.isEmpty()) return null; // We didn't find a method
+		if(methods == null || methods.isEmpty()) return null; // We didn't find a method
 		
 		for(MethodBinding b : methods)
 		{
@@ -160,6 +161,7 @@ public class DynamicFrunction implements Expression, Frunction
 	@Override public void addMethod(MethodBinding binding)
 	{
 		String[] types = binding.getTypes();
+		System.out.println("Binding with types: " + ParseUtil.concatStringArray(types));
 		// Generating the list if it doesn't exist
 		if(!this.method_bindings.containsKey(types)) this.method_bindings.put(types, new ArrayList<MethodBinding>());
 		// Retrieving the list
@@ -168,7 +170,7 @@ public class DynamicFrunction implements Expression, Frunction
 		binding_list.add(binding);
 	}
 	
-	@Override public SymbolBinding getSymbol(String symbol)
+	@Override public SymbolBinding getSymbol(String symbol) throws SymbolNotFoundException
 	{
 		if(!this.isEvaluated()) this.evaluate();
 		
@@ -184,12 +186,24 @@ public class DynamicFrunction implements Expression, Frunction
 		
 		SymbolBinding binding = null;
 		// First case is to check if it will force an environment pop-up
-		if(symbol.startsWith(CONTAINER_ENV_SYMBOL)) binding = this.environment.getSymbol(symbol.replaceFirst(CONTAINER_ENV_SYMBOL, ""));
+		if(symbol.startsWith(CONTAINER_ENV_SYMBOL)) 
+		{
+      if(environment == null) throw new SymbolNotFoundException(symbol);
+		  binding = this.environment.getSymbol(symbol.replaceFirst(CONTAINER_ENV_SYMBOL, ""));
+		}
 		else 
 		{
 		  binding = this.symbol_bindings.get(symbol);
-		  if(binding == null) binding = this.environment.getSymbol(symbol);
+		  if(binding == null) 
+		  {
+	      if(environment == null) throw new SymbolNotFoundException(symbol);
+		    binding = this.environment.getSymbol(symbol);
+		  }
 		}
+		
+		
+		
+		if(binding == null) throw new SymbolNotFoundException(symbol);
 		
 		// Returning the binding, it may be null
 		return binding;
