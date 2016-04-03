@@ -13,13 +13,12 @@ import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
 import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.tokens.Token;
-import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
 import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
 import net.samongi.frunction.parse.ParseUtil;
 
-public class DynamicFrunction implements Expression, Frunction
+public class DynamicFrunction implements Frunction
 {
   private static final String SELF_SYMBOL = "@";
   private static final String CONTAINER_ENV_SYMBOL = "^";
@@ -221,8 +220,6 @@ public class DynamicFrunction implements Expression, Frunction
 	@Override public String getType(){return this.type;}
 	
 	@Override public Container getEnvironment(){return this.environment;}
-
-  @Override public Frunction evaluate(Container environment){return this;}
   
   @Override public String getSource(){return this.source;}
 

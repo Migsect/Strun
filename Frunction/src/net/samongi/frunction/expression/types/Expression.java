@@ -48,7 +48,7 @@ public interface Expression
       {
         if(i != 0) return null; // must be first
         if(!(environment instanceof DynamicFrunction)) return null; // TODO make this a valid exception
-        AccessorExpression expr = new AccessorExpression((DynamicFrunction) environment, (SymbolToken) t);
+        AccessorExpression expr = new AccessorExpression(((Frunction) environment).toExpression(), (SymbolToken) t);
         left_expr = expr; // Setting it to be the left expression
         i += 1;
       }

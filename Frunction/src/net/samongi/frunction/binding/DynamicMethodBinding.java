@@ -55,7 +55,6 @@ public class DynamicMethodBinding implements MethodBinding
 	  // Getting the expression section
 	  if(section.length() <= i) return null; // This means there is no expression
 	  String expression = section.substring(i).trim(); // getting the remainder
-	  System.out.println("  Expression is: '" + expression + "'");
 	  
 	  // indexer for the prior section
 	  int j = 0; 
@@ -80,14 +79,12 @@ public class DynamicMethodBinding implements MethodBinding
 	  String condition = null;
 	  if(prior.length() > j) // checking to see if there is a conditional clause.
 	  {
-	    System.out.println("  Found Condition");
 	  	condition = prior.substring(j); // getting the condition
 	  	boolean cond_enclosed = condition.startsWith("(") && condition.endsWith(")");
 	  	if(cond_enclosed) condition = condition.substring(1, condition.length() - 1).trim();
 	  	// Now we should have the condition expression;
 	  }
 	  if(condition == null) condition = ""; // making sure it aint null; 
-	  System.out.println("  Condition is: '" + condition + "'");
 	  
 	  if(input_section.length() == 0) return new DynamicMethodBinding(environment, new String[0], new String[0], condition, expression);
 	  
@@ -98,7 +95,6 @@ public class DynamicMethodBinding implements MethodBinding
 	  for(int k = 0; k < split_input.length; k++)
 	  {
 	  	String part = split_input[k].trim(); // removing whitespace as well as squeezing
-	  	System.out.println("  " + k + " Part: '" + part + "'");
 	  	String[] parts = part.split(" +"); // splitting the part, this is how types are specified.
 	  	
 	  	input_symbols[k] = parts[0]; // first is going to be the symbol

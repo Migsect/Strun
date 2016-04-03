@@ -3,9 +3,8 @@ package net.samongi.frunction.frunction;
 import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.types.Expression;
 
-public interface Frunction extends Container, Expression
+public interface Frunction extends Container
 {
-  
 	/**Evaluates the frunction if it needs to be evaluated
 	 * This will do nothing on native frunctions but on source-based frunctions
 	 * this will parse the source to generate the frunction
@@ -34,4 +33,18 @@ public interface Frunction extends Container, Expression
 	 * @return The source that was used to defined the frunction
 	 */
 	public String getSource();
+	
+	/**Converts the frunction to an expression that will
+	 * evaluate to the frunction
+	 * 
+	 * @return An expression that returns this frunction
+	 */
+	public default Expression toExpression()
+	{
+	  Frunction this_frunction = this;
+	  return new Expression()
+	  {
+      @Override public Frunction evaluate(Container environment){return this_frunction;}
+	  };
+	}
 }

@@ -55,7 +55,7 @@ public class MethodExpression implements Expression
     for(int i = 0; i < exprs.length; i++)
     {
       // These are being evaluated on the normal environment that is called the expression.
-    	Frunction i_eval = r_evals[i].evaluate(environment);
+    	Frunction i_eval = r_evals[i].toExpression().evaluate(environment);
       if(i_eval == null) return null;
       r_evals[i] = i_eval;
     }

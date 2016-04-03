@@ -72,7 +72,7 @@ public class DynamicSymbolBinding implements SymbolBinding
 	public DynamicSymbolBinding(String key, Frunction evaluated, Container environment)
 	{
 	  this.key = key;
-	  this.expression = evaluated;
+	  this.expression = evaluated.toExpression();
 	  this.environment = environment;
 	  this.source = null;
 	}
@@ -108,7 +108,7 @@ public class DynamicSymbolBinding implements SymbolBinding
 	
 	@Override public String toDisplay()
 	{
-		String display = this.key + ":" + this.source;
+		String display = "'" + this.key + "':'" + this.source + "'";
 		return display;
 	}
   @Override public void evaluate() throws TokenException

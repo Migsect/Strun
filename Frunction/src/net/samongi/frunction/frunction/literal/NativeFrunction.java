@@ -2,7 +2,6 @@ package net.samongi.frunction.frunction.literal;
 
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.DynamicFrunction;
-import net.samongi.frunction.frunction.Frunction;
 
 public abstract class NativeFrunction extends DynamicFrunction
 {
@@ -14,9 +13,6 @@ public abstract class NativeFrunction extends DynamicFrunction
 	// Native Frunctions should never need to be evaluated
 	@Override public void evaluate(){}
 	@Override public boolean isEvaluated(){return true;}
-	
-	// evaluate
-	@Override public Frunction evaluate(Container environment){return this;}
 
 	// Native Frunctions have no source
 	@Override public String getSource(){return null;}
