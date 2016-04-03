@@ -49,38 +49,45 @@ public class DynamicMethodBinding implements MethodBinding
 	  i += prior.length(); // Adding to the index length to get the expression
     prior = prior.trim(); // Trimming the prior
 
-	  System.out.println("  prior: " + prior);
-	  // Removing the binding operator
+	  // Removing the binding operator from prior
 	  if(prior.endsWith(BINDING)) prior = prior.substring(0, prior.length() - BINDING.length()).trim();
-    System.out.println("  prior-c: " + prior);
 	  
 	  // Getting the expression section
 	  if(section.length() <= i) return null; // This means there is no expression
 	  String expression = section.substring(i).trim(); // getting the remainder
+	  System.out.println("  Expression is: '" + expression + "'");
 	  
-	  int j = 0; // indexer for the prior section
+	  // indexer for the prior section
+	  int j = 0; 
+	  
+	  // The input section represents the input symbol defintion
 	  String input_section = ParseUtil.getSection(prior, j, COND_OPERATOR, 
 	  		Token.getScopeOpenIdentifiers(), 
 	  		Token.getScopeCloseIdentifiers(), 
 	  		Token.getScopeeToggleIdentifiers());
-	  j += input_section.length();
+	  j += input_section.length(); // incrementing the prior index
+    input_section = input_section.trim(); // trimming the input section;
 	  
 	  // Removing the conditional operator
-	  if(prior.endsWith(COND_OPERATOR)) prior = prior.substring(0, prior.length() - COND_OPERATOR.length());
+	  if(input_section.endsWith(COND_OPERATOR)) input_section = input_section.substring(0, input_section.length() - COND_OPERATOR.length()).trim();
+	  
+	  // boolean for testing if the input was enclosed
 	  boolean input_enclosed = input_section.startsWith("(") && input_section.endsWith(")");
-    System.out.println("Enclosed Input: " + prior);
-  	if(input_enclosed) prior = prior.substring(1, prior.length() - 1).trim();
-  	System.out.println("Declosed Input: " + prior);
+  	if(input_enclosed) input_section = input_section.substring(1, input_section.length() - 1).trim();
 	  
 	  // Creating the condition expression
+  	//  This is the remainder of the input section
 	  String condition = null;
-	  if(prior.length() < j) // checking to see if there is a conditional clause.
+	  if(prior.length() > j) // checking to see if there is a conditional clause.
 	  {
-	  	condition = prior.substring(j);
+	    System.out.println("  Found Condition");
+	  	condition = prior.substring(j); // getting the condition
 	  	boolean cond_enclosed = condition.startsWith("(") && condition.endsWith(")");
 	  	if(cond_enclosed) condition = condition.substring(1, condition.length() - 1).trim();
 	  	// Now we should have the condition expression;
 	  }
+	  if(condition == null) condition = ""; // making sure it aint null; 
+	  System.out.println("  Condition is: '" + condition + "'");
 	  
 	  if(input_section.length() == 0) return new DynamicMethodBinding(environment, new String[0], new String[0], condition, expression);
 	  
@@ -90,7 +97,8 @@ public class DynamicMethodBinding implements MethodBinding
 	  String[] input_types = new String[split_input.length];
 	  for(int k = 0; k < split_input.length; k++)
 	  {
-	  	String part = split_input[k]; // removing whitespace as well as squeezing
+	  	String part = split_input[k].trim(); // removing whitespace as well as squeezing
+	  	System.out.println("  " + k + " Part: '" + part + "'");
 	  	String[] parts = part.split(" +"); // splitting the part, this is how types are specified.
 	  	
 	  	input_symbols[k] = parts[0]; // first is going to be the symbol

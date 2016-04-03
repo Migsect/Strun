@@ -15,5 +15,8 @@ relation : {
   c2 : coord2;
   () ?()-> {a : 5; b : 6;};
   () -> c2;
+  (a, b) -> a.add(b);
+  (a Boolean, b Boolean) -> a.eq(b);
+  (a Boolean, b Boolean) ?(a) -> b;
 };
 a_coord : relation();
