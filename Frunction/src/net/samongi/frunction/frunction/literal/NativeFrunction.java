@@ -43,7 +43,7 @@ public abstract class NativeFrunction extends DynamicFrunction
 	// Even then, this will forumlate the two hashmaps.
 	@Override public void evaluate()
 	{
-		this.evaluate();
+		super.evaluate();
 	}
 	@Override public boolean isEvaluated(){return true;}
 

@@ -71,7 +71,7 @@ public class BooleanFrunction extends NativeFrunction
 		// Setting the state of the boolean.
 		this.state = state;
 		
-		this.evaluate(); // It will evaluate to nothing
+		super.evaluate(); // It will evaluate to nothing
 		
 		// Adding the methods
 		this.addSymbol(this.methodEquals());
