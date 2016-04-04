@@ -40,7 +40,11 @@ public abstract class NativeFrunction extends DynamicFrunction
 	}
 	
 	// Native Frunctions should never need to be evaluated
-	@Override public void evaluate(){}
+	// Even then, this will forumlate the two hashmaps.
+	@Override public void evaluate()
+	{
+		this.evaluate();
+	}
 	@Override public boolean isEvaluated(){return true;}
 
 	// Native Frunctions have no source

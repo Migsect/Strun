@@ -3,12 +3,20 @@
   y : 20;
 };
 !coord2 : {
-  x : 30;
-  y : 40;
+  x : 30.0;
+  y : 40.0;
 };
 !coord3 : {
   x : 50;
   y : 60;
+};
+coord4 : {
+  x : true;
+  y : false;
+};
+coord5 : {
+  x : "Hello";
+  y : "World";
 };
 relation : {
   c1 : coord1;
