@@ -100,7 +100,7 @@ public interface Expression
       }
       // System.out.println(" - Left expression is now : " + left_expr.getClass().toGenericString());
     }
-    return left_expr;
+    return new MemoryExpression(left_expr);
   }
   
 	public Frunction evaluate(Container environment);

@@ -82,9 +82,11 @@ public class MethodExpression implements Expression
     
     // Getting the expression
     Expression expr = null;
-    try { expr = binding.getExpression();}
+    try {expr = binding.getExpression();}
     catch (TokenException e){}
     if(expr == null) return null;
+    
+    System.out.println(expr.getClass().toGenericString());
     
     // Evaluating the expression
     return expr.evaluate(container);

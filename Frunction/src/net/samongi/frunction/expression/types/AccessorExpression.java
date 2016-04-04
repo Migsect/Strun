@@ -20,6 +20,8 @@ public class AccessorExpression implements Expression
   
   @Override public Frunction evaluate(Container environment)
   {
+    System.out.println("  " + token.getSource());
+    
     // Evaluating the left expression that is going to be accessed
     //   We are evaluating based on the current environment.
     Frunction l_frunction = left.evaluate(environment);
@@ -39,21 +41,6 @@ public class AccessorExpression implements Expression
     {
       e.displayError();
       return null;
-    }
-    while(l_binding == null)
-    {
-      current_scope = current_scope.getEnvironment();
-      // TODO actually make exceptions?
-      if(current_scope == null) return null; // We have failed to evaluate this expression
-      try
-      {
-        l_binding = current_scope.getSymbol(symbol);
-      }
-      catch (SymbolNotFoundException e)
-      {
-        e.displayError();
-        return null;
-      }
     }
     
     // Getting the binded expression

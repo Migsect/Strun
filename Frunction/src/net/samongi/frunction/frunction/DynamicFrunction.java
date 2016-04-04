@@ -160,7 +160,7 @@ public class DynamicFrunction implements Frunction
 	@Override public void addMethod(MethodBinding binding)
 	{
 		String[] types = binding.getTypes();
-		System.out.println("Binding with types: " + ParseUtil.concatStringArray(types));
+		// System.out.println("Binding with types: " + ParseUtil.concatStringArray(types));
 		// Generating the list if it doesn't exist
 		if(!this.method_bindings.containsKey(types)) this.method_bindings.put(types, new ArrayList<MethodBinding>());
 		// Retrieving the list
