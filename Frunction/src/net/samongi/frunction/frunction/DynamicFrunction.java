@@ -64,10 +64,17 @@ public class DynamicFrunction implements Frunction
 	@Override public void evaluate()
 	{
 		if(this.isEvaluated()) return;
+		System.out.println("Evalating a frunction");
 		
 		// Creating the hashmaps
     this.symbol_bindings = new HashMap<>();
 		this.method_bindings = new HashMap<>();
+		if(this.symbol_bindings == null) System.out.println("SymbolBindings is null");
+		if(this.method_bindings == null) System.out.println("MethodBindings is null");
+		
+		
+		if(source == null) return;
+		if(source.length() <= 0) return;
 		
 		int i = 0;
 		

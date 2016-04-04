@@ -71,8 +71,6 @@ public class BooleanFrunction extends NativeFrunction
 		// Setting the state of the boolean.
 		this.state = state;
 		
-		super.evaluate(); // It will evaluate to nothing
-		
 		// Adding the methods
 		this.addSymbol(this.methodEquals());
 	}
@@ -85,10 +83,12 @@ public class BooleanFrunction extends NativeFrunction
 	{
 	  // The frunction that will hold the method
 		Frunction method_holder = new DynamicFrunction(this, null);
+		try{method_holder.evaluate();} // We need to evaluate this
+		catch (TokenException e1){}
 		
 		// Generating the first method
 		String[] input_0 = new String[]{"other"};
-		String[] types_0 = new String[]{"Boolean"};
+		String[] types_0 = new String[]{"bool"};
 		Expression condition_0 = BooleanFrunction.getTautology();
 		Expression expression_0 = new Expression()
 		{
