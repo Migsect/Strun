@@ -1,12 +1,15 @@
 package net.samongi.frunction.frunction.literal.dictionary;
 
+import java.util.HashMap;
 import java.util.List;
 
+import net.samongi.frunction.binding.DynamicSymbolBinding;
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
+import net.samongi.frunction.frunction.literal.NativeFrunction;
 import net.samongi.frunction.frunction.literal.StringFrunction;
 
 /**Represents a container that stores and creates all instances of literals
@@ -35,47 +38,40 @@ public class LiteralDictionary implements Container
     return instance;
   }
 
-  @Override public MethodBinding getMethod(String[] types, Frunction[] inputs)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  // This will store all the literals for quick lookup
+  //   This is also what makes all literals the same objects.
+  private HashMap<String, SymbolBinding> stored_literals = new HashMap<>();
+  
+  @Override public MethodBinding getMethod(String[] types, Frunction[] inputs){return null;}
 
-  @Override public void addMethod(MethodBinding binding)
-  {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override public List<MethodBinding> getMethods()
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  @Override public void addMethod(MethodBinding binding){}
+  
+  @Override public List<MethodBinding> getMethods(){return null;}
 
   @Override public SymbolBinding getSymbol(String symbol)
   {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override public void addSymbol(SymbolBinding binding)
-  {
-    // TODO Auto-generated method stub
+  	// Returning it if it already exists
+    if(this.stored_literals.containsKey(symbol)) return this.stored_literals.get(symbol);
     
+    Frunction f = NativeFrunction.parseLiteral(symbol, this);
+    if(f == null) return null;
+    
+    System.out.println("  Created literal binding for '" + symbol + "' with type '"+ f.getType() + "'");
+    
+    // Creating the binding and adding it to the map
+    SymbolBinding b = new DynamicSymbolBinding(symbol, f, this);
+    this.stored_literals.put(symbol, b);
+    
+    // Returning the new binding.
+    return b;
   }
 
-  @Override public List<SymbolBinding> getSymbols()
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  @Override public void addSymbol(SymbolBinding binding){}
 
-  @Override public Container getEnvironment()
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  @Override public List<SymbolBinding> getSymbols(){return null;}
+  
+  @Override public Container getEnvironment(){return null;}
+  
   /**Will return true if the symbol can be depicted as a literal.
    * 
    * @param symbol The symbol to check for.

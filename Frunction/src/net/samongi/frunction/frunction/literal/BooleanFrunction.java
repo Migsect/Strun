@@ -16,8 +16,16 @@ public class BooleanFrunction extends NativeFrunction
   public static final String TRUE_LITERAL = "true";
   public static final String FALSE_LITERAL = "false";
   
-	private static final String TYPE = "Boolean";
+	private static final String TYPE = "bool";
 	
+	
+	public static Frunction parseLiteral(String symbol, Container environment)
+	{
+		if(symbol.toLowerCase().equals(TRUE_LITERAL)) return new BooleanFrunction(environment, true);
+		if(symbol.toLowerCase().equals(FALSE_LITERAL)) return new BooleanFrunction(environment, false);
+		return null;
+		
+	}
 	/**Returns an expression that is a tautology which means
 	 * it will always return true.
 	 * This expression returns a boolean frunction that is true
@@ -58,7 +66,6 @@ public class BooleanFrunction extends NativeFrunction
 	
 	public BooleanFrunction(Container environment, boolean state)
 	{
-		// 
 		super(environment);
 		
 		// Setting the state of the boolean.

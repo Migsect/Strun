@@ -1,10 +1,18 @@
 package net.samongi.frunction.frunction.literal;
 
 import net.samongi.frunction.frunction.Container;
+import net.samongi.frunction.frunction.Frunction;
 
 public class IntegerFrunction extends NativeFrunction
 {
-  private static final String TYPE = "Boolean";
+  private static final String TYPE = "int";
+  
+  public static final Frunction parseLiteral(String symbol, Container environment)
+  {
+  	Long converted = null;
+  	try{converted = Long.parseLong(symbol.trim());}catch(NumberFormatException e){return null;}
+  	return new IntegerFrunction(environment, converted);
+  }
   
   private final long state;
   

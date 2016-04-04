@@ -1,12 +1,20 @@
 package net.samongi.frunction.frunction.literal;
 
 import net.samongi.frunction.frunction.Container;
+import net.samongi.frunction.frunction.Frunction;
 
 public class StringFrunction extends NativeFrunction
 {
   public static final String STRING_CAPSULE = "\"";
   
-  private static final String TYPE = "String";
+  private static final String TYPE = "string";
+  
+  public static Frunction parseLiteral(String symbol, Container environment)
+  {
+  	if(!symbol.startsWith(STRING_CAPSULE) || !symbol.endsWith(STRING_CAPSULE)) return null;
+  	String str = symbol.substring(1, symbol.length() - 1); // Getting the inner string
+  	return new StringFrunction(environment, str);
+  }
   
   private final String state;
   
