@@ -136,4 +136,11 @@ public class ParseUtil
 	  concat += "]";
 	  return concat;
 	}
+	
+	public static String spacing(int spacing)
+	{
+		String str = "";
+		for(int i = 0; i < spacing; i++) str += " ";
+		return str;
+	}
 }

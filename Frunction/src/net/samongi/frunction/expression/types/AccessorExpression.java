@@ -37,11 +37,19 @@ public class AccessorExpression implements Expression
   
   @Override public Frunction evaluate(Container environment)
   {
-    // System.out.println("  " + token.getSource());
+    System.out.println("  AccessorExpression: " + this.getDisplay());
+    if(this.left == null) System.out.println("    Left Expression: null expression");
+    else System.out.println("    Left Expression: " + this.left.getDisplay());
     
     // Evaluating the left expression that is going to be accessed
     //   We are evaluating based on the current environment.
-    if(this.left_container == null) this.left_container = left.evaluate(environment);
+    // What happens if the left expression is the same 
+    if(this.left != null) this.left_container = left.evaluate(environment);
+    if(this.left_container == null)
+    {
+    	System.out.println("  Accessor Expression: Left Container was still null!");
+    	return null;
+    }
     //if(DEBUG) System.out.println("  A-Evaluate left_frunction_source: " + l_frunction.getSource());
     
     // The symbol that is going to be expressed from the right expression.

@@ -4,8 +4,10 @@ import java.util.List;
 
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
+import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.frunction.exceptions.FrunctionNotEvaluatedException;
 import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
+import net.samongi.frunction.parse.ParseUtil;
 
 public interface Container
 {
@@ -56,4 +58,39 @@ public interface Container
    * @return The container
    */
   public Container getEnvironment();
+  
+  /**Used for debugging to display the frunction hierarchy
+   * 
+   * @param spacing
+   */
+  public default void displayHierarchy(int spacing)
+  {
+  	String space = ParseUtil.spacing(spacing);
+  	List<MethodBinding> met_bindings = this.getMethods();
+  	for(MethodBinding b : met_bindings)
+  	{
+  		System.out.println(space + b.toDisplay());
+  	}
+  	if(met_bindings.size() == 0) System.out.println(space + "No Method Bindings");
+  	
+  	List<SymbolBinding> sym_bindings = this.getSymbols();
+  	for(SymbolBinding b : sym_bindings)
+  	{
+  		Frunction f = null;
+  		try{f = b.get();}
+			catch (TokenException e)
+  		{
+				System.out.println(space + b.getKey() + " : TokenException");
+				continue;
+  		}
+  		if(f == null)
+  		{
+				System.out.println(space + b.getKey() + " : null frunction");
+  			continue;
+  		}
+  		System.out.println(space + b.getKey() + " : '" + f.getType() + "' <" + f.getSource() + ">");
+  		f.displayHierarchy(spacing + 2);
+  	}
+  	if(sym_bindings.size() == 0) System.out.println(space + "No Symbol Bindings");
+  }
 }

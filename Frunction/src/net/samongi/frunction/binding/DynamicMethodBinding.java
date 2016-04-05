@@ -178,9 +178,18 @@ public class DynamicMethodBinding implements MethodBinding
 		inputs += ")";
 		
 		String types = "[";
-		for(String t : this.input_types) types += t + " ";
+		for(String t : this.input_types) types += " '" + t + "' ";
 		types += "]";
-		return inputs + types;
+		
+		try
+		{
+			return inputs + types + "->'" + this.getExpression().getDisplay() + "'";
+		}
+		catch (TokenException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 	@Override public String[] getTypes(){return this.input_types;}
 

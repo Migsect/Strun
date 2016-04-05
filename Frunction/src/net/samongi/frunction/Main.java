@@ -37,6 +37,9 @@ public class Main
     
     DynamicFrunction main_frunction = new DynamicFrunction(null, text_body);
     main_frunction.evaluate();
+    
+    System.out.println("Displaying Mains Hierarchy:");
+    main_frunction.displayHierarchy(2);
 	}
 
 }

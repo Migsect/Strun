@@ -274,6 +274,7 @@ public class DynamicFrunction implements Frunction
 	
 	@Override public SymbolBinding getSymbol(String symbol) throws SymbolNotFoundException
 	{
+		symbol = symbol.trim();
 		if(!this.isEvaluated()) this.evaluate();
 		
 		// First step is to consult if the symbol is a literal
@@ -281,6 +282,7 @@ public class DynamicFrunction implements Frunction
 		
 		if(symbol.equals(SELF_SYMBOL)) // time to create the self binding that will need to be accessed.
 		{
+			System.out.println("  Frunction: getSymbol > Symbol was self accessor");
 		  SymbolBinding self_bind = new DynamicSymbolBinding(SELF_SYMBOL, this, this);
 		  self_bind.setCountable(false); // it shouldn't be countable
 		  
@@ -351,6 +353,12 @@ public class DynamicFrunction implements Frunction
 		
 		List<SymbolBinding> sorted_list = new ArrayList<>();
 		sorted_list.addAll(sorted_bindings.values());
+		
+		for(int i = sorted_list.size() - 1; i >= 0; i--)
+		{
+			if(!sorted_list.get(i).isCountable()) sorted_list.remove(i);
+		}
+		
 		return sorted_list;
 	}
 }

@@ -11,7 +11,7 @@ import net.samongi.frunction.frunction.MethodContainer;
 
 public class MethodExpression implements Expression
 {
-  private static final boolean DEBUG = false;
+  private static final boolean DEBUG = true;
   
   private final Expression left_expression;
   private final InputToken right_token;
