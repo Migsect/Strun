@@ -12,7 +12,6 @@ import net.samongi.frunction.parse.ParseUtil;
  */
 public class GroupToken implements Token
 {
-	
 
 	private final String source;
 	private List<Token> tokens = null;
@@ -114,6 +113,22 @@ public class GroupToken implements Token
 	{
 		if(this.tokens == null) this.evaluate();
 		return this.tokens.toArray(new Token[this.tokens.size()]);
+	}
+	
+	/**Returns a list of this group's token's types
+	 * 
+	 * @return A string representing the types
+	 */
+	public String displayTypes()
+	{
+	  String str = "[";
+	  for(Token t : this.tokens) 
+	  {
+	    if(t == null) str += "null";
+	    else str += t.getType().toString();
+	  }
+	  str += "]";
+	  return str;
 	}
 	
 	@Override public String getSource(){return this.source;}

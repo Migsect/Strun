@@ -56,12 +56,7 @@ public interface Expression
           if(DEBUG) System.out.println("  Issue in Expression Parser: Symbol found it was not first");
           return null;
         }
-        if(!(environment instanceof Frunction))
-        { 
-          if(DEBUG) System.out.println("  Issue in Expression Parser: Symbol found Environment was not instance of frunction.");
-          return null; // TODO make this a valid exception}
-        }
-        AccessorExpression expr = new AccessorExpression(((Frunction) environment).toExpression(), (SymbolToken) t);
+        AccessorExpression expr = new AccessorExpression(environment, (SymbolToken) t);
         left_expr = expr; // Setting it to be the left expression
         i += 1;
       }

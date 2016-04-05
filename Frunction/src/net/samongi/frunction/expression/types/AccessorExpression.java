@@ -14,14 +14,24 @@ public class AccessorExpression implements Expression
   private final Expression left;
   private final SymbolToken token;
   
+  private Container left_container = null;
+  
   public AccessorExpression(Expression left, SymbolToken token)
   {
     this.left = left;
     this.token = token;
   }
   
+  public AccessorExpression(Container left, SymbolToken token)
+  {
+    this.left_container = left;
+    this.token = token;
+    this.left = null;
+  }
+  
   @Override public String getDisplay()
   {
+    if(this.left == null) return "A<'" + token.getSource() + "':E>"; 
     return "A<'" + token.getSource() + "':" + left.getDisplay() + ">"; 
   }
   
@@ -31,8 +41,8 @@ public class AccessorExpression implements Expression
     
     // Evaluating the left expression that is going to be accessed
     //   We are evaluating based on the current environment.
-    Frunction l_frunction = left.evaluate(environment);
-    if(DEBUG) System.out.println("  A-Evaluate left_frunction_source: " + l_frunction.getSource());
+    if(this.left_container == null) this.left_container = left.evaluate(environment);
+    //if(DEBUG) System.out.println("  A-Evaluate left_frunction_source: " + l_frunction.getSource());
     
     // The symbol that is going to be expressed from the right expression.
     String symbol = token.getSource();
@@ -41,7 +51,7 @@ public class AccessorExpression implements Expression
     
     try
     {
-      l_binding = l_frunction.getSymbol(symbol);
+      l_binding = this.left_container.getSymbol(symbol);
     }
     catch (SymbolNotFoundException e)
     {
@@ -60,7 +70,7 @@ public class AccessorExpression implements Expression
     
     // We can now evaluate the expression.
     //   This is using the environment of the frunction it is apart of.
-    Frunction accessed = l_expr.evaluate(l_frunction);
+    Frunction accessed = l_expr.evaluate(this.left_container);
     if(DEBUG) System.out.println("  A-Evaluate accessed_source: " + accessed.getSource());
     
     // Returning the accessed expression
