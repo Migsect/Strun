@@ -10,24 +10,27 @@
   x : 50;
   y : 60;
 };
-coord4 : {
+!coord4 : {
   x : true;
   y : false;
 };
-coord5 : {
+!coord5 : {
   x : "Hello";
   y : "World";
 };
 relation : {
   c1 : coord1;
   c2 : coord2;
-  () ?()-> {a : 5; b : 6;};
+  () ?()-> {
+    a : 5; 
+    b : 6;
+  };
   () -> c2;
   (a, b) -> a.add(b);
-  (a Boolean, b Boolean) -> a.eq(b);
-  (a Boolean, b Boolean) ?(a) -> b;
+  (a bool, b bool) -> a.eq(b);
+  (a bool, b bool) ?(a) -> b;
   -> c2;
 };
 a_coord : relation();
-b_coord : a_coord;
-c_coord : a_coord;
+b_coord : a_coord.a;
+c_coord : a_coord.b;

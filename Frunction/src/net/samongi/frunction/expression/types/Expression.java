@@ -7,11 +7,12 @@ import net.samongi.frunction.expression.tokens.InputToken;
 import net.samongi.frunction.expression.tokens.SymbolToken;
 import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.frunction.Container;
-import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.frunction.Frunction;
 
 public interface Expression
 {
+  public static final boolean DEBUG = false;
+  
   /**Parses a string to make an expression
    * this uses Token.parseTokens and Expression.parseExpression to do so
    * As such this is a utility method and nothing much else.
@@ -23,6 +24,7 @@ public interface Expression
    */
   public static Expression parseString(String source, Container environment) throws TokenException
   {
+    source = source.trim();
     GroupToken token = Token.parseTokens(source);
     return Expression.parseTokens(token.getTokens(), environment);
   }
@@ -35,6 +37,9 @@ public interface Expression
    */
   public static Expression parseTokens(Token[] tokens, Container environment) throws TokenException
   {
+    if(DEBUG) System.out.println("  Expression Parser: Parsing through '" + tokens.length + "' tokens.");
+    if(DEBUG) System.out.println("    Token Types:");
+    if(DEBUG) for(Token t : tokens) System.out.println("     - " + t.getType().toString());
     Expression left_expr = null;
     int i = 0;
     while(i < tokens.length)
@@ -46,8 +51,16 @@ public interface Expression
       //   This only occurs if we start on a symbol
       if(t.getType().equals(Token.Type.SYMBOL))
       {
-        if(i != 0) return null; // must be first
-        if(!(environment instanceof DynamicFrunction)) return null; // TODO make this a valid exception
+        if(i != 0)
+        {
+          if(DEBUG) System.out.println("  Issue in Expression Parser: Symbol found it was not first");
+          return null;
+        }
+        if(!(environment instanceof Frunction))
+        { 
+          if(DEBUG) System.out.println("  Issue in Expression Parser: Symbol found Environment was not instance of frunction.");
+          return null; // TODO make this a valid exception}
+        }
         AccessorExpression expr = new AccessorExpression(((Frunction) environment).toExpression(), (SymbolToken) t);
         left_expr = expr; // Setting it to be the left expression
         i += 1;
@@ -55,8 +68,16 @@ public interface Expression
       // Case 2: We come accross and accessor token
       else if(t.getType().equals(Token.Type.ACCESSOR))
       {
-        if(left_expr == null) return null; // We need a left hand expression
-        if(tokens.length >= i) return null; // We need a right hand symbol.
+        if(left_expr == null)
+        {
+          if(DEBUG) System.out.println("  Issue in Expression Parser: Accessor found left expr to be null.");
+          return null; // We need a left hand expression
+        }
+        if(tokens.length <= i + 1) 
+        {
+          if(DEBUG) System.out.println("  Issue in Expression Parser: Accessor found right symbol to be null.");
+          return null; // We need a right hand symbol.
+        }
         if(!tokens[i + 1].getType().equals(Token.Type.SYMBOL)) return null;
         
         Token r_t = tokens[i + 1];
@@ -69,7 +90,11 @@ public interface Expression
       //   This is a very similar case to the symbol token
       else if(t.getType().equals(Token.Type.FRUNCTION))
       {
-        if(i != 0) return null; // must be first
+        if(i != 0)
+        {
+          if(DEBUG) System.out.println("  Issue in Expression Parser: Frunction found it was not first.");
+          return null; // must be first
+        }
         FrunctionExpression expr = new FrunctionExpression((FrunctionToken) t);
         left_expr = expr;
         i += 1;
@@ -78,7 +103,12 @@ public interface Expression
       //   This requires a symbol to be before it.
       else if(t.getType().equals(Token.Type.INPUT))
       {
-        if(left_expr == null) return null; // We need a left hand expression
+        if(left_expr == null)
+        
+        {
+          if(DEBUG) System.out.println("  Issue in Expression Parser: Input left expression was null.");
+          return null; // We need a left hand expression
+        }
         MethodExpression expr = new MethodExpression(left_expr, (InputToken) t);
         left_expr = expr;
         i += 1;
@@ -87,7 +117,11 @@ public interface Expression
       //   This should be the first token, just like frunctions and first symbols
       else if(t.getType().equals(Token.Type.GROUP))
       {
-        if(i != 0) return null; // must be first
+        if(i != 0)
+        {
+          if(DEBUG) System.out.println("  Issue in Expression Parser: Group found it was not first.");
+          return null; // must be first
+        }
         GroupToken g_t = (GroupToken) t;
         Expression expr = Expression.parseTokens(g_t.getTokens(), environment);
         left_expr = expr;
@@ -96,12 +130,19 @@ public interface Expression
       else
       {
         // TODO unknown token
+        if(DEBUG) System.out.println("  Issue in Expression Parser: Unknown Token");
         return null;
       }
-      // System.out.println(" - Left expression is now : " + left_expr.getClass().toGenericString());
+    }
+    if(left_expr == null)
+    {
+      if(DEBUG) System.out.println("  Issue in Expression Parser: Left expression was null.");
+      return null;
     }
     return new MemoryExpression(left_expr);
   }
   
 	public Frunction evaluate(Container environment);
+	
+	public default String getDisplay(){return "Generic";};
 }

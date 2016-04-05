@@ -14,6 +14,11 @@ public class FrunctionExpression implements Expression
     this.token = token;
   }
   
+  @Override public String getDisplay()
+  {
+    return "F<" + token.getSource() + ">";  
+  }
+  
   @Override public Frunction evaluate(Container environment)
   {
     DynamicFrunction frunction = new DynamicFrunction(environment, token.getSource());

@@ -9,6 +9,8 @@ import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
 
 public class AccessorExpression implements Expression
 {
+  private static final boolean DEBUG = false;
+  
   private final Expression left;
   private final SymbolToken token;
   
@@ -18,24 +20,28 @@ public class AccessorExpression implements Expression
     this.token = token;
   }
   
+  @Override public String getDisplay()
+  {
+    return "A<'" + token.getSource() + "':" + left.getDisplay() + ">"; 
+  }
+  
   @Override public Frunction evaluate(Container environment)
   {
-    System.out.println("  " + token.getSource());
+    // System.out.println("  " + token.getSource());
     
     // Evaluating the left expression that is going to be accessed
     //   We are evaluating based on the current environment.
     Frunction l_frunction = left.evaluate(environment);
+    if(DEBUG) System.out.println("  A-Evaluate left_frunction_source: " + l_frunction.getSource());
     
     // The symbol that is going to be expressed from the right expression.
     String symbol = token.getSource();
     // Getting the binding associated with the symbol.
     SymbolBinding l_binding = null;
     
-    // Starting a loop, peeling back scopes as neccessary
-    Container current_scope = l_frunction;
     try
     {
-      l_binding = current_scope.getSymbol(symbol);
+      l_binding = l_frunction.getSymbol(symbol);
     }
     catch (SymbolNotFoundException e)
     {
@@ -55,6 +61,7 @@ public class AccessorExpression implements Expression
     // We can now evaluate the expression.
     //   This is using the environment of the frunction it is apart of.
     Frunction accessed = l_expr.evaluate(l_frunction);
+    if(DEBUG) System.out.println("  A-Evaluate accessed_source: " + accessed.getSource());
     
     // Returning the accessed expression
     return accessed;

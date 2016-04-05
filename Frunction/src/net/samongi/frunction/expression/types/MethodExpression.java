@@ -11,6 +11,8 @@ import net.samongi.frunction.frunction.MethodContainer;
 
 public class MethodExpression implements Expression
 {
+  private static final boolean DEBUG = false;
+  
   private final Expression left_expression;
   private final InputToken right_token;
   
@@ -18,6 +20,11 @@ public class MethodExpression implements Expression
   {
     this.left_expression = left_expression;
     this.right_token = right_token;
+  }
+  
+  @Override public String getDisplay()
+  {
+    return "M<(" + right_token.getSource() + ")->[" + left_expression.getDisplay() + "]>";
   }
   
   @Override public Frunction evaluate(Container environment)
@@ -38,10 +45,13 @@ public class MethodExpression implements Expression
       try{expr = Expression.parseTokens(tokens[i].getTokens(), environment);}
       catch (TokenException e)
       {
-        // TODO add proper error
+        e.printError();
         return null;
       }
-      if(expr == null) return null;
+      if(expr == null)
+      {
+        if(DEBUG) System.out.println("  Issue in M-Evaluate: Expression '" + i + "' from tokens was null");
+      }
       exprs[i] = expr;
     }
     
@@ -56,7 +66,11 @@ public class MethodExpression implements Expression
     {
       // These are being evaluated on the normal environment that is called the expression.
     	Frunction i_eval = r_evals[i].toExpression().evaluate(environment);
-      if(i_eval == null) return null;
+      if(i_eval == null) 
+      {
+        if(DEBUG) System.out.println("  Issue in M-Evaluate: Evaluated input '" + i + "' is null");
+        return null;
+      }
       r_evals[i] = i_eval;
     }
     
@@ -68,6 +82,7 @@ public class MethodExpression implements Expression
     MethodBinding binding = eval.getMethod(types, r_evals);
     if(binding == null)
     {
+      if(DEBUG) System.out.println("  Methodbinding returned null!");
       // TODO throw a proper exception.
       return null;
     }
@@ -84,9 +99,14 @@ public class MethodExpression implements Expression
     Expression expr = null;
     try {expr = binding.getExpression();}
     catch (TokenException e){}
-    if(expr == null) return null;
+    if(expr == null) 
+    {
+      if(DEBUG) System.out.println("  Issue in M-Evaluate: Binding returned null expression!");
+      if(DEBUG) System.out.println("    Left Expression: " + this.left_expression.getDisplay());
+      return null;
+    }
     
-    System.out.println(expr.getClass().toGenericString());
+    if(DEBUG) System.out.println(expr.getClass().toGenericString());
     
     // Evaluating the expression
     return expr.evaluate(container);

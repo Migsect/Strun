@@ -44,6 +44,7 @@ public interface Frunction extends Container
 	  Frunction this_frunction = this;
 	  return new Expression()
 	  {
+	    @Override public String getDisplay(){return "E";}
       @Override public Frunction evaluate(Container environment){return this_frunction;}
 	  };
 	}

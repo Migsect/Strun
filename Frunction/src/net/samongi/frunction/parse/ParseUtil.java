@@ -130,8 +130,8 @@ public class ParseUtil
 	  String concat = "[";
 	  for(String s : array) 
 	  { 
-	    if(concat.length() == 1) concat += s;
-	    else concat += ", " + s;
+	    if(concat.length() == 1) concat += "'" + s + "'";
+	    else concat += ",'" + s + "'";
 	  }
 	  concat += "]";
 	  return concat;

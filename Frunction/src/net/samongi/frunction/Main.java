@@ -34,6 +34,7 @@ public class Main
     System.out.println("___Starting Parsing:");
     text_body = ParseUtil.removeNextLines(text_body);
     text_body = ParseUtil.squeeze(text_body);
+    
     DynamicFrunction main_frunction = new DynamicFrunction(null, text_body);
     main_frunction.evaluate();
 	}

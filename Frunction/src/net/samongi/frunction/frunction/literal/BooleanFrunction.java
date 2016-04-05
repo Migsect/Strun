@@ -11,6 +11,7 @@ import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.frunction.Frunction;
 import net.samongi.frunction.frunction.exceptions.FrunctionNotEvaluatedException;
 import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
+import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
 
 public class BooleanFrunction extends NativeFrunction
 {
@@ -40,7 +41,13 @@ public class BooleanFrunction extends NativeFrunction
 		{
 			@Override public Frunction evaluate(Container environment)
 			{
-				return new BooleanFrunction(environment, true);
+				try{return LiteralDictionary.getInstance().getSymbol(TRUE_LITERAL).getExpression().evaluate(environment);}
+        catch (TokenException e)
+        {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+				return null;
 			}
 		};
 	}
@@ -57,7 +64,13 @@ public class BooleanFrunction extends NativeFrunction
 		{
 			@Override public Frunction evaluate(Container environment)
 			{
-				return new BooleanFrunction(environment, false);
+			  try{return LiteralDictionary.getInstance().getSymbol(FALSE_LITERAL).getExpression().evaluate(environment);}
+        catch (TokenException e)
+        {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+			  return null;
 			}
 		};
 	}

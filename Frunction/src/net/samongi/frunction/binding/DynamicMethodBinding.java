@@ -14,6 +14,8 @@ import net.samongi.frunction.parse.ParseUtil;
  */
 public class DynamicMethodBinding implements MethodBinding
 {
+  public static final boolean DEBUG = false;
+  
 	private static final String BINDING = "->";
 	private static final String COND_OPERATOR = "?";
 	private static final String INPUT_SPLITTER = ",";
@@ -55,6 +57,7 @@ public class DynamicMethodBinding implements MethodBinding
 	  // Getting the expression section
 	  if(section.length() <= i) return null; // This means there is no expression
 	  String expression = section.substring(i).trim(); // getting the remainder
+	  if(DEBUG) System.out.println("  Parsing Method - Expr Source: '" + expression + "'");
 	  
 	  // indexer for the prior section
 	  int j = 0; 
@@ -137,7 +140,7 @@ public class DynamicMethodBinding implements MethodBinding
 	{
     if(this.expression != null) return;
 	  this.condition = Expression.parseString(condition_source, container);
-	  if(this.condition.equals(null)) this.condition = BooleanFrunction.getTautology();
+	  if(this.condition == null) this.condition = BooleanFrunction.getTautology();
 	}
 	
 	@Override public Expression getConditional() throws TokenException
@@ -153,11 +156,15 @@ public class DynamicMethodBinding implements MethodBinding
 	{
     if(this.expression != null) return;
 	  this.expression = Expression.parseString(source, container);
+	  if(this.expression == null)
+	  {
+	    if(DEBUG) System.out.println("  MethodBinding: Generated a null expression!");
+	  }
 	  
 	}
 	@Override public Expression getExpression() throws TokenException
 	{
-	  if(this.expression == null) this.generateCondition();
+	  if(this.expression == null) this.generateExpression();
 	  return this.expression;
 	}
 	

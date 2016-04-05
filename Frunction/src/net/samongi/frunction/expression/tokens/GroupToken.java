@@ -22,6 +22,11 @@ public class GroupToken implements Token
 		this.source = source.trim();
 	}
 	
+	// checks to see if the prebious index is a number
+	private boolean prevIsNumber(int i){return (i > 0) && (source.substring(i - 1, i).matches("\\d"));}
+	// checks to see if the next index is a number
+  private boolean nextIsNumber(int i){return (i < source.length() - 1) && (source.substring(i + 1, i + 2).matches("\\d"));}
+  
 	public void evaluate() throws TokenException
 	{
 		if(this.tokens != null) return;
@@ -31,10 +36,7 @@ public class GroupToken implements Token
 	  while(i < this.source.length())
 		{
 	  	// Creating accessor tokens
-	    // This will check to see if the accessor can be a real symbol
-	    boolean prev_is_num = (i > 0) && (source.substring(i - 1, i).matches("\\d"));
-	    boolean next_is_num = (i < source.length() - 1) && (source.substring(i + 1, i + 2).matches("\\d"));
-			if(ParseUtil.matchesAt(source, i, AccessorToken.OPERATOR) && !(prev_is_num && next_is_num))
+			if(ParseUtil.matchesAt(source, i, AccessorToken.OPERATOR) && !(this.prevIsNumber(i) && this.nextIsNumber(i)))
 			{
 			  // TODO make it so REALS are not split up by this operator
         i += AccessorToken.OPERATOR.length();
@@ -86,9 +88,14 @@ public class GroupToken implements Token
 			
 			// otherwise its the start of a symbol
 			int sym_start = i;
-			String[] not_sym = new String[]{InputToken.OPEN, InputToken.CLOSE, FrunctionToken.OPEN, FrunctionToken.CLOSE, AccessorToken.OPERATOR};
+			String[] not_sym = new String[]{InputToken.OPEN, InputToken.CLOSE, FrunctionToken.OPEN, FrunctionToken.CLOSE};
 			// going while the character can still be part of a symbol
-			while(!ParseUtil.matchesAt(source, i, not_sym) && i < source.length()) i++;
+			while((!(ParseUtil.matchesAt(this.source, i, not_sym)) // If the index is not a symbol
+			    && !(ParseUtil.matchesAt(this.source, i, AccessorToken.OPERATOR) && !this.prevIsNumber(i) && !this.nextIsNumber(i))) // If the index is a valid operator
+			    && i < this.source.length()) 
+			{
+			  i++;
+			}
 			// If the sym_i ends at an index, that means it matches an identifier
 			String section = source.substring(sym_start, i);
 			if(section.length() > 0)

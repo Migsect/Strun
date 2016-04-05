@@ -26,6 +26,8 @@ import net.samongi.frunction.frunction.literal.StringFrunction;
  */ 
 public class LiteralDictionary implements Container
 {
+  public static final boolean DEBUG = false;
+  
   private static LiteralDictionary instance = null;
   /**Will create a new dictionary if one doesn't exist, otherwise it 
    * return the current singleton that does exists.
@@ -79,6 +81,7 @@ public class LiteralDictionary implements Container
    */
   public boolean isLiteral(String symbol)
   {
+    symbol = symbol.trim();
     if(symbol.startsWith(StringFrunction.STRING_CAPSULE) && symbol.endsWith(StringFrunction.STRING_CAPSULE)) return true;
     if(symbol.equals(BooleanFrunction.TRUE_LITERAL) || symbol.equals(BooleanFrunction.FALSE_LITERAL)) return true;
     

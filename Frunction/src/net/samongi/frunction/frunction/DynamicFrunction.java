@@ -1,6 +1,8 @@
 package net.samongi.frunction.frunction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +23,8 @@ import net.samongi.frunction.parse.ParseUtil;
 
 public class DynamicFrunction implements Frunction
 {
+  public static final boolean DEBUG = false;
+  
   private static final String SELF_SYMBOL = "@";
   private static final String CONTAINER_ENV_SYMBOL = "^";
   
@@ -33,7 +37,7 @@ public class DynamicFrunction implements Frunction
 	 * 
 	 * There can be multiple method bindings to a set of types.
 	 */
-	private Map<String[], List<MethodBinding>> method_bindings = null;
+	private Map<List<String>, List<MethodBinding>> method_bindings = null;
 	
 	/**A set will represent the type that a frunction is.
 	 */
@@ -68,9 +72,7 @@ public class DynamicFrunction implements Frunction
 		
 		// Creating the hashmaps
     this.symbol_bindings = new HashMap<String, SymbolBinding>();
-		this.method_bindings = new HashMap<String[], List<MethodBinding>>();
-		if(this.symbol_bindings == null) System.out.println("SymbolBindings is null");
-		if(this.method_bindings == null) System.out.println("MethodBindings is null");
+		this.method_bindings = new HashMap<List<String>, List<MethodBinding>>();
 		
 		if(source == null) return;
 		if(source.length() <= 0) return;
@@ -123,14 +125,23 @@ public class DynamicFrunction implements Frunction
 	
 	@Override public MethodBinding getMethod(String[] types, Frunction[] inputs)
 	{
+	  if(DEBUG) System.out.println("  Fetching method with types:" + ParseUtil.concatStringArray(types));
 	  if(types.length != inputs.length)
 	  {
+	    if(DEBUG) System.out.println("  Issue in getMethod: types and input legnths missmatch");
+	    if(DEBUG) System.out.println("    with ypes:" + ParseUtil.concatStringArray(types));
 	    // TODO proper exception
 	    return null;
 	  }
-		if(!this.isEvaluated()) this.evaluate();
-		List<MethodBinding> methods = this.method_bindings.get(types);
-		if(methods == null || methods.isEmpty()) return null; // We didn't find a method
+		if(!this.isEvaluated()) this.evaluate(); // evaluating the frunction if it hasn't yet been.
+		
+		List<MethodBinding> methods = this.method_bindings.get(Collections.unmodifiableList(Arrays.asList(types)));
+		if(methods == null || methods.isEmpty())
+		{
+		  if(DEBUG) System.out.println("  Issue in getMethod: Returned Binding list returned empty or null");
+		  if(DEBUG) System.out.println("    with types:" + ParseUtil.concatStringArray(types));
+		  return null;
+		}
 		
 		for(MethodBinding b : methods)
 		{
@@ -141,7 +152,8 @@ public class DynamicFrunction implements Frunction
 			//  exception for something went seriously wrong.
 			if(input_symbols.length != inputs.length)
 			{
-				// TODO proper exception
+			  if(DEBUG) System.out.println("  Issue in getMethod: Input symbols length did not match inputs length");
+			  if(DEBUG) System.out.println("    with types:" + ParseUtil.concatStringArray(types));
 				return null;
 			}
 			// Adding the input symbols to the container
@@ -169,8 +181,11 @@ public class DynamicFrunction implements Frunction
 				if(!state) continue; // if it is false, then we will skip this method
 			}
 			// Returning the found binding as a result.
+			if(DEBUG) System.out.println("  Finished Fetching method.");
 			return b;
 		}
+		if(DEBUG) System.out.println("  Issue in getMethod: Couldn't find the method.");
+		if(DEBUG) System.out.println("    with types:" + ParseUtil.concatStringArray(types));
 		return null; // We didn't find the method for the types
 	}
 	
@@ -179,13 +194,16 @@ public class DynamicFrunction implements Frunction
 	  if(!this.isEvaluated()) throw new FrunctionNotEvaluatedException();
 	  
 		String[] types = binding.getTypes();
+		if(DEBUG) System.out.println("  Adding with types:" + ParseUtil.concatStringArray(types));
 		// System.out.println("Binding with types: " + ParseUtil.concatStringArray(types));
 		// Generating the list if it doesn't exist
-		if(!this.method_bindings.containsKey(types)) this.method_bindings.put(types, new ArrayList<MethodBinding>());
+		List<String> types_list = Collections.unmodifiableList(Arrays.asList(types));
+		if(!this.method_bindings.containsKey(types_list)) this.method_bindings.put(types_list, new ArrayList<MethodBinding>());
 		// Retrieving the list
-		List<MethodBinding> binding_list = this.method_bindings.get(types);
+		List<MethodBinding> binding_list = this.method_bindings.get(types_list);
 		// Adding the binding to the list
 		binding_list.add(binding);
+		if(DEBUG) System.out.println("    List size: " + binding_list.size());
 	}
 	
 	@Override public SymbolBinding getSymbol(String symbol) throws SymbolNotFoundException
@@ -248,7 +266,7 @@ public class DynamicFrunction implements Frunction
 
 	@Override public List<MethodBinding> getMethods()
 	{
-		TreeMap<String[], List<MethodBinding>> sorted_bindings = new TreeMap<>();
+		TreeMap<List<String>, List<MethodBinding>> sorted_bindings = new TreeMap<>();
 		sorted_bindings.putAll(this.method_bindings);
 
 		List<List<MethodBinding>> sorted_list = new ArrayList<>();
@@ -262,7 +280,6 @@ public class DynamicFrunction implements Frunction
 
 	@Override public List<SymbolBinding> getSymbols()
 	{
-
 		TreeMap<String, SymbolBinding> sorted_bindings = new TreeMap<>();
 		sorted_bindings.putAll(this.symbol_bindings);
 		

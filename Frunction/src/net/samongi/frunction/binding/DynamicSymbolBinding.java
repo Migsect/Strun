@@ -7,6 +7,8 @@ import net.samongi.frunction.frunction.Frunction;
 
 public class DynamicSymbolBinding implements SymbolBinding
 {
+  public static final boolean DEBUG = false;
+  
 	private static final String DEF_KEY = "_"; 
 	private static final String BINDING = ":";
 	private static final String DELAY_EVAL = "!";
@@ -47,6 +49,12 @@ public class DynamicSymbolBinding implements SymbolBinding
 		{
 		  try{binding.collapse();}
 		  catch(TokenException e){e.printError();}
+		  
+		  try{
+		    if(binding.getExpression() == null) System.out.println("  " + binding.getKey() + " >>> null");
+		    else if(DEBUG) System.out.println("  " + binding.getKey() + " >>> " + binding.getExpression().getDisplay());
+		  }
+      catch (TokenException e){System.out.println(binding.getKey() + " >>> Could not get expression");}
 		}
 		
 		return binding;
@@ -93,6 +101,7 @@ public class DynamicSymbolBinding implements SymbolBinding
 	@Override public Expression getExpression() throws TokenException
 	{
 		if(this.expression == null) this.generateExpression();
+		if(this.expression == null) System.out.println("  SymbolBinding : Expression is still null after generation.");
 		return this.expression;
 	}
 	/**Forces the binding to generate it's related expression.
