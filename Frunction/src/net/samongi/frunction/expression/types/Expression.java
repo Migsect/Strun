@@ -66,7 +66,7 @@ public interface Expression
           if(DEBUG) System.out.println("  Issue in Expression Parser: Symbol found it was not first");
           return null;
         }
-        AccessorExpression expr = new AccessorExpression(environment, (SymbolToken) t);
+        ContainerAccessorExpression expr = new ContainerAccessorExpression(environment, (SymbolToken) t);
         left_expr = expr; // Setting it to be the left expression
         i += 1;
       }
@@ -86,7 +86,7 @@ public interface Expression
         if(!tokens[i + 1].getType().equals(Token.Type.SYMBOL)) return null;
         
         Token r_t = tokens[i + 1];
-        AccessorExpression expr = new AccessorExpression(left_expr, (SymbolToken) r_t);
+        FrunctionAccessorExpression expr = new FrunctionAccessorExpression(left_expr, (SymbolToken) r_t);
         left_expr = expr; // Setting it to be the left expression
         i += 2;
       }
