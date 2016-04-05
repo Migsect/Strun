@@ -1,8 +1,6 @@
 package net.samongi.frunction.frunction;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +35,7 @@ public class DynamicFrunction implements Frunction
 	 * 
 	 * There can be multiple method bindings to a set of types.
 	 */
-	private Map<List<String>, List<MethodBinding>> method_bindings = null;
+	private Map<Integer, List<MethodBinding>> method_bindings = null;
 	
 	/**A set will represent the type that a frunction is.
 	 */
@@ -72,7 +70,7 @@ public class DynamicFrunction implements Frunction
 		
 		// Creating the hashmaps
     this.symbol_bindings = new HashMap<String, SymbolBinding>();
-		this.method_bindings = new HashMap<List<String>, List<MethodBinding>>();
+		this.method_bindings = new HashMap<Integer, List<MethodBinding>>();
 		
 		if(source == null) return;
 		if(source.length() <= 0) return;
@@ -135,7 +133,7 @@ public class DynamicFrunction implements Frunction
 	  }
 		if(!this.isEvaluated()) this.evaluate(); // evaluating the frunction if it hasn't yet been.
 		
-		List<MethodBinding> methods = this.method_bindings.get(Collections.unmodifiableList(Arrays.asList(types)));
+		List<MethodBinding> methods = this.method_bindings.get(types.length);
 		if(methods == null || methods.isEmpty())
 		{
 		  if(DEBUG) System.out.println("  Issue in getMethod: Returned Binding list returned empty or null");
@@ -143,51 +141,120 @@ public class DynamicFrunction implements Frunction
 		  return null;
 		}
 		
-		for(MethodBinding b : methods)
-		{
-			// Generating the method container to be used with the inputs
-			MethodContainer m_container = new MethodContainer(this);
-			String[] input_symbols = b.getInputSymbols();
-			// If for some reason the inputs are wrong for both this should be a hard
-			//  exception for something went seriously wrong.
-			if(input_symbols.length != inputs.length)
-			{
-			  if(DEBUG) System.out.println("  Issue in getMethod: Input symbols length did not match inputs length");
-			  if(DEBUG) System.out.println("    with types:" + ParseUtil.concatStringArray(types));
-				return null;
-			}
-			// Adding the input symbols to the container
-			for(int i = 0; i < input_symbols.length; i++){m_container.addSymbol(input_symbols[i], inputs[i]);}
-			
-			// Getting the boolean result.
-			Frunction result = null;
-			// Evaluated the conditional expression using the inputs
-			try{result = b.getConditional().evaluate(m_container);}
-			catch (TokenException e)
-			{
-			  e.printError(); 
-			  return null;
-			}
-			
-			// We are now going to test and see if the method is a boolean type
-			//   If it is not, we are going to assume the expression evaluates to true
-			//   This is done such that only false-hood will prevent a method from
-			//   working.
-			if(result.getType().equals("Boolean") && result instanceof BooleanFrunction)
-			{
-		    // Casting to a boolean frunction
-				BooleanFrunction b_result = (BooleanFrunction) result;
-				boolean state = b_result.getNative();
-				if(!state) continue; // if it is false, then we will skip this method
-			}
-			// Returning the found binding as a result.
-			if(DEBUG) System.out.println("  Finished Fetching method.");
-			return b;
-		}
+		MethodBinding b = this.searchMethodsTyped(methods, types, inputs);
+		if(b != null) return b;
+		
+		b = this.searchMethodsUntyped(methods, types, inputs);
+		if(b != null) return b;
+		
 		if(DEBUG) System.out.println("  Issue in getMethod: Couldn't find the method.");
 		if(DEBUG) System.out.println("    with types:" + ParseUtil.concatStringArray(types));
 		return null; // We didn't find the method for the types
 	}
+	
+	private MethodBinding searchMethodsUntyped(List<MethodBinding> bindings, String[] types, Frunction[] inputs)
+	{
+	  for(MethodBinding b : bindings)
+	  {
+  	  // Generating the method container to be used with the inputs
+      MethodContainer m_container = new MethodContainer(this);
+      String[] input_symbols = b.getInputSymbols();
+      // If for some reason the inputs are wrong for both this should be a hard
+      //  exception for something went seriously wrong.
+      if(input_symbols.length != inputs.length)
+      {
+        if(DEBUG) System.out.println("  Issue in getMethod: Input symbols length did not match inputs length");
+        if(DEBUG) System.out.println("    with types:" + ParseUtil.concatStringArray(types));
+        return null;
+      }
+      // Adding the input symbols to the container
+      for(int i = 0; i < input_symbols.length; i++){m_container.addSymbol(input_symbols[i], inputs[i]);}
+      
+      // Getting the boolean result.
+      Frunction result = null;
+      // Evaluated the conditional expression using the inputs
+      try{result = b.getConditional().evaluate(m_container);}
+      catch (TokenException e)
+      {
+        e.printError(); 
+        return null;
+      }
+      
+      // We are now going to test and see if the method is a boolean type
+      //   If it is not, we are going to assume the expression evaluates to true
+      //   This is done such that only false-hood will prevent a method from
+      //   working.
+      if(result.getType().equals("Boolean") && result instanceof BooleanFrunction)
+      {
+        // Casting to a boolean frunction
+        BooleanFrunction b_result = (BooleanFrunction) result;
+        boolean state = b_result.getNative();
+        if(!state) continue; // if it is false, then we will skip this method
+      }
+      // Returning the found binding as a result.
+      if(DEBUG) System.out.println("  Finished Fetching method.");
+      return b;
+	  }
+	  return null;
+	}
+	
+	private MethodBinding searchMethodsTyped(List<MethodBinding> bindings, String[] types, Frunction[] inputs)
+  {
+    for(MethodBinding b : bindings)
+    {
+      String[] input_types = b.getTypes();
+      boolean do_skip = false;
+      for(int i = 0; i < input_types.length; i++)
+      {
+        if(!types[i].equals(input_types[i]))
+        {
+          do_skip = true;
+          break;
+        }
+      }
+      if(do_skip) continue;
+      
+      // Generating the method container to be used with the inputs
+      MethodContainer m_container = new MethodContainer(this);
+      String[] input_symbols = b.getInputSymbols();
+      // If for some reason the inputs are wrong for both this should be a hard
+      //  exception for something went seriously wrong.
+      if(input_symbols.length != inputs.length)
+      {
+        if(DEBUG) System.out.println("  Issue in getMethod: Input symbols length did not match inputs length");
+        if(DEBUG) System.out.println("    with types:" + ParseUtil.concatStringArray(types));
+        return null;
+      }
+      // Adding the input symbols to the container
+      for(int i = 0; i < input_symbols.length; i++){m_container.addSymbol(input_symbols[i], inputs[i]);}
+      
+      // Getting the boolean result.
+      Frunction result = null;
+      // Evaluated the conditional expression using the inputs
+      try{result = b.getConditional().evaluate(m_container);}
+      catch (TokenException e)
+      {
+        e.printError(); 
+        return null;
+      }
+      
+      // We are now going to test and see if the method is a boolean type
+      //   If it is not, we are going to assume the expression evaluates to true
+      //   This is done such that only false-hood will prevent a method from
+      //   working.
+      if(result.getType().equals("Boolean") && result instanceof BooleanFrunction)
+      {
+        // Casting to a boolean frunction
+        BooleanFrunction b_result = (BooleanFrunction) result;
+        boolean state = b_result.getNative();
+        if(!state) continue; // if it is false, then we will skip this method
+      }
+      // Returning the found binding as a result.
+      if(DEBUG) System.out.println("  Finished Fetching method.");
+      return b;
+    }
+    return null;
+  }
 	
 	@Override public void addMethod(MethodBinding binding) throws FrunctionNotEvaluatedException
 	{
@@ -197,10 +264,9 @@ public class DynamicFrunction implements Frunction
 		if(DEBUG) System.out.println("  Adding with types:" + ParseUtil.concatStringArray(types));
 		// System.out.println("Binding with types: " + ParseUtil.concatStringArray(types));
 		// Generating the list if it doesn't exist
-		List<String> types_list = Collections.unmodifiableList(Arrays.asList(types));
-		if(!this.method_bindings.containsKey(types_list)) this.method_bindings.put(types_list, new ArrayList<MethodBinding>());
+		if(!this.method_bindings.containsKey(types.length)) this.method_bindings.put(types.length, new ArrayList<MethodBinding>());
 		// Retrieving the list
-		List<MethodBinding> binding_list = this.method_bindings.get(types_list);
+		List<MethodBinding> binding_list = this.method_bindings.get(types.length);
 		// Adding the binding to the list
 		binding_list.add(binding);
 		if(DEBUG) System.out.println("    List size: " + binding_list.size());
@@ -266,7 +332,7 @@ public class DynamicFrunction implements Frunction
 
 	@Override public List<MethodBinding> getMethods()
 	{
-		TreeMap<List<String>, List<MethodBinding>> sorted_bindings = new TreeMap<>();
+		TreeMap<Integer, List<MethodBinding>> sorted_bindings = new TreeMap<>();
 		sorted_bindings.putAll(this.method_bindings);
 
 		List<List<MethodBinding>> sorted_list = new ArrayList<>();

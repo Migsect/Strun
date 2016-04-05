@@ -36,12 +36,12 @@ public class InputToken implements Token
   	  if(ParseUtil.matchesAt(section, section.length() - SEPERATOR.length(), SEPERATOR)) section_list.add(section.substring(0, section.length() - SEPERATOR.length()));
   	  else section_list.add(section);
   	}
-  	
+  	// System.out.println("  InputTokens - Section Amount: " + section_list.size());
   	// Translating the sections into new GroupTokens
   	this.input_tokens = new GroupToken[section_list.size()];
   	for(int c = 0; c < section_list.size(); c++)
   	{
-  	  this.input_tokens[i] = new GroupToken(section_list.get(i));
+  	  this.input_tokens[c] = new GroupToken(section_list.get(c));
   	}
   	if(this.input_tokens == null) this.input_tokens = new GroupToken[0]; // Empty array if it doesn't have any.
   }

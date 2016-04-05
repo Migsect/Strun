@@ -1,0 +1,15 @@
+List : {
+  (hd, tl) -> {
+    hd: hd;
+    tl: tl;
+    (prior) -> List(prior, @);
+  };
+};
+
+l : List(5, {})(4)(3)(2)(1)(0);
+
+l1 : l.hd;
+l2 : l.tl.hd;
+l3 : l.tl.tl.hd;
+l4 : l.tl.tl.tl.hd;
+l5 : l.tl.tl.tl.tl.hd;

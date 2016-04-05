@@ -41,7 +41,16 @@ public class MethodExpression implements Expression
     Expression[] exprs = new Expression[tokens.length];
     for(int i = 0; i < tokens.length; i++)
     {
+      // We will evaluate the group tokens
+      try{tokens[i].evaluate();}
+      catch (TokenException e1)
+      {
+        e1.printStackTrace();
+      }
+      
       Expression expr = null;
+      if(DEBUG)  System.out.println("  M-Evaluate: Token[" + i + "] source: '" + tokens[i].getSource() + "'");
+      if(DEBUG) System.out.println("  M-Evaluate: Token[" + i + "] types: '" + tokens[i].displayTypes() + "'");
       try{expr = Expression.parseTokens(tokens[i].getTokens(), environment);}
       catch (TokenException e)
       {
@@ -58,6 +67,7 @@ public class MethodExpression implements Expression
     // evaluating the left expression
     // This is where we will attempt to get the method from.
     Frunction eval = left_expression.evaluate(environment);
+    if(DEBUG) if(eval == null) System.out.println("  Issue in M-Evaluate: Evaluated left expression is null");
     //System.out.println("Left Expression Type: " + left_expression.getClass().toGenericString());
     
     // Evaluating all the inputs because it is needed to get the types.
@@ -65,7 +75,7 @@ public class MethodExpression implements Expression
     for(int i = 0; i < exprs.length; i++)
     {
       // These are being evaluated on the normal environment that is called the expression.
-    	Frunction i_eval = r_evals[i].toExpression().evaluate(environment);
+    	Frunction i_eval = exprs[i].evaluate(environment);
       if(i_eval == null) 
       {
         if(DEBUG) System.out.println("  Issue in M-Evaluate: Evaluated input '" + i + "' is null");
@@ -80,9 +90,10 @@ public class MethodExpression implements Expression
     // TODO see if we need to check if the types include a null string
     
     MethodBinding binding = eval.getMethod(types, r_evals);
+    if(DEBUG) System.out.println("  >> Left: " + left_expression.getDisplay());
     if(binding == null)
     {
-      if(DEBUG) System.out.println("  Methodbinding returned null!");
+      if(DEBUG) System.out.println("  Issue in M-Evaluate: Methodbinding returned null!");
       // TODO throw a proper exception.
       return null;
     }
