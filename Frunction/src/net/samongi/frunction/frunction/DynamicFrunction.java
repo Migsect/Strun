@@ -13,6 +13,7 @@ import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
 import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.tokens.Token;
+import net.samongi.frunction.frunction.exceptions.FrunctionNotEvaluatedException;
 import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
 import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
@@ -64,14 +65,12 @@ public class DynamicFrunction implements Frunction
 	@Override public void evaluate()
 	{
 		if(this.isEvaluated()) return;
-		System.out.println("Evalating a frunction");
 		
 		// Creating the hashmaps
-    this.symbol_bindings = new HashMap<>();
-		this.method_bindings = new HashMap<>();
+    this.symbol_bindings = new HashMap<String, SymbolBinding>();
+		this.method_bindings = new HashMap<String[], List<MethodBinding>>();
 		if(this.symbol_bindings == null) System.out.println("SymbolBindings is null");
 		if(this.method_bindings == null) System.out.println("MethodBindings is null");
-		
 		
 		if(source == null) return;
 		if(source.length() <= 0) return;
@@ -94,7 +93,8 @@ public class DynamicFrunction implements Frunction
       {
         System.out.println("Found met_b in: '" + section.trim() + "'");
         
-        this.addMethod(met_binding);
+        try{this.addMethod(met_binding);}
+        catch (FrunctionNotEvaluatedException e){e.printStackTrace();}
         continue;
       }
 		  SymbolBinding sym_binding = DynamicSymbolBinding.parseBinding(section, this);
@@ -102,7 +102,8 @@ public class DynamicFrunction implements Frunction
 		  {
 		    System.out.println("Found sym_b '" + sym_binding.getKey() + "' in: '" + section.trim() + "'");
 		    
-		    this.addSymbol(sym_binding);
+		    try{this.addSymbol(sym_binding);}
+	      catch (FrunctionNotEvaluatedException e){e.printStackTrace();}
 		    continue;
 		  }
 		  
@@ -113,7 +114,12 @@ public class DynamicFrunction implements Frunction
 		}
 	}
 	
-	@Override public boolean isEvaluated(){return symbol_bindings != null && method_bindings != null;}
+	@Override public boolean isEvaluated()
+	{
+	  if(this.symbol_bindings == null) return false;
+	  if(this.method_bindings == null) return false;
+	  return true;
+	}
 	
 	@Override public MethodBinding getMethod(String[] types, Frunction[] inputs)
 	{
@@ -145,7 +151,11 @@ public class DynamicFrunction implements Frunction
 			Frunction result = null;
 			// Evaluated the conditional expression using the inputs
 			try{result = b.getConditional().evaluate(m_container);}
-			catch (TokenException e){return null;}
+			catch (TokenException e)
+			{
+			  e.printError(); 
+			  return null;
+			}
 			
 			// We are now going to test and see if the method is a boolean type
 			//   If it is not, we are going to assume the expression evaluates to true
@@ -164,8 +174,10 @@ public class DynamicFrunction implements Frunction
 		return null; // We didn't find the method for the types
 	}
 	
-	@Override public void addMethod(MethodBinding binding)
+	@Override public void addMethod(MethodBinding binding) throws FrunctionNotEvaluatedException
 	{
+	  if(!this.isEvaluated()) throw new FrunctionNotEvaluatedException();
+	  
 		String[] types = binding.getTypes();
 		// System.out.println("Binding with types: " + ParseUtil.concatStringArray(types));
 		// Generating the list if it doesn't exist
@@ -187,7 +199,10 @@ public class DynamicFrunction implements Frunction
 		{
 		  SymbolBinding self_bind = new DynamicSymbolBinding(SELF_SYMBOL, this, this);
 		  self_bind.setCountable(false); // it shouldn't be countable
-		  this.addSymbol(self_bind); // creating the new self-binded symbol;
+		  
+		  // Adding the new symbol for the self
+		  try{this.addSymbol(self_bind);}
+      catch (FrunctionNotEvaluatedException e){e.printStackTrace();}
 		}
 		
 		SymbolBinding binding = null;
@@ -215,8 +230,9 @@ public class DynamicFrunction implements Frunction
 		return binding;
 	}
 	
-	@Override public void addSymbol(SymbolBinding binding)
+	@Override public void addSymbol(SymbolBinding binding) throws FrunctionNotEvaluatedException
 	{
+    if(!this.isEvaluated()) throw new FrunctionNotEvaluatedException();
 		// Simply adding the symbol
 		// This will override any existing symbols in that place, but it is expected
 		this.symbol_bindings.put(binding.getKey(), binding);

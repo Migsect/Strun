@@ -23,7 +23,7 @@ import net.samongi.frunction.frunction.literal.StringFrunction;
  *  - string
  * 
  * This class shall be a singleton and furthermore shall be called for all literal parsing.
- */
+ */ 
 public class LiteralDictionary implements Container
 {
   private static LiteralDictionary instance = null;

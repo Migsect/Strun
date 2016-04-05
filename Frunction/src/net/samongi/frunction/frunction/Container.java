@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
+import net.samongi.frunction.frunction.exceptions.FrunctionNotEvaluatedException;
 import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
 
 public interface Container
@@ -20,7 +21,7 @@ public interface Container
    * @param types The types of arguments the binding takes.
    * @param binding The binding to add
    */
-  public void addMethod(MethodBinding binding);
+  public void addMethod(MethodBinding binding) throws FrunctionNotEvaluatedException;
   
   /**Returns a list of lists of methodbindings.
    * 
@@ -40,7 +41,7 @@ public interface Container
    * @param symbol The symbol's string to add
    * @param binding The binding to add
    */
-  public void addSymbol(SymbolBinding binding);
+  public void addSymbol(SymbolBinding binding) throws FrunctionNotEvaluatedException;
   
   /**Returns all the symbols stored in the container
    * This returns all of the symbols sorted.

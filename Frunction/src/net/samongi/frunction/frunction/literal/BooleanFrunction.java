@@ -9,6 +9,7 @@ import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.frunction.Frunction;
+import net.samongi.frunction.frunction.exceptions.FrunctionNotEvaluatedException;
 import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
 
 public class BooleanFrunction extends NativeFrunction
@@ -72,7 +73,8 @@ public class BooleanFrunction extends NativeFrunction
 		this.state = state;
 		
 		// Adding the methods
-		this.addSymbol(this.methodEquals());
+		try{this.addSymbol(this.methodEquals());}
+		catch(FrunctionNotEvaluatedException e){e.printStackTrace();}
 	}
 	
 	/**Will generate a method binding for determining if another method is equal.
@@ -122,7 +124,8 @@ public class BooleanFrunction extends NativeFrunction
 			
 		};
 		MethodBinding method_0 = new DynamicMethodBinding(this, input_0, types_0, condition_0, expression_0);
-		method_holder.addMethod(method_0);
+		try{method_holder.addMethod(method_0);}
+		catch(FrunctionNotEvaluatedException e){e.printStackTrace();}
 		
 		// Creating the binding
 		SymbolBinding binding = new DynamicSymbolBinding("eq", method_holder, this);
