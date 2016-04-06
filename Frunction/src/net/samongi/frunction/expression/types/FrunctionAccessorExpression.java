@@ -27,12 +27,7 @@ public class FrunctionAccessorExpression implements Expression
   
   @Override public Frunction evaluate(Container environment)
   {
-
-  	System.out.println("  Expr: Evaluating a FrunctionAccessorExpression");
-  	
-    System.out.println("  AccessorExpression: " + this.getDisplay());
-    if(this.left == null) System.out.println("    Left Expression: null expression");
-    else System.out.println("    Left Expression: " + this.left.getDisplay());
+  	// System.out.println("  Expr: Evaluating a FrunctionAccessorExpression");
     
     // Evaluate the left expression such that we can access its bindings
     Frunction eval = left.evaluate(environment);

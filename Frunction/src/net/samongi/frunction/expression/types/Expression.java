@@ -146,7 +146,7 @@ public interface Expression
         if(DEBUG) System.out.println("  Issue in Expression Parser: Unknown Token");
         return null;
       }
-      System.out.println("  LeftExpr: " + left_expr.getDisplay());
+      // System.out.println("  LeftExpr: " + left_expr.getDisplay());
     }
     if(left_expr == null)
     {

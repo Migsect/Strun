@@ -21,7 +21,7 @@ public class FrunctionExpression implements Expression
   
   @Override public Frunction evaluate(Container environment)
   {
-  	System.out.println("  Expr: Evaluating a FrunctionException");
+  	// System.out.println("  Expr: Evaluating a FrunctionException");
   	
     DynamicFrunction frunction = new DynamicFrunction(environment, token.getSource());
     frunction.evaluate();

@@ -2,7 +2,7 @@ List : {
   (hd, tl) -> {
     hd: hd;
     tl: tl;
-    (prior) -> List(prior, List(hd, tl));
+    (prior) -> List(prior, List(hd, tl)); 
   };
 };
 
@@ -10,20 +10,16 @@ l_0 : List(0, {});
 
 # Calling the single method on l_0
 #  This will, as a result, create a list but first
-l_1 : l_0(1.0);
+
+l_1 : l_0(1.0);  
 
 
-#l_2 : List(0, List(1, List(2, {})));
+l_2 : List(0, List(1, List(2, {})));
 
-#l : List(5, {})(4)(3)(2)(1)(0.0);
-#l_5 : List(5, {});
-#l_4 : l_5(4);
-#l_3 : l_4(3);
-#l_2 : l_3(2);
-#l_1 : l_2(1);
+l : List(5, {})(4)(3)(2)(1)(0.0);
 
-#l1 : l_1.hd;
-#l2 : l_2.tl.hd;
-#l3 : l_3.tl.tl.hd;
-#l4 : l_4.tl.tl.tl.hd;
-#l5 : l_5.tl.tl.tl.tl.hd;
+ele_1 : l.hd;
+ele_2 : l.tl.hd;
+ele_3 : l.tl.tl.hd;
+ele_4 : l.tl.tl.tl.hd;
+ele_5 : l.tl.tl.tl.tl.tl.hd;

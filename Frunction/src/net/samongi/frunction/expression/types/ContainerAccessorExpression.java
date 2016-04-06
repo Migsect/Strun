@@ -26,7 +26,7 @@ public class ContainerAccessorExpression implements Expression
 	
 	@Override public Frunction evaluate(Container environment)
 	{
-  	System.out.println("  Expr: Evaluating a FrunctionAccessorExpression");
+  	// System.out.println("  Expr: Evaluating a ContainerAccessorExpression");
 		
 		// Getting the symbol from the token
 		String symbol = token.getSource();
@@ -44,18 +44,18 @@ public class ContainerAccessorExpression implements Expression
     }
     
     // Getting the binded expression
-    Expression l_expr;
-    try{l_expr = l_binding.getExpression();}
-    catch (TokenException e)
-    {
-      // TODO actual error here
-      return null;
-    }
     
     // We can now evaluate the expression.
     //   This is using the environment of the frunction it is apart of.
-    //System.out.println("  Left Expression: " + left.getClass().toGenericString());
-    Frunction accessed = l_expr.evaluate(left);
+    Frunction accessed = null;
+    try
+    {
+      accessed = l_binding.get();
+    }
+    catch (TokenException e)
+    {
+      e.printStackTrace();
+    }
     if(DEBUG) System.out.println("  A-Evaluate accessed_source: " + accessed.getSource());
     
     // Returning the accessed expression

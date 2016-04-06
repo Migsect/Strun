@@ -11,7 +11,7 @@ import net.samongi.frunction.frunction.MethodContainer;
 
 public class MethodExpression implements Expression
 {
-  private static final boolean DEBUG = true;
+  private static final boolean DEBUG = false;
   
   private final Expression left_expression;
   private final InputToken right_token;
@@ -29,7 +29,7 @@ public class MethodExpression implements Expression
   
   @Override public Frunction evaluate(Container environment)
   {
-  	System.out.println("  Expr: Evaluating a MethodExpression");
+  	// System.out.println("  Expr: Evaluating a MethodExpression");
   	
   	// Getting group tokens included in the input token.
     GroupToken[] tokens = null;
