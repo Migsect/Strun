@@ -8,9 +8,12 @@ List : {
 
 l_0 : List(0, {});
 
+# Calling the single method on l_0
+#  This will, as a result, create a list but first
 l_1 : l_0(1.0);
 
-l_2 : List(0, List(1, List(2, {})));
+
+#l_2 : List(0, List(1, List(2, {})));
 
 #l : List(5, {})(4)(3)(2)(1)(0.0);
 #l_5 : List(5, {});

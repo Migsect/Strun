@@ -61,7 +61,7 @@ public interface Expression
       //   This only occurs if we start on a symbol
       if(t.getType().equals(Token.Type.SYMBOL))
       {
-        if(i != 0)
+        if(i != 0) // Needs to be the first token if this case happens
         {
           if(DEBUG) System.out.println("  Issue in Expression Parser: Symbol found it was not first");
           return null;
@@ -70,22 +70,29 @@ public interface Expression
         left_expr = expr; // Setting it to be the left expression
         i += 1;
       }
-      // Case 2: We come accross and accessor token
+      // Case 2: We come across an accessor token
       else if(t.getType().equals(Token.Type.ACCESSOR))
       {
         if(left_expr == null)
         {
+        	// TODO proper error?
           if(DEBUG) System.out.println("  Issue in Expression Parser: Accessor found left expr to be null.");
-          return null; // We need a left hand expression
+          return null;
         }
-        if(tokens.length <= i + 1) 
+        // Checking to see if there is a next index
+        if(tokens.length < i + 1)
         {
+        	// TODO proper error?
           if(DEBUG) System.out.println("  Issue in Expression Parser: Accessor found right symbol to be null.");
           return null; // We need a right hand symbol.
         }
-        if(!tokens[i + 1].getType().equals(Token.Type.SYMBOL)) return null;
+        if(!tokens[i + 1].getType().equals(Token.Type.SYMBOL)) 
+        {
+        	// TODO proper error?
+        	return null;
+       	}
         
-        Token r_t = tokens[i + 1];
+        Token r_t = tokens[i + 1]; // Getting the next token
         FrunctionAccessorExpression expr = new FrunctionAccessorExpression(left_expr, (SymbolToken) r_t);
         left_expr = expr; // Setting it to be the left expression
         i += 2;
@@ -122,6 +129,7 @@ public interface Expression
       //   This should be the first token, just like frunctions and first symbols
       else if(t.getType().equals(Token.Type.GROUP))
       {
+      	System.out.println("  For some reason there was a group token?!?!");
         if(i != 0)
         {
           if(DEBUG) System.out.println("  Issue in Expression Parser: Group found it was not first.");
@@ -146,8 +154,6 @@ public interface Expression
       return null;
     }
     return left_expr; // Returning the final left expression
-    // Commented out because memory expressions cause weirdness with methods?
-    // return new MemoryExpression(left_expr);
   }
   
 	public Frunction evaluate(Container environment);

@@ -7,6 +7,7 @@ import java.util.Map;
 import net.samongi.frunction.binding.DynamicSymbolBinding;
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
+import net.samongi.frunction.frunction.exceptions.FrunctionNotEvaluatedException;
 import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
 
 /**Used as an intermeditary for methods to contain the extra symbols.
@@ -36,32 +37,45 @@ public class MethodContainer implements Container
     this.override_symbols.put(symbol, s_binding);
   }
 
-  // Shouldn't do anything yet
-  @Override public MethodBinding getMethod(String[] types, Frunction[] inputs){return null;}
+  // Calling the inner environment for get method
+  @Override public MethodBinding getMethod(String[] types, Frunction[] inputs){return this.environment.getMethod(types, inputs);}
   
+  // Calling the inner environment for the get symbol given that this doesn't
+  //   wish to override it.
   @Override public SymbolBinding getSymbol(String symbol) throws SymbolNotFoundException
   {
     if(override_symbols.containsKey(symbol)) return override_symbols.get(symbol);
     return this.environment.getSymbol(symbol);
   }
 
-	@Override public Container getEnvironment(){return this.environment;}
+  // This will return the environment above the environment this wraps
+  // This is because the method container acts as a wrapper around its environment.
+	@Override public Container getEnvironment(){return this.environment.getEnvironment();}
+	
+	/**Will return the environment that this wraps.
+	 * 
+	 * @return The environment that the method container wraps.
+	 */
+  public Container getWrappedEnvironment(){return this.environment;}
 
-	@Override public void addMethod(MethodBinding binding){}
+	@Override public void addMethod(MethodBinding binding)
+	{
+		try
+		{
+			// Calling the inner's method for this.
+			this.environment.addMethod(binding);
+		}
+		catch (FrunctionNotEvaluatedException e)
+		{
+			e.printStackTrace();
+		}
+	}
 	@Override public void addSymbol(SymbolBinding binding)
 	{
 		this.override_symbols.put(binding.getKey(), binding);
 	}
 
-	@Override public List<MethodBinding> getMethods()
-	{
-		// TODO 
-		return null;
-	}
+	@Override public List<MethodBinding> getMethods(){return this.environment.getMethods();}
 
-	@Override public List<SymbolBinding> getSymbols()
-	{
-		// TODO 
-		return null;
-	}
+	@Override public List<SymbolBinding> getSymbols(){return this.environment.getSymbols();}
 }

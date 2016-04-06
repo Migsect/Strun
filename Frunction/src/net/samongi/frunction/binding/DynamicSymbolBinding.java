@@ -132,6 +132,7 @@ public class DynamicSymbolBinding implements SymbolBinding
   }
   @Override public Frunction get() throws TokenException
   {
+  	if(this.collapsed != null) return this.collapsed;
     this.collapse();
     return this.collapsed;
   }

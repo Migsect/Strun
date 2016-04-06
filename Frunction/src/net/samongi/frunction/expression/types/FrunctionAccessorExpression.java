@@ -27,44 +27,35 @@ public class FrunctionAccessorExpression implements Expression
   
   @Override public Frunction evaluate(Container environment)
   {
+
+  	System.out.println("  Expr: Evaluating a FrunctionAccessorExpression");
+  	
     System.out.println("  AccessorExpression: " + this.getDisplay());
     if(this.left == null) System.out.println("    Left Expression: null expression");
     else System.out.println("    Left Expression: " + this.left.getDisplay());
     
-    // Evaluating the left expression that is going to be accessed
-    //   We are evaluating based on the current environment.
-    // What happens if the left expression is the same 
+    // Evaluate the left expression such that we can access its bindings
     Frunction eval = left.evaluate(environment);
-    
-    //if(DEBUG) System.out.println("  A-Evaluate left_frunction_source: " + l_frunction.getSource());
     
     // The symbol that is going to be expressed from the right expression.
     String symbol = token.getSource();
     // Getting the binding associated with the symbol.
     SymbolBinding l_binding = null;
-    
-    try
-    {
-      l_binding = eval.getSymbol(symbol);
-    }
+    try{l_binding = eval.getSymbol(symbol);}
     catch (SymbolNotFoundException e)
     {
       e.displayError();
       return null;
     }
     
-    // Getting the binded expression
-    Expression l_expr;
-    try{l_expr = l_binding.getExpression();}
-    catch (TokenException e)
-    {
-      // TODO actual error here
-      return null;
-    }
-    
     // We can now evaluate the expression.
     //   This is using the environment of the frunction it is apart of.
-    Frunction accessed = l_expr.evaluate(eval);
+    Frunction accessed = null;
+		try{accessed = l_binding.get();}
+		catch (TokenException e)
+		{
+			e.printStackTrace();
+		}
     if(DEBUG) System.out.println("  A-Evaluate accessed_source: " + accessed.getSource());
     
     // Returning the accessed expression

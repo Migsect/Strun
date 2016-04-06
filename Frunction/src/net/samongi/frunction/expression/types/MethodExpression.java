@@ -29,6 +29,8 @@ public class MethodExpression implements Expression
   
   @Override public Frunction evaluate(Container environment)
   {
+  	System.out.println("  Expr: Evaluating a MethodExpression");
+  	
   	// Getting group tokens included in the input token.
     GroupToken[] tokens = null;
     try{tokens = this.right_token.getTokens();}
@@ -119,7 +121,7 @@ public class MethodExpression implements Expression
     
     if(DEBUG) System.out.println(expr.getClass().toGenericString());
     
-    // Evaluating the expression
+    // Evaluating the expression using the method container.
     return expr.evaluate(container);
   }
   
