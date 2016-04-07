@@ -306,15 +306,16 @@ public class DynamicFrunction implements Frunction
 		// First case is to check if it will force an environment pop-up
 		if(symbol.startsWith(CONTAINER_ENV_SYMBOL)) 
 		{
-      if(environment == null) throw new SymbolNotFoundException(symbol);
-		  binding = this.environment.getSymbol(symbol.replaceFirst(CONTAINER_ENV_SYMBOL, ""));
+      System.out.println("  .  .  Found use of '^', upping the environment. New Sym: '" + symbol.substring(CONTAINER_ENV_SYMBOL.length()) + "'");
+      if(this.environment == null) throw new SymbolNotFoundException(symbol);
+		  binding = this.environment.getSymbol(symbol.substring(CONTAINER_ENV_SYMBOL.length()));
 		}
 		else 
 		{
 		  binding = this.symbol_bindings.get(symbol);
 		  if(binding == null) 
 		  {
-	      if(environment == null) throw new SymbolNotFoundException(symbol);
+	      if(this.environment == null) throw new SymbolNotFoundException(symbol);
 		    binding = this.environment.getSymbol(symbol);
 		  }
 		}
@@ -332,6 +333,7 @@ public class DynamicFrunction implements Frunction
     if(!this.isEvaluated()) throw new FrunctionNotEvaluatedException();
 		// Simply adding the symbol
 		// This will override any existing symbols in that place, but it is expected
+    System.out.println("  Adding sym with key '" + binding.getKey() + "' to frunction with type '" + this.getType() + "'");
 		this.symbol_bindings.put(binding.getKey(), binding);
 	}
 	

@@ -68,10 +68,12 @@ public abstract class NativeExpression implements Expression
   {
     Frunction method_holder = new DynamicFrunction(environment);
     
-    MethodBinding method = new DynamicMethodBinding(environment, types, types, condition, this);
+    MethodBinding method = new DynamicMethodBinding(environment, input, types, condition, this);
     try{method_holder.addMethod(method);}
     catch(FrunctionNotEvaluatedException e){e.printStackTrace();}
     
-    return new DynamicSymbolBinding(key, method_holder, environment);
+    SymbolBinding binding = new DynamicSymbolBinding(key, method_holder, environment);
+    binding.setCountable(false);
+    return binding;
   }
 }

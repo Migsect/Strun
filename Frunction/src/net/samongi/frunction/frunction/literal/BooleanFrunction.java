@@ -1,13 +1,9 @@
 package net.samongi.frunction.frunction.literal;
 
-import net.samongi.frunction.binding.DynamicMethodBinding;
-import net.samongi.frunction.binding.DynamicSymbolBinding;
-import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
 import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
-import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.frunction.Frunction;
 import net.samongi.frunction.frunction.exceptions.FrunctionNotEvaluatedException;
 import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
@@ -102,6 +98,7 @@ public class BooleanFrunction extends NativeFrunction
 	private void addMethods() throws FrunctionNotEvaluatedException
 	{
 	  this.addSymbol(this.methodEquals());
+	  this.addSymbol(this.methodString());
 	}
 	
 	/**Will generate a method binding for determining if another method is equal.
@@ -142,6 +139,34 @@ public class BooleanFrunction extends NativeFrunction
 		};
 		return expression.getAsBinding("eq", this, input, types, condition);
 	}
+	
+  private SymbolBinding methodString()
+  {
+    // Generating the first method
+    String[] input = new String[]{};
+    String[] types = new String[]{};
+    Expression condition = BooleanFrunction.getTautology();
+    
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+        
+        if(!left.getType().equals(BooleanFrunction.TYPE) || !(left instanceof BooleanFrunction))
+        {
+          return null; // We should technically never get to this stage.
+        }
+        BooleanFrunction b_left = (BooleanFrunction) left;
+        // Performing the native operation.
+        return StringFrunction.getCached("" + b_left.getNative());
+      }
+      
+    };
+    return expression.getAsBinding("str", this, input, types, condition);
+  }
+
 
 
 	@Override public String getType(){return BooleanFrunction.TYPE;}

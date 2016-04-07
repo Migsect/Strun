@@ -1,9 +1,13 @@
 package net.samongi.frunction.frunction.literal;
 
+import net.samongi.frunction.binding.SymbolBinding;
 import net.samongi.frunction.expression.exceptions.TokenException;
+import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
+import net.samongi.frunction.frunction.exceptions.FrunctionNotEvaluatedException;
 import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
+import net.samongi.frunction.frunction.literal.method.NativeExpression;
 
 public class StringFrunction extends NativeFrunction
 {
@@ -17,6 +21,7 @@ public class StringFrunction extends NativeFrunction
   	String str = symbol.substring(1, symbol.length() - 1); // Getting the inner string
   	return new StringFrunction(environment, str);
   }
+  
   public static Frunction getCached(String str)
   {
     String sym = "\"" + str + "\""; 
@@ -30,9 +35,150 @@ public class StringFrunction extends NativeFrunction
   public StringFrunction(Container environment, String state)
   {
     super(environment);
+    
+    // setting the state of the string
     this.state = state;
+    
+    // Adding the methods
+    try{this.addMethods();}
+    catch(FrunctionNotEvaluatedException e){e.printStackTrace();}
   }
-
+  private void addMethods() throws FrunctionNotEvaluatedException
+  {
+    this.addSymbol(this.methodEquals());
+    this.addSymbol(this.methodString());
+    this.addSymbol(this.methodPrint());
+    this.addSymbol(this.methodPrintln());
+  }
+  
+  /**Will generate a method binding for determining if another method is equal.
+   * 
+   * @return
+   */
+  private SymbolBinding methodEquals()
+  {
+    // Generating the first method
+    String[] input = new String[]{"other"};
+    String[] types = new String[]{StringFrunction.TYPE};
+    Expression condition = BooleanFrunction.getTautology();
+    
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+        
+        // Getting the right argument which should be the "other" argument as defined
+        Frunction right = this.getInput("other");
+        
+        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction))
+        {
+          return null; // We should technically never get to this stage.
+        }
+        if(!right.getType().equals(StringFrunction.TYPE) || !(right instanceof StringFrunction))
+        {
+          return null; // We should technically never get to this stage.
+        }
+        StringFrunction s_left = (StringFrunction) left;
+        StringFrunction s_right = (StringFrunction) right;
+        // Performing the native operation.
+        return BooleanFrunction.getCached(s_left.getNative().equals(s_right.getNative()));
+      }
+      
+    };
+    return expression.getAsBinding("eq", this, input, types, condition);
+  }
+  
+  private SymbolBinding methodString()
+  {
+    // Generating the first method
+    String[] input = new String[]{};
+    String[] types = new String[]{};
+    Expression condition = BooleanFrunction.getTautology();
+    
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+        
+        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction))
+        {
+          return null; // We should technically never get to this stage.
+        }
+        return left;
+      }
+      
+    };
+    return expression.getAsBinding("str", this, input, types, condition);
+  }
+  
+  private SymbolBinding methodPrint()
+  {
+    // Generating the first method
+    String[] input = new String[]{};
+    String[] types = new String[]{};
+    Expression condition = BooleanFrunction.getTautology();
+    
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+        
+        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction))
+        {
+          return null; // We should technically never get to this stage.
+        }
+        
+        // Converting the type
+        StringFrunction s_left = (StringFrunction) left;
+        
+        // performing the action
+        System.out.print(s_left.getNative());
+        
+        return left;
+      }
+      
+    };
+    return expression.getAsBinding("print", this, input, types, condition);
+  }
+  
+  private SymbolBinding methodPrintln()
+  {
+    // Generating the first method
+    String[] input = new String[]{};
+    String[] types = new String[]{};
+    Expression condition = BooleanFrunction.getTautology();
+    
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+        
+        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction))
+        {
+          return null; // We should technically never get to this stage.
+        }
+        
+        // Converting the type
+        StringFrunction s_left = (StringFrunction) left;
+        
+        // performing the action
+        System.out.println(s_left.getNative());
+        
+        return left;
+      }
+      
+    };
+    return expression.getAsBinding("println", this, input, types, condition);
+  }
+  
   @Override public String getType(){return TYPE;}
   
   public String getNative(){return this.state;}
