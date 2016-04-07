@@ -10,49 +10,57 @@ import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
 public class FrunctionAccessorExpression implements Expression
 {
   private static final boolean DEBUG = false;
-  
+
   private final Expression left;
   private final SymbolToken token;
-  
+
   public FrunctionAccessorExpression(Expression left, SymbolToken token)
   {
     this.left = left;
     this.token = token;
   }
-  
+
   @Override public String getDisplay()
   {
-    return "A<'" + token.getSource() + "':" + left.getDisplay() + ">"; 
+    return "A<'" + token.getSource() + "':" + left.getDisplay() + ">";
   }
-  
+
   @Override public Frunction evaluate(Container environment)
   {
-  	// System.out.println("  Expr: Evaluating a FrunctionAccessorExpression");
-    
+    // System.out.println("  Expr: Evaluating a FrunctionAccessorExpression");
+
     // Evaluate the left expression such that we can access its bindings
     Frunction eval = left.evaluate(environment);
-    
+
     // The symbol that is going to be expressed from the right expression.
     String symbol = token.getSource();
     // Getting the binding associated with the symbol.
     SymbolBinding l_binding = null;
-    try{l_binding = eval.getSymbol(symbol);}
-    catch (SymbolNotFoundException e)
+    try
+    {
+      l_binding = eval.getSymbol(symbol);
+    }
+    catch(SymbolNotFoundException e)
     {
       e.displayError();
       return null;
     }
-    
+
     // We can now evaluate the expression.
-    //   This is using the environment of the frunction it is apart of.
+    // This is using the environment of the frunction it is apart of.
     Frunction accessed = null;
-		try{accessed = l_binding.get();}
-		catch (TokenException e)
-		{
-			e.printStackTrace();
-		}
-    if(DEBUG) System.out.println("  A-Evaluate accessed_source: " + accessed.getSource());
-    
+    try
+    {
+      accessed = l_binding.get();
+    }
+    catch(TokenException e)
+    {
+      e.printStackTrace();
+    }
+    if(DEBUG)
+      System.out.println("  A-Evaluate accessed_source: "
+          + accessed.getSource());
+
     // Returning the accessed expression
     return accessed;
   }

@@ -8,22 +8,23 @@ import net.samongi.frunction.frunction.Frunction;
 public class FrunctionExpression implements Expression
 {
   private final FrunctionToken token;
-  
+
   public FrunctionExpression(FrunctionToken token)
   {
     this.token = token;
   }
-  
+
   @Override public String getDisplay()
   {
-    return "F<" + token.getSource() + ">";  
+    return "F<" + token.getSource() + ">";
   }
-  
+
   @Override public Frunction evaluate(Container environment)
   {
-  	// System.out.println("  Expr: Evaluating a FrunctionException");
-  	
-    DynamicFrunction frunction = new DynamicFrunction(environment, token.getSource());
+    // System.out.println("  Expr: Evaluating a FrunctionException");
+
+    DynamicFrunction frunction = new DynamicFrunction(environment,
+        token.getSource());
     frunction.evaluate();
     return frunction;
   }
