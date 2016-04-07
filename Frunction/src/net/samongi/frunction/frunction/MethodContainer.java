@@ -44,6 +44,7 @@ public class MethodContainer implements Container
   //   wish to override it.
   @Override public SymbolBinding getSymbol(String symbol) throws SymbolNotFoundException
   {
+    symbol = symbol.trim();
     if(override_symbols.containsKey(symbol)) return override_symbols.get(symbol);
     return this.environment.getSymbol(symbol);
   }

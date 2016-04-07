@@ -90,7 +90,7 @@ public class GroupToken implements Token
 			String[] not_sym = new String[]{InputToken.OPEN, InputToken.CLOSE, FrunctionToken.OPEN, FrunctionToken.CLOSE};
 			// going while the character can still be part of a symbol
 			while((!(ParseUtil.matchesAt(this.source, i, not_sym)) // If the index is not a symbol
-			    && !(ParseUtil.matchesAt(this.source, i, AccessorToken.OPERATOR) && !this.prevIsNumber(i) && !this.nextIsNumber(i))) // If the index is a valid operator
+			    && !(ParseUtil.matchesAt(this.source, i, AccessorToken.OPERATOR) && !(this.prevIsNumber(i) && this.nextIsNumber(i)))) // If the index is a valid operator
 			    && i < this.source.length()) 
 			{
 			  i++;

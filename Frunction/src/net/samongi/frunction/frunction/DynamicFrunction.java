@@ -102,7 +102,7 @@ public class DynamicFrunction implements Frunction
 		  MethodBinding met_binding = DynamicMethodBinding.parseBinding(section, this);
       if(met_binding != null)
       {
-        System.out.println("Found met_b in: '" + section.trim() + "'");
+        //System.out.println("Found met_b in: '" + section.trim() + "'");
         
         try{this.addMethod(met_binding);}
         catch (FrunctionNotEvaluatedException e){e.printStackTrace();}
@@ -111,7 +111,7 @@ public class DynamicFrunction implements Frunction
 		  SymbolBinding sym_binding = DynamicSymbolBinding.parseBinding(section, this);
 		  if(sym_binding != null)
 		  {
-		    System.out.println("Found sym_b '" + sym_binding.getKey() + "' in: '" + section.trim() + "'");
+		    //System.out.println("Found sym_b '" + sym_binding.getKey() + "' in: '" + section.trim() + "'");
 		    
 		    try{this.addSymbol(sym_binding);}
 	      catch (FrunctionNotEvaluatedException e){e.printStackTrace();}
@@ -293,7 +293,7 @@ public class DynamicFrunction implements Frunction
 		
 		if(symbol.equals(SELF_SYMBOL)) // time to create the self binding that will need to be accessed.
 		{
-			System.out.println("  Frunction: getSymbol > Symbol was self accessor");
+			//System.out.println("  Frunction: getSymbol > Symbol was self accessor");
 		  SymbolBinding self_bind = new DynamicSymbolBinding(SELF_SYMBOL, this, this);
 		  self_bind.setCountable(false); // it shouldn't be countable
 		  
@@ -306,7 +306,7 @@ public class DynamicFrunction implements Frunction
 		// First case is to check if it will force an environment pop-up
 		if(symbol.startsWith(CONTAINER_ENV_SYMBOL)) 
 		{
-      System.out.println("  .  .  Found use of '^', upping the environment. New Sym: '" + symbol.substring(CONTAINER_ENV_SYMBOL.length()) + "'");
+      //System.out.println("  .  .  Found use of '^', upping the environment. New Sym: '" + symbol.substring(CONTAINER_ENV_SYMBOL.length()) + "'");
       if(this.environment == null) throw new SymbolNotFoundException(symbol);
 		  binding = this.environment.getSymbol(symbol.substring(CONTAINER_ENV_SYMBOL.length()));
 		}
@@ -333,7 +333,7 @@ public class DynamicFrunction implements Frunction
     if(!this.isEvaluated()) throw new FrunctionNotEvaluatedException();
 		// Simply adding the symbol
 		// This will override any existing symbols in that place, but it is expected
-    System.out.println("  Adding sym with key '" + binding.getKey() + "' to frunction with type '" + this.getType() + "'");
+    //System.out.println("  Adding sym with key '" + binding.getKey() + "' to frunction with type '" + this.getType() + "'");
 		this.symbol_bindings.put(binding.getKey(), binding);
 	}
 	

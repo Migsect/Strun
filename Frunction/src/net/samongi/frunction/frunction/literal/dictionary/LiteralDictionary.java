@@ -58,7 +58,7 @@ public class LiteralDictionary implements Container
     Frunction f = NativeFrunction.parseLiteral(symbol, this);
     if(f == null) return null;
     
-    System.out.println("  Created literal binding for '" + symbol + "' with type '"+ f.getType() + "'");
+    if(DEBUG) System.out.println("  Created literal binding for '" + symbol + "' with type '"+ f.getType() + "'");
     
     // Creating the binding and adding it to the map
     SymbolBinding b = new DynamicSymbolBinding(symbol, f, this);
