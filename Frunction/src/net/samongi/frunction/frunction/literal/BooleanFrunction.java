@@ -10,8 +10,8 @@ import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.frunction.Frunction;
 import net.samongi.frunction.frunction.exceptions.FrunctionNotEvaluatedException;
-import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
 import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
+import net.samongi.frunction.frunction.literal.method.NativeExpression;
 
 public class BooleanFrunction extends NativeFrunction
 {
@@ -26,8 +26,17 @@ public class BooleanFrunction extends NativeFrunction
 		if(symbol.toLowerCase().equals(TRUE_LITERAL)) return new BooleanFrunction(environment, true);
 		if(symbol.toLowerCase().equals(FALSE_LITERAL)) return new BooleanFrunction(environment, false);
 		return null;
-		
 	}
+	public static Frunction getCached(boolean bool)
+	{
+	  String sym = null;
+	  if(bool) sym = TRUE_LITERAL;
+	  else sym = FALSE_LITERAL;
+	  try{return LiteralDictionary.getInstance().getSymbol(sym).get();}
+    catch (TokenException e){e.printStackTrace();}
+	  return null;
+	}
+	
 	/**Returns an expression that is a tautology which means
 	 * it will always return true.
 	 * This expression returns a boolean frunction that is true
@@ -86,8 +95,13 @@ public class BooleanFrunction extends NativeFrunction
 		this.state = state;
 		
 		// Adding the methods
-		try{this.addSymbol(this.methodEquals());}
+		try{this.addMethods();}
 		catch(FrunctionNotEvaluatedException e){e.printStackTrace();}
+	}
+	
+	private void addMethods() throws FrunctionNotEvaluatedException
+	{
+	  this.addSymbol(this.methodEquals());
 	}
 	
 	/**Will generate a method binding for determining if another method is equal.
@@ -96,30 +110,20 @@ public class BooleanFrunction extends NativeFrunction
 	 */
 	private SymbolBinding methodEquals()
 	{
-	  // The frunction that will hold the method
-		Frunction method_holder = new DynamicFrunction(this, null);
-		try{method_holder.evaluate();} // We need to evaluate this
-		catch (TokenException e1){}
-		
 		// Generating the first method
-		String[] input_0 = new String[]{"other"};
-		String[] types_0 = new String[]{"bool"};
-		Expression condition_0 = BooleanFrunction.getTautology();
-		Expression expression_0 = new Expression()
+		String[] input = new String[]{"other"};
+		String[] types = new String[]{BooleanFrunction.TYPE};
+		Expression condition = BooleanFrunction.getTautology();
+		
+		NativeExpression expression = new NativeExpression()
 		{
-			@Override public Frunction evaluate(Container environment)
+			@Override public Frunction evaluate()
 			{
 				// Getting the left argument which should be the "@" self binding.
-				Frunction left = null;
-				try{left = environment.getSymbol("^@").getExpression().evaluate(environment);}
-				catch (TokenException e){return null;}
-				catch (SymbolNotFoundException e){return null;}
+				Frunction left = this.getSelf();
 				
 				// Getting the right argument which should be the "other" argument as defined
-				Frunction right = null;
-				try{right = environment.getSymbol("other").getExpression().evaluate(environment);}
-				catch (TokenException e){return null;}
-        catch (SymbolNotFoundException e){return null;}
+				Frunction right = this.getInput("other");
 				
 				if(!left.getType().equals(BooleanFrunction.TYPE) || !(left instanceof BooleanFrunction))
 				{
@@ -132,18 +136,11 @@ public class BooleanFrunction extends NativeFrunction
 				BooleanFrunction b_left = (BooleanFrunction) left;
 				BooleanFrunction b_right = (BooleanFrunction) right;
 				// Performing the native operation.
-				return new BooleanFrunction(environment, b_left.getNative() == b_right.getNative());
+				return BooleanFrunction.getCached(b_left.getNative() == b_right.getNative());
 			}
 			
 		};
-		MethodBinding method_0 = new DynamicMethodBinding(this, input_0, types_0, condition_0, expression_0);
-		try{method_holder.addMethod(method_0);}
-		catch(FrunctionNotEvaluatedException e){e.printStackTrace();}
-		
-		// Creating the binding
-		SymbolBinding binding = new DynamicSymbolBinding("eq", method_holder, this);
-		
-		return binding;
+		return expression.getAsBinding("eq", this, input, types, condition);
 	}
 
 

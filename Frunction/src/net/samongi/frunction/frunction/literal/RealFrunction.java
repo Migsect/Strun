@@ -1,7 +1,9 @@
 package net.samongi.frunction.frunction.literal;
 
+import net.samongi.frunction.expression.exceptions.TokenException;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
+import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
 
 public class RealFrunction extends NativeFrunction
 {
@@ -12,6 +14,13 @@ public class RealFrunction extends NativeFrunction
   	Double converted = null;
   	try{converted = Double.parseDouble(symbol.trim());}catch(NumberFormatException e){return null;}
   	return new RealFrunction(environment, converted);
+  }
+  public static Frunction getCached(double real)
+  {
+    String sym = "" + real;
+    try{return LiteralDictionary.getInstance().getSymbol(sym).get();}
+    catch (TokenException e){e.printStackTrace();}
+    return null;
   }
   
   private final double state;

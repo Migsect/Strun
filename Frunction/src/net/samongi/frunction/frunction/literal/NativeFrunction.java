@@ -36,7 +36,7 @@ public abstract class NativeFrunction extends DynamicFrunction
 	
 	public NativeFrunction(Container environment)
 	{
-		super(environment, "");
+		super(environment);
 		super.evaluate();
 	}
 

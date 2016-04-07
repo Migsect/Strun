@@ -23,3 +23,7 @@ ele_2 : l.tl.hd;
 ele_3 : l.tl.tl.hd;
 ele_4 : l.tl.tl.tl.hd;
 ele_5 : l.tl.tl.tl.tl.tl.hd;
+
+bool_1 : true;
+bool_2 : false;
+bool_3 : bool_1.eq(bool_2);

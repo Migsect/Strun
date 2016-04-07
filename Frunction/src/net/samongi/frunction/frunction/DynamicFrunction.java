@@ -63,6 +63,17 @@ public class DynamicFrunction implements Frunction
 		this.environment = environment;
 		this.source = source;
 	}
+	/**Constructor for when there is no source.  Generally used by native frunction
+	 * definitions.  This will automatically call evaluate to ensure that the hashmaps are made
+	 * 
+	 * @param environment
+	 */
+	public DynamicFrunction(Container environment)
+	{
+	  this.environment = environment;
+	  this.source = null;
+	  this.evaluate();
+	}
 	
 	@Override public void evaluate()
 	{
