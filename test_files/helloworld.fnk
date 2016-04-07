@@ -1,0 +1,32 @@
+"Hello World!".println();
+
+Coord : {
+  (x, y) -> {
+    x_coord : x;
+    y_coord : y;
+    print : {->{
+      "(".print();
+      x_coord.str().print();
+      ",".print();
+      y_coord.str().print();
+      ")".println();
+    };};
+  };
+};
+
+one_line : {
+  ()     -> "No Argument";
+  (x)    -> x.str();
+  (x, y) -> x.eq(y).str();
+};
+
+one_line().println();
+one_line(1,2).println();
+
+
+
+c_1 : Coord(1,2);
+c_2 : Coord(3,4);
+
+c_1.print();
+c_2.print();

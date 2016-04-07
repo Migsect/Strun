@@ -62,8 +62,7 @@ public class DynamicMethodBinding implements MethodBinding
     if(section.length() <= i) return null; // This means there is no expression
     String expression = section.substring(i).trim(); // getting the remainder
     if(DEBUG)
-      System.out
-          .println("  Parsing Method - Expr Source: '" + expression + "'");
+      System.out.println("  Parsing Method - Expr Source: '" + expression + "'");
 
     // indexer for the prior section
     int j = 0;

@@ -133,7 +133,10 @@ public class MethodExpression implements Expression
     String[] input_symbols = binding.getInputSymbols();
     // Adding all the frunction inputs.
     for(int i = 0; i < input_symbols.length; i++)
+    {
+    	System.out.println("  M-expr: Added sym '" + input_symbols[i] + "' to container");
       container.addSymbol(input_symbols[i], r_evals[i]);
+    }
 
     // Getting the expression
     Expression expr = null;

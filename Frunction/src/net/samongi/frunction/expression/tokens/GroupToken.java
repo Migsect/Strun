@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.samongi.frunction.expression.exceptions.TokenException;
+import net.samongi.frunction.frunction.literal.StringFrunction;
 import net.samongi.frunction.parse.ParseUtil;
 
 /**
@@ -39,7 +40,7 @@ public class GroupToken implements Token
   {
     if(this.tokens != null) return;
     this.tokens = new ArrayList<>();
-
+    
     int i = 0;
     while(i < this.source.length())
     {
@@ -64,7 +65,7 @@ public class GroupToken implements Token
         // Incrementing the next index based on the section length found
         i += section.length();
 
-        // Checking to see if the section end correctly.
+        // Checking to see if the section ends correctly.
         if(!ParseUtil.matchesAt(section,
             section.length() - InputToken.CLOSE.length(), InputToken.CLOSE)) { throw new TokenException(
             section); // Throwing the exception
@@ -101,17 +102,25 @@ public class GroupToken implements Token
 
       // otherwise its the start of a symbol
       int sym_start = i;
+      
+      // Checking to see if the symbol start is encapsilated
+      boolean encapped = ParseUtil.matchesAt(this.source, i, StringFrunction.STRING_CAPSULE);
+      
       String[] not_sym = new String[] { InputToken.OPEN, InputToken.CLOSE,
           FrunctionToken.OPEN, FrunctionToken.CLOSE };
       // going while the character can still be part of a symbol
-      while((!(ParseUtil.matchesAt(this.source, i, not_sym)) // If the index is
-                                                             // not a symbol
+      while((!(!encapped && ParseUtil.matchesAt(this.source, i, not_sym)) // If the index is not a symbol
           && !(ParseUtil.matchesAt(this.source, i, AccessorToken.OPERATOR) && !(this
               .prevIsNumber(i) && this.nextIsNumber(i)))) // If the index is a
                                                           // valid operator
           && i < this.source.length())
       {
         i++;
+        if(ParseUtil.matchesAt(this.source, i, StringFrunction.STRING_CAPSULE))
+        {
+        	if(encapped) encapped = false;
+        	else encapped = true;
+        }
       }
       // If the sym_i ends at an index, that means it matches an identifier
       String section = source.substring(sym_start, i);

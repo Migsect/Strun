@@ -21,7 +21,7 @@ public class ContainerAccessorExpression implements Expression
 
   @Override public String getDisplay()
   {
-    return "C<'" + token.getSource() + "': E" + ">";
+    return "C<'" + token.getSource() + "': E>";
   }
 
   @Override public Frunction evaluate(Container environment)
@@ -56,10 +56,13 @@ public class ContainerAccessorExpression implements Expression
     {
       e.printStackTrace();
     }
-    if(DEBUG)
-      System.out.println("  A-Evaluate accessed_source: "
-          + accessed.getSource());
-
+    if(DEBUG) System.out.println("  A-Evaluate accessed_source: " + accessed.getSource());
+    if(accessed == null)
+    {
+    	// TODO throw proper exception?
+    	System.out.println("Accessed Frunction turned out to be null");
+    }
+    
     // Returning the accessed expression
     return accessed;
   }

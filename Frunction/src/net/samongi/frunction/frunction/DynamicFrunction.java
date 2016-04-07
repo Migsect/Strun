@@ -395,12 +395,16 @@ public class DynamicFrunction implements Frunction
       binding = this.symbol_bindings.get(symbol);
       if(binding == null)
       {
+      	this.displayHierarchy(2);
         if(this.environment == null) throw new SymbolNotFoundException(symbol);
         binding = this.environment.getSymbol(symbol);
       }
     }
-
-    if(binding == null) throw new SymbolNotFoundException(symbol);
+    
+    if(binding == null) 
+    {
+    	throw new SymbolNotFoundException(symbol);
+    }
 
     // Returning the binding, it may be null
     return binding;

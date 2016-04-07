@@ -30,8 +30,11 @@ public class FrunctionAccessorExpression implements Expression
     // System.out.println("  Expr: Evaluating a FrunctionAccessorExpression");
 
     // Evaluate the left expression such that we can access its bindings
+  	//System.out.println("Is left null?: " + (left == null));
+    System.out.println("What is left's type?: " + left.getClass().getCanonicalName());
     Frunction eval = left.evaluate(environment);
-
+    //System.out.println("Is eval null?: " + (eval == null));
+    
     // The symbol that is going to be expressed from the right expression.
     String symbol = token.getSource();
     // Getting the binding associated with the symbol.

@@ -42,7 +42,7 @@ public class ParseUtil
         if(toggle_scope) toggle_scope = false;
         else toggle_scope = true;
       }
-      if(has_scope_up && ParseUtil.matchesAt(text, i, scope_up)
+      if(!toggle_scope && has_scope_up && ParseUtil.matchesAt(text, i, scope_up)
           && !toggle_scope) scope++;
 
       if(ParseUtil.matchesAt(text, i, seperator) && scope == 0 && !toggle_scope)
@@ -51,7 +51,7 @@ public class ParseUtil
         return text.substring(start, end);
       }
       // Scoping down after
-      if(has_scope_down && ParseUtil.matchesAt(text, i, scope_down)
+      if(!toggle_scope && has_scope_down && ParseUtil.matchesAt(text, i, scope_down)
           && !toggle_scope) scope--;
     }
 
@@ -119,6 +119,7 @@ public class ParseUtil
   public static boolean matchesAt(String text, int start, String pattern)
   {
     // Iterating through the pattern.
+  	if(start < 0) return false;
     if(pattern.length() == 0) return true;
     if(text.length() - start < pattern.length()) return false; // remaining is
                                                                // less than the

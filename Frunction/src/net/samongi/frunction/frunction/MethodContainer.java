@@ -52,6 +52,8 @@ public class MethodContainer implements Container
       throws SymbolNotFoundException
   {
     symbol = symbol.trim();
+    System.out.println("MethodContainer, grabbing: '" + symbol + "'");
+    System.out.println("  Does Contain '" + override_symbols.containsKey(symbol) + "'");
     if(override_symbols.containsKey(symbol))
       return override_symbols.get(symbol);
     return this.environment.getSymbol(symbol);
