@@ -15,6 +15,9 @@ public class ContainerAccessorExpression implements Expression
 
   public ContainerAccessorExpression(Container left, SymbolToken token)
   {
+  	if(left == null) throw new NullPointerException("'left' was null");
+  	if(token == null) throw new NullPointerException("'token' was null");
+  	
     this.left = left;
     this.token = token;
   }

@@ -41,9 +41,11 @@ public class DynamicMethodBinding implements MethodBinding
    *          The environment the binding will be defined in
    * @return A dynamic symbol binding
    */
-  public static DynamicMethodBinding parseBinding(String section,
-      Container environment)
+  public static DynamicMethodBinding parseBinding(String section, Container environment)
   {
+  	if(section == null) throw new NullPointerException("'section' was null");
+    if(environment == null) throw new NullPointerException("'environment' was null");
+    
     // System.out.println("Parsing for method: " + section);
     int i = 0; // indexer for the whole section
 
@@ -164,8 +166,7 @@ public class DynamicMethodBinding implements MethodBinding
   {
     if(this.expression != null) return;
     this.condition = Expression.parseString(condition_source, container);
-    if(this.condition == null)
-      this.condition = BooleanFrunction.getTautology();
+    if(this.condition == null) this.condition = BooleanFrunction.getTautology();
   }
 
   @Override public Expression getConditional() throws TokenException

@@ -22,10 +22,11 @@ public class DynamicSymbolBinding implements SymbolBinding
    *          The environment of which the binding will be made
    * @return A dynamic symbol bidning
    */
-  public static DynamicSymbolBinding parseBinding(String text_section,
-      Container environment)
+  public static DynamicSymbolBinding parseBinding(String text_section, Container environment)
   {
-
+  	if(text_section == null) throw new NullPointerException("'text_section' was null");
+  	if(environment == null) throw new NullPointerException("'environment' was null");
+  	
     // Splitting the section based on the first bound binding operator
     String[] split_section = text_section.split(BINDING, 2);
     // System.out.println("Split_section length: " + split_section.length);
@@ -50,8 +51,7 @@ public class DynamicSymbolBinding implements SymbolBinding
     boolean do_eval = !key.startsWith(DELAY_EVAL);
     if(!do_eval) key = key.replaceFirst(DELAY_EVAL, "");
 
-    DynamicSymbolBinding binding = new DynamicSymbolBinding(key, source,
-        environment);
+    DynamicSymbolBinding binding = new DynamicSymbolBinding(key, source, environment);
     if(do_eval)
     {
       try
@@ -93,18 +93,26 @@ public class DynamicSymbolBinding implements SymbolBinding
 
   public DynamicSymbolBinding(String key, String source, Container environment)
   {
+    if(key == null) throw new NullPointerException("'key' was null");
+    if(environment == null) throw new NullPointerException("environment was null");
+    if(source == null) throw new NullPointerException("'source' was null");
+  	
     this.key = key;
     this.source = source;
     this.environment = environment;
   }
 
-  public DynamicSymbolBinding(String key, Frunction evaluated,
-      Container environment)
+  public DynamicSymbolBinding(String key, Frunction evaluated, Container environment)
   {
+  	if(key == null) throw new NullPointerException("key was null");
+  	if(evaluated == null) throw new NullPointerException("evaluated was null");
+    if(environment == null) throw new NullPointerException("environment was null");
+  	
     this.key = key;
-    this.expression = evaluated.toExpression();
     this.environment = environment;
     this.source = null;
+    
+    
   }
 
   @Override public String getKey()
@@ -147,7 +155,7 @@ public class DynamicSymbolBinding implements SymbolBinding
   public void generateExpression() throws TokenException
   {
     if(this.expression == null)
-      this.expression = Expression.parseString(this.source, this.environment);
+    this.expression = Expression.parseString(this.source, this.environment);
   }
 
   @Override public Container getContainer()

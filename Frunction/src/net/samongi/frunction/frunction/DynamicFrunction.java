@@ -64,6 +64,9 @@ public class DynamicFrunction implements Frunction
    */
   public DynamicFrunction(Container environment, String source)
   {
+  	if(environment == null) throw new NullPointerException("'environment' was null");
+  	if(source == null) throw new NullPointerException("'source' was null");
+  	
     this.environment = environment;
     this.source = source;
   }
@@ -109,8 +112,7 @@ public class DynamicFrunction implements Frunction
             - Binding.BINDING_SEPERATOR.length());
       // Now we have a clean binding defintion.
 
-      MethodBinding met_binding = DynamicMethodBinding.parseBinding(section,
-          this);
+      MethodBinding met_binding = DynamicMethodBinding.parseBinding(section,this);
       if(met_binding != null)
       {
         // System.out.println("Found met_b in: '" + section.trim() + "'");
@@ -202,9 +204,12 @@ public class DynamicFrunction implements Frunction
     return null; // We didn't find the method for the types
   }
 
-  private MethodBinding searchMethodsUntyped(List<MethodBinding> bindings,
-      String[] types, Frunction[] inputs)
+  private MethodBinding searchMethodsUntyped(List<MethodBinding> bindings, String[] types, Frunction[] inputs)
   {
+  	if(bindings == null) throw new NullPointerException("'bindings' was null");
+  	if(types == null) throw new NullPointerException("'types' was null");
+  	if(inputs == null) throw new NullPointerException("'inputs' was null");
+  	
     for(MethodBinding b : bindings)
     {
       // Generating the method container to be used with the inputs
@@ -233,6 +238,7 @@ public class DynamicFrunction implements Frunction
       // Evaluated the conditional expression using the inputs
       try
       {
+      	if(b.getConditional() == null) System.out.println("Method Search: Found binding conditional to be null");
         result = b.getConditional().evaluate(m_container);
       }
       catch(TokenException e)
@@ -260,9 +266,12 @@ public class DynamicFrunction implements Frunction
     return null;
   }
 
-  private MethodBinding searchMethodsTyped(List<MethodBinding> bindings,
-      String[] types, Frunction[] inputs)
+  private MethodBinding searchMethodsTyped(List<MethodBinding> bindings, String[] types, Frunction[] inputs)
   {
+  	if(bindings == null) throw new NullPointerException("'bindings' was null");
+  	if(types == null) throw new NullPointerException("'types' was null");
+  	if(inputs == null) throw new NullPointerException("'inputs' was null");
+  	
     for(MethodBinding b : bindings)
     {
       String[] input_types = b.getTypes();
@@ -330,8 +339,7 @@ public class DynamicFrunction implements Frunction
     return null;
   }
 
-  @Override public void addMethod(MethodBinding binding)
-      throws FrunctionNotEvaluatedException
+  @Override public void addMethod(MethodBinding binding) throws FrunctionNotEvaluatedException
   {
     if(!this.isEvaluated()) throw new FrunctionNotEvaluatedException();
 
@@ -410,10 +418,11 @@ public class DynamicFrunction implements Frunction
     return binding;
   }
 
-  @Override public void addSymbol(SymbolBinding binding)
-      throws FrunctionNotEvaluatedException
+  @Override public void addSymbol(SymbolBinding binding) throws FrunctionNotEvaluatedException
   {
+  	if(binding == null) throw new NullPointerException("'binding' was null");
     if(!this.isEvaluated()) throw new FrunctionNotEvaluatedException();
+    
     // Simply adding the symbol
     // This will override any existing symbols in that place, but it is expected
     // System.out.println("  Adding sym with key '" + binding.getKey() +

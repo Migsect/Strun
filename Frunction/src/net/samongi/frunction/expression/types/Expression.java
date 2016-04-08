@@ -23,9 +23,11 @@ public interface Expression
    * @return
    * @throws TokenException
    */
-  public static Expression parseString(String source, Container environment)
-      throws TokenException
+  public static Expression parseString(String source, Container environment) throws TokenException
   {
+  	if(source == null) throw new NullPointerException("'source' was null");
+  	if(environment == null) throw new NullPointerException("'environment' was null");
+  	
     source = source.trim();
     GroupToken token = Token.parseTokens(source);
     return Expression.parseTokens(token.getTokens(), environment);

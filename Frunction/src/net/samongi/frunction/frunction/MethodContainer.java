@@ -9,6 +9,7 @@ import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
 import net.samongi.frunction.frunction.exceptions.FrunctionNotEvaluatedException;
 import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
+import net.samongi.frunction.parse.ParseUtil;
 
 /**
  * Used as an intermeditary for methods to contain the extra symbols.
@@ -23,6 +24,8 @@ public class MethodContainer implements Container
 
   public MethodContainer(Container environment)
   {
+  	if(environment == null) throw new NullPointerException("'environment was null'");
+  	
     this.environment = environment;
   }
 
@@ -35,8 +38,9 @@ public class MethodContainer implements Container
    */
   public void addSymbol(String symbol, Frunction frunction)
   {
-    SymbolBinding s_binding = new DynamicSymbolBinding(symbol, frunction,
-        this.environment);
+  	if(frunction == null) throw new NullPointerException("'frunction' was null");
+  	
+    SymbolBinding s_binding = new DynamicSymbolBinding(symbol, frunction, this.environment);
     this.override_symbols.put(symbol, s_binding);
   }
 
@@ -103,5 +107,16 @@ public class MethodContainer implements Container
   @Override public List<SymbolBinding> getSymbols()
   {
     return this.environment.getSymbols();
+  }
+  
+  @Override public void displayHierarchy(int spacing)
+  {
+  	System.out.println(ParseUtil.spacing(spacing) +"Container Overrides:");
+  	for(SymbolBinding b : this.override_symbols.values())
+  	{
+  		System.out.println(ParseUtil.spacing(spacing) +"- " + b.toDisplay());
+  	}
+  	System.out.println(ParseUtil.spacing(spacing) + "Masked Structure:");
+  	this.environment.displayHierarchy(spacing + 2);
   }
 }

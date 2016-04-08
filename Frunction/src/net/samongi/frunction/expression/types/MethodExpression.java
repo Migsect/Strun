@@ -11,7 +11,7 @@ import net.samongi.frunction.frunction.MethodContainer;
 
 public class MethodExpression implements Expression
 {
-  private static final boolean DEBUG = false;
+  private static final boolean DEBUG = true;
 
   private final Expression left_expression;
   private final InputToken right_token;
@@ -33,10 +33,11 @@ public class MethodExpression implements Expression
     // System.out.println("  Expr: Evaluating a MethodExpression");
 
     // Getting group tokens included in the input token.
-    GroupToken[] tokens = null;
+    GroupToken[] group_tokens = null;
     try
     {
-      tokens = this.right_token.getTokens();
+    	// Grabbing the group tokens from the input token
+      group_tokens = this.right_token.getTokens();
     }
     catch(TokenException e1)
     {
@@ -44,29 +45,30 @@ public class MethodExpression implements Expression
       return null;
     }
     // Now we will translate the group tokens into expressions
-    Expression[] exprs = new Expression[tokens.length];
-    for(int i = 0; i < tokens.length; i++)
+    Expression[] exprs = new Expression[group_tokens.length];
+    for(int i = 0; i < group_tokens.length; i++)
     {
       // We will evaluate the group tokens
       try
       {
-        tokens[i].evaluate();
+      	// We need to first evaluate the group tokens
+        group_tokens[i].evaluate();
       }
-      catch(TokenException e1)
+      catch(TokenException e)
       {
-        e1.printStackTrace();
+      	// TODO proper exception?
+        e.printStackTrace();
       }
 
+      // This is the expression that the method represents
       Expression expr = null;
       if(DEBUG)
-        System.out.println("  M-Evaluate: Token[" + i + "] source: '"
-            + tokens[i].getSource() + "'");
+        System.out.println("  M-Evaluate: GroupToken[" + i + "] source: '" + group_tokens[i].getSource() + "'");
       if(DEBUG)
-        System.out.println("  M-Evaluate: Token[" + i + "] types: '"
-            + tokens[i].displayTypes() + "'");
+        System.out.println("  M-Evaluate: GroupToken[" + i + "] types: '" + group_tokens[i].displayTypes() + "'");
       try
       {
-        expr = Expression.parseTokens(tokens[i].getTokens(), environment);
+        expr = Expression.parseTokens(group_tokens[i].getTokens(), environment);
       }
       catch(TokenException e)
       {
@@ -93,6 +95,8 @@ public class MethodExpression implements Expression
     // left_expression.getClass().toGenericString());
 
     // Evaluating all the inputs because it is needed to get the types.
+    // The inputs should be evaluated based on the expression environment and not on the
+    // container.
     Frunction[] r_evals = new DynamicFrunction[exprs.length];
     for(int i = 0; i < exprs.length; i++)
     {
@@ -102,26 +106,25 @@ public class MethodExpression implements Expression
       if(i_eval == null)
       {
         if(DEBUG)
-          System.out.println("  Issue in M-Evaluate: Evaluated input '" + i
-              + "' is null");
+          System.out.println("  Issue in M-Evaluate: Evaluated input '" + i + "' is null");
         return null;
       }
       r_evals[i] = i_eval;
     }
 
     // Getting the types of the evaluated expression.
+    //   The types will be used to get the method.
     String[] types = new String[r_evals.length];
     for(int i = 0; i < types.length; i++)
       types[i] = r_evals[i].getType(); // type may become null?
     // TODO see if we need to check if the types include a null string
-
+    
+    // Retrieving the method biniding.
     MethodBinding binding = eval.getMethod(types, r_evals);
-    if(DEBUG) System.out.println("  >> Left: " + left_expression.getDisplay());
+    if(DEBUG) System.out.println("  M-Left: " + left_expression.getDisplay());
     if(binding == null)
     {
-      if(DEBUG)
-        System.out
-            .println("  Issue in M-Evaluate: Methodbinding returned null!");
+      if(DEBUG) System.out.println("  Issue in M-Evaluate: Methodbinding returned null!");
       // TODO throw a proper exception.
       return null;
     }
@@ -159,6 +162,8 @@ public class MethodExpression implements Expression
 
     if(DEBUG) System.out.println(expr.getClass().toGenericString());
 
+    container.displayHierarchy(2);
+    
     // Evaluating the expression using the method container.
     return expr.evaluate(container);
   }
