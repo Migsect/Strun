@@ -162,16 +162,12 @@ public class DynamicFrunction implements Frunction
   @Override public MethodBinding getMethod(String[] types, Frunction[] inputs)
   {
     if(DEBUG)
-      System.out.println("  Fetching method with types:"
-          + ParseUtil.concatStringArray(types));
+      System.out.println("  Fetching method with types:" + ParseUtil.concatStringArray(types));
     if(types.length != inputs.length)
     {
+      if(DEBUG) System.out.println("  Issue in getMethod: types and input legnths missmatch");
       if(DEBUG)
-        System.out
-            .println("  Issue in getMethod: types and input legnths missmatch");
-      if(DEBUG)
-        System.out.println("    with ypes:"
-            + ParseUtil.concatStringArray(types));
+        System.out.println("    with ypes:" + ParseUtil.concatStringArray(types));
       // TODO proper exception
       return null;
     }
