@@ -4,81 +4,62 @@ import java.util.List;
 
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
-import net.samongi.frunction.expression.exceptions.TokenException;
-import net.samongi.frunction.frunction.exceptions.FrunctionNotEvaluatedException;
-import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
+import net.samongi.frunction.exceptions.parsing.ExpressionException;
+import net.samongi.frunction.exceptions.parsing.ParsingException;
+import net.samongi.frunction.exceptions.parsing.TokenException;
+import net.samongi.frunction.exceptions.runtime.RunTimeException;
 import net.samongi.frunction.parse.ParseUtil;
 
 public interface Container
 {
-  /**
-   * Gets the method binding for the corresponding types
+  /** Gets the method binding for the corresponding types
    * 
-   * @param types
-   *          THe types to get a method for
-   * @return A MethodBinding, otherwise null
-   */
-  public MethodBinding getMethod(String[] types, Frunction[] inputs);
+   * @param types THe types to get a method for
+   * @return A MethodBinding, otherwise null 
+   * @throws RunTimeException 
+   * @throws TokenException 
+   * @throws ExpressionException */
+  public MethodBinding getMethod(String[] types, Frunction[] inputs) throws ParsingException, RunTimeException;
 
-  /**
-   * Adds the binding to this container
+  /** Adds the binding to this container
    * 
-   * @param types
-   *          The types of arguments the binding takes.
-   * @param binding
-   *          The binding to add
-   */
-  public void addMethod(MethodBinding binding)
-      throws FrunctionNotEvaluatedException;
+   * @param types The types of arguments the binding takes.
+   * @param binding The binding to add */
+  public void addMethod(MethodBinding binding) throws RunTimeException;
 
-  /**
-   * Returns a list of lists of methodbindings.
+  /** Returns a list of lists of methodbindings.
    * 
-   * @return A list of all the methods in the frunction
-   */
+   * @return A list of all the methods in the frunction */
   public List<MethodBinding> getMethods();
 
-  /**
-   * Gets the symbol binding for the corresponding symbol
+  /** Gets the symbol binding for the corresponding symbol
    * 
-   * @param symbol
-   *          The symbol to retrieve
-   * @return A SymbolBinding, otherwise null
-   */
-  public SymbolBinding getSymbol(String symbol) throws SymbolNotFoundException;
+   * @param symbol The symbol to retrieve
+   * @return A SymbolBinding, otherwise null 
+   * @throws ExpressionException 
+   * @throws TokenException */
+  public SymbolBinding getSymbol(String symbol) throws ParsingException, RunTimeException;
 
-  /**
-   * Adds the binding to this container
+  /** Adds the binding to this container
    * 
-   * @param symbol
-   *          The symbol's string to add
-   * @param binding
-   *          The binding to add
-   */
-  public void addSymbol(SymbolBinding binding)
-      throws FrunctionNotEvaluatedException;
+   * @param symbol The symbol's string to add
+   * @param binding The binding to add */
+  public void addSymbol(SymbolBinding binding) throws RunTimeException;
 
-  /**
-   * Returns all the symbols stored in the container This returns all of the
-   * symbols sorted.
+  /** Returns all the symbols stored in the container This returns all of the symbols sorted.
    * 
-   * @return All the symbols.
-   */
+   * @return All the symbols. */
   public List<SymbolBinding> getSymbols();
 
-  /**
-   * Returns the environment that the container is contained within. This may be
-   * null if the container is a top level container
+  /** Returns the environment that the container is contained within. This may be null if the container is a top level
+   * container
    * 
-   * @return The container
-   */
+   * @return The container */
   public Container getEnvironment();
 
-  /**
-   * Used for debugging to display the frunction hierarchy
+  /** Used for debugging to display the frunction hierarchy
    * 
-   * @param spacing
-   */
+   * @param spacing */
   public default void displayHierarchy(int spacing)
   {
     String space = ParseUtil.spacing(spacing);
@@ -87,8 +68,7 @@ public interface Container
     {
       System.out.println(space + b.toDisplay());
     }
-    if(met_bindings.size() == 0)
-      System.out.println(space + "No Method Bindings");
+    if(met_bindings.size() == 0) System.out.println(space + "No Method Bindings");
 
     List<SymbolBinding> sym_bindings = this.getSymbols();
     for(SymbolBinding b : sym_bindings)
@@ -98,9 +78,16 @@ public interface Container
       {
         f = b.get();
       }
-      catch(TokenException e)
+      catch(RunTimeException e)
       {
-        System.out.println(space + b.getKey() + " : TokenException");
+        System.out.println(space + b.getKey() + " : RunTimeException");
+        e.printStackTrace();
+        continue;
+      }
+      catch(ParsingException e)
+      {
+        System.out.println(space + b.getKey() + " : ParsingException");
+        e.printStackTrace();
         continue;
       }
       if(f == null)
@@ -108,11 +95,9 @@ public interface Container
         System.out.println(space + b.getKey() + " : null frunction");
         continue;
       }
-      System.out.println(space + b.getKey() + " : '" + f.getType() + "' <"
-          + f.getSource() + ">");
+      System.out.println(space + b.getKey() + " : '" + f.getType() + "' <" + f.getSource() + ">");
       f.displayHierarchy(spacing + 2);
     }
-    if(sym_bindings.size() == 0)
-      System.out.println(space + "No Symbol Bindings");
+    if(sym_bindings.size() == 0) System.out.println(space + "No Symbol Bindings");
   }
 }

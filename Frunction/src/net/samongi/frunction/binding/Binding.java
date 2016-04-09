@@ -1,29 +1,26 @@
 package net.samongi.frunction.binding;
 
-import net.samongi.frunction.expression.exceptions.TokenException;
+import net.samongi.frunction.exceptions.parsing.ExpressionException;
+import net.samongi.frunction.exceptions.parsing.ParsingException;
 import net.samongi.frunction.frunction.Container;
 
 public interface Binding
 {
   public static final String BINDING_SEPERATOR = ";";
 
-  /**
-   * Returns the source of the binding
+  /** Returns the source of the binding
    * 
-   * @return
-   */
+   * @return */
   public String getSource();
 
-  /**
-   * Returns the container of the binding
+  /** Returns the container of the binding
    * 
-   * @return
-   */
+   * @return */
   public Container getContainer();
 
-  /**
-   * Will force an evaluation of the symbol's expressions
+  /** Will force an evaluation of the symbol's expressions
    * 
-   */
-  public void evaluate() throws TokenException;
+   * @throws ExpressionException 
+   * @throws ParsingException */
+  public void evaluate() throws ParsingException;
 }

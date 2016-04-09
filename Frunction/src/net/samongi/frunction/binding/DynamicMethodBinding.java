@@ -1,18 +1,16 @@
 package net.samongi.frunction.binding;
 
-import net.samongi.frunction.expression.exceptions.TokenException;
+import net.samongi.frunction.exceptions.parsing.ExpressionException;
+import net.samongi.frunction.exceptions.parsing.TokenException;
 import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
 import net.samongi.frunction.parse.ParseUtil;
 
-/**
- * Method bindings bind a set of inputs to an expression.
+/** Method bindings bind a set of inputs to an expression.
  * 
- * @author Alex
- *
- */
+ * @author Alex */
 public class DynamicMethodBinding implements MethodBinding
 {
   public static final boolean DEBUG = false;
@@ -32,61 +30,46 @@ public class DynamicMethodBinding implements MethodBinding
   private Expression condition = null;
   private Expression expression = null;
 
-  /**
-   * Parse a section of text and returns a method binding
+  /** Parse a section of text and returns a method binding
    * 
-   * @param text_section
-   *          The section of text to parse
-   * @param environment
-   *          The environment the binding will be defined in
-   * @return A dynamic symbol binding
-   */
+   * @param text_section The section of text to parse
+   * @param environment The environment the binding will be defined in
+   * @return A dynamic symbol binding */
   public static DynamicMethodBinding parseBinding(String section, Container environment)
   {
-  	if(section == null) throw new NullPointerException("'section' was null");
+    if(section == null) throw new NullPointerException("'section' was null");
     if(environment == null) throw new NullPointerException("'environment' was null");
-    
+
     // System.out.println("Parsing for method: " + section);
     int i = 0; // indexer for the whole section
 
     // Getting the section prior to the binding.
-    String prior = ParseUtil.getSection(section, i, BINDING,
-        Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers(),
-        Token.getScopeeToggleIdentifiers());
+    String prior = ParseUtil.getSection(section, i, BINDING, Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers(), Token.getScopeeToggleIdentifiers());
     i += prior.length(); // Adding to the index length to get the expression
     prior = prior.trim(); // Trimming the prior
 
     // Removing the binding operator from prior
-    if(prior.endsWith(BINDING))
-      prior = prior.substring(0, prior.length() - BINDING.length()).trim();
+    if(prior.endsWith(BINDING)) prior = prior.substring(0, prior.length() - BINDING.length()).trim();
 
     // Getting the expression section
     if(section.length() <= i) return null; // This means there is no expression
     String expression = section.substring(i).trim(); // getting the remainder
-    if(DEBUG)
-      System.out.println("  Parsing Method - Expr Source: '" + expression + "'");
+    if(DEBUG) System.out.println("  Parsing Method - Expr Source: '" + expression + "'");
 
     // indexer for the prior section
     int j = 0;
 
     // The input section represents the input symbol defintion
-    String input_section = ParseUtil.getSection(prior, j, COND_OPERATOR,
-        Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers(),
-        Token.getScopeeToggleIdentifiers());
+    String input_section = ParseUtil.getSection(prior, j, COND_OPERATOR, Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers(), Token.getScopeeToggleIdentifiers());
     j += input_section.length(); // incrementing the prior index
     input_section = input_section.trim(); // trimming the input section;
 
     // Removing the conditional operator
-    if(input_section.endsWith(COND_OPERATOR))
-      input_section = input_section.substring(0,
-          input_section.length() - COND_OPERATOR.length()).trim();
+    if(input_section.endsWith(COND_OPERATOR)) input_section = input_section.substring(0, input_section.length() - COND_OPERATOR.length()).trim();
 
     // boolean for testing if the input was enclosed
-    boolean input_enclosed = input_section.startsWith("(")
-        && input_section.endsWith(")");
-    if(input_enclosed)
-      input_section = input_section.substring(1, input_section.length() - 1)
-          .trim();
+    boolean input_enclosed = input_section.startsWith("(") && input_section.endsWith(")");
+    if(input_enclosed) input_section = input_section.substring(1, input_section.length() - 1).trim();
 
     // Creating the condition expression
     // This is the remainder of the input section
@@ -94,17 +77,13 @@ public class DynamicMethodBinding implements MethodBinding
     if(prior.length() > j) // checking to see if there is a conditional clause.
     {
       condition = prior.substring(j); // getting the condition
-      boolean cond_enclosed = condition.startsWith("(")
-          && condition.endsWith(")");
-      if(cond_enclosed)
-        condition = condition.substring(1, condition.length() - 1).trim();
+      boolean cond_enclosed = condition.startsWith("(") && condition.endsWith(")");
+      if(cond_enclosed) condition = condition.substring(1, condition.length() - 1).trim();
       // Now we should have the condition expression;
     }
     if(condition == null) condition = ""; // making sure it aint null;
 
-    if(input_section.length() == 0)
-      return new DynamicMethodBinding(environment, new String[0],
-          new String[0], condition, expression);
+    if(input_section.length() == 0) return new DynamicMethodBinding(environment, new String[0], new String[0], condition, expression);
 
     // Splitting the input
     String[] split_input = input_section.split(INPUT_SPLITTER);
@@ -124,12 +103,10 @@ public class DynamicMethodBinding implements MethodBinding
     }
 
     // Time to return
-    return new DynamicMethodBinding(environment, input_symbols, input_types,
-        condition, expression);
+    return new DynamicMethodBinding(environment, input_symbols, input_types, condition, expression);
   }
 
-  public DynamicMethodBinding(Container container, String[] input_symbols,
-      String[] input_types, Expression condition, Expression expression)
+  public DynamicMethodBinding(Container container, String[] input_symbols, String[] input_types, Expression condition, Expression expression)
   {
     this.container = container;
     this.input_symbols = input_symbols;
@@ -141,8 +118,7 @@ public class DynamicMethodBinding implements MethodBinding
     this.expression = expression;
   }
 
-  public DynamicMethodBinding(Container container, String[] input_symbols,
-      String[] input_types, String cond_source, String source)
+  public DynamicMethodBinding(Container container, String[] input_symbols, String[] input_types, String cond_source, String source)
   {
     this.container = container;
     this.input_symbols = input_symbols;
@@ -157,42 +133,39 @@ public class DynamicMethodBinding implements MethodBinding
     return this.input_symbols;
   }
 
-  /**
-   * Generates the condition for the method binding
+  /** Generates the condition for the method binding
    * 
    * @throws TokenException
-   */
-  public void generateCondition() throws TokenException
+   * @throws ExpressionException */
+  public void generateCondition() throws TokenException, ExpressionException
   {
     if(this.expression != null) return;
     this.condition = Expression.parseString(condition_source, container);
     if(this.condition == null) this.condition = BooleanFrunction.getTautology();
   }
 
-  @Override public Expression getConditional() throws TokenException
+  @Override public Expression getConditional() throws TokenException, ExpressionException
   {
     if(this.condition == null) this.generateCondition();
     return this.condition;
   }
 
-  /**
-   * Will generate the expression for method.
+  /** Will generate the expression for method.
    * 
    * @throws TokenException
-   */
-  public void generateExpression() throws TokenException
+   * @throws ExpressionException */
+  public void generateExpression() throws TokenException, ExpressionException
   {
     if(this.expression != null) return;
     this.expression = Expression.parseString(source, container);
     if(this.expression == null)
     {
-      if(DEBUG)
-        System.out.println("  MethodBinding: Generated a null expression!");
+      if(DEBUG) System.out.println("  MethodBinding: Generated a null expression!");
     }
 
   }
 
-  @Override public Expression getExpression() throws TokenException
+  @Override public Expression getExpression() throws TokenException, ExpressionException
   {
     if(this.expression == null) this.generateExpression();
     return this.expression;
@@ -224,7 +197,7 @@ public class DynamicMethodBinding implements MethodBinding
     {
       return inputs + types + "->'" + this.getExpression().getDisplay() + "'";
     }
-    catch(TokenException e)
+    catch(TokenException | ExpressionException e)
     {
       e.printStackTrace();
     }
@@ -236,7 +209,7 @@ public class DynamicMethodBinding implements MethodBinding
     return this.input_types;
   }
 
-  @Override public void evaluate() throws TokenException
+  @Override public void evaluate() throws TokenException, ExpressionException
   {
     this.generateCondition();
     this.generateExpression();

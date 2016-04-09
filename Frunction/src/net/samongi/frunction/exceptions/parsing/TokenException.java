@@ -1,6 +1,6 @@
-package net.samongi.frunction.expression.exceptions;
+package net.samongi.frunction.exceptions.parsing;
 
-public class TokenException extends Exception
+public class TokenException extends ParsingException
 {
   private static final long serialVersionUID = 7302187024945500408L;
 

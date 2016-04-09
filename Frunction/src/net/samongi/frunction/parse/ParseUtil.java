@@ -3,30 +3,20 @@ package net.samongi.frunction.parse;
 public class ParseUtil
 {
 
-  /**
-   * Will iterate through the text and return a string which is a section of the
-   * original string up until the pattern is found. This takes into account
-   * scoping up and down (given they exist)
+  /** Will iterate through the text and return a string which is a section of the original string up until the pattern is
+   * found. This takes into account scoping up and down (given they exist)
    * 
    * This will include the seperator in the section.
    * 
-   * If there is a scope (determined by scoping up and down) then seperators
-   * will not be discovered in the scope.
+   * If there is a scope (determined by scoping up and down) then seperators will not be discovered in the scope.
    * 
-   * @param text
-   *          The text to get a section of
-   * @param start
-   *          The index at which to start the sectioning
-   * @param seperator
-   *          The seperator to look for
-   * @param scope_up
-   *          Will scope up if this is matched.
-   * @param scope_down
-   *          Will scope down if this is matched
-   * @return The section found
-   */
-  public static String getSection(String text, int start, String seperator,
-      String[] scope_up, String[] scope_down, String[] scope_toggle)
+   * @param text The text to get a section of
+   * @param start The index at which to start the sectioning
+   * @param seperator The seperator to look for
+   * @param scope_up Will scope up if this is matched.
+   * @param scope_down Will scope down if this is matched
+   * @return The section found */
+  public static String getSection(String text, int start, String seperator, String[] scope_up, String[] scope_down, String[] scope_toggle)
   {
     // Checking to see if we have any scope up methods
     boolean has_scope_up = scope_up != null && scope_up.length > 0;
@@ -42,8 +32,7 @@ public class ParseUtil
         if(toggle_scope) toggle_scope = false;
         else toggle_scope = true;
       }
-      if(!toggle_scope && has_scope_up && ParseUtil.matchesAt(text, i, scope_up)
-          && !toggle_scope) scope++;
+      if(!toggle_scope && has_scope_up && ParseUtil.matchesAt(text, i, scope_up) && !toggle_scope) scope++;
 
       if(ParseUtil.matchesAt(text, i, seperator) && scope == 0 && !toggle_scope)
       {
@@ -51,8 +40,7 @@ public class ParseUtil
         return text.substring(start, end);
       }
       // Scoping down after
-      if(!toggle_scope && has_scope_down && ParseUtil.matchesAt(text, i, scope_down)
-          && !toggle_scope) scope--;
+      if(!toggle_scope && has_scope_down && ParseUtil.matchesAt(text, i, scope_down) && !toggle_scope) scope--;
     }
 
     // TODO scoping exceptions?
@@ -61,18 +49,15 @@ public class ParseUtil
     return text.substring(start);
   }
 
-  /**
-   * Gets section for a singular string.
+  /** Gets section for a singular string.
    * 
    * @param text
    * @param start
    * @param seperator
    * @param scope_up
    * @param scope_down
-   * @return
-   */
-  public static String getSection(String text, int start, String seperator,
-      String scope_up, String scope_down, String scope_toggle)
+   * @return */
+  public static String getSection(String text, int start, String seperator, String scope_up, String scope_down, String scope_toggle)
   {
     String[] scope_up_array = null;
     if(scope_up.length() == 0) scope_up_array = new String[0];
@@ -86,40 +71,30 @@ public class ParseUtil
     if(scope_toggle.length() == 0) scope_toggle_array = new String[0];
     else scope_toggle_array = new String[] { scope_toggle };
 
-    return ParseUtil.getSection(text, start, seperator, scope_up_array,
-        scope_down_array, scope_toggle_array);
+    return ParseUtil.getSection(text, start, seperator, scope_up_array, scope_down_array, scope_toggle_array);
   }
 
-  /**
-   * Reduced and simplified form of getSection
+  /** Reduced and simplified form of getSection
    * 
    * @param text
    * @param start
    * @param seperator
-   * @return
-   */
+   * @return */
   public static String getSection(String text, int start, String seperator)
   {
-    return ParseUtil.getSection(text, start, seperator, new String[0],
-        new String[0], new String[0]);
+    return ParseUtil.getSection(text, start, seperator, new String[0], new String[0], new String[0]);
   }
 
-  /**
-   * Tests to see if the index of the string matches the pattern This goes
-   * character by character for matching.
+  /** Tests to see if the index of the string matches the pattern This goes character by character for matching.
    * 
-   * @param text
-   *          The text to match at
-   * @param start
-   *          The index to start the match at
-   * @param pattern
-   *          The pattern to test the match against
-   * @return
-   */
+   * @param text The text to match at
+   * @param start The index to start the match at
+   * @param pattern The pattern to test the match against
+   * @return */
   public static boolean matchesAt(String text, int start, String pattern)
   {
     // Iterating through the pattern.
-  	if(start < 0) return false;
+    if(start < 0) return false;
     if(pattern.length() == 0) return true;
     if(text.length() - start < pattern.length()) return false; // remaining is
                                                                // less than the

@@ -1,8 +1,6 @@
 package net.samongi.frunction.expression.tokens;
 
-/**
- * Represents a symbol in an expression.
- */
+/** Represents a symbol in an expression. */
 public class SymbolToken implements Token
 {
   private final String source;

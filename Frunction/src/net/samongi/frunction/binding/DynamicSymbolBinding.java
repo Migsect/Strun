@@ -1,6 +1,9 @@
 package net.samongi.frunction.binding;
 
-import net.samongi.frunction.expression.exceptions.TokenException;
+import net.samongi.frunction.exceptions.parsing.ExpressionException;
+import net.samongi.frunction.exceptions.parsing.ParsingException;
+import net.samongi.frunction.exceptions.parsing.TokenException;
+import net.samongi.frunction.exceptions.runtime.RunTimeException;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
@@ -13,20 +16,19 @@ public class DynamicSymbolBinding implements SymbolBinding
   private static final String BINDING = ":";
   private static final String DELAY_EVAL = "!";
 
-  /**
-   * Parse a section of text and returns a symbol binding
+  /** Parse a section of text and returns a symbol binding
    * 
-   * @param text_section
-   *          The section of text to parse
-   * @param environment
-   *          The environment of which the binding will be made
+   * @param text_section The section of text to parse
+   * @param environment The environment of which the binding will be made
    * @return A dynamic symbol bidning
-   */
-  public static DynamicSymbolBinding parseBinding(String text_section, Container environment)
+   * @throws RunTimeException 
+   * @throws ExpressionException
+   * @throws TokenException */
+  public static DynamicSymbolBinding parseBinding(String text_section, Container environment) throws ParsingException, RunTimeException
   {
-  	if(text_section == null) throw new NullPointerException("'text_section' was null");
-  	if(environment == null) throw new NullPointerException("'environment' was null");
-  	
+    if(text_section == null) throw new NullPointerException("'text_section' was null");
+    if(environment == null) throw new NullPointerException("'environment' was null");
+
     // Splitting the section based on the first bound binding operator
     String[] split_section = text_section.split(BINDING, 2);
     // System.out.println("Split_section length: " + split_section.length);
@@ -54,22 +56,12 @@ public class DynamicSymbolBinding implements SymbolBinding
     DynamicSymbolBinding binding = new DynamicSymbolBinding(key, source, environment);
     if(do_eval)
     {
-      try
-      {
-        binding.collapse();
-      }
-      catch(TokenException e)
-      {
-        e.printError();
-      }
+      binding.collapse();
 
       try
       {
-        if(binding.getExpression() == null) System.out.println("  "
-            + binding.getKey() + " >>> null");
-        else if(DEBUG)
-          System.out.println("  " + binding.getKey() + " >>> "
-              + binding.getExpression().getDisplay());
+        if(binding.getExpression() == null) System.out.println("  " + binding.getKey() + " >>> null");
+        else if(DEBUG) System.out.println("  " + binding.getKey() + " >>> " + binding.getExpression().getDisplay());
       }
       catch(TokenException e)
       {
@@ -96,7 +88,7 @@ public class DynamicSymbolBinding implements SymbolBinding
     if(key == null) throw new NullPointerException("'key' was null");
     if(environment == null) throw new NullPointerException("environment was null");
     if(source == null) throw new NullPointerException("'source' was null");
-  	
+
     this.key = key;
     this.source = source;
     this.environment = environment;
@@ -104,15 +96,14 @@ public class DynamicSymbolBinding implements SymbolBinding
 
   public DynamicSymbolBinding(String key, Frunction evaluated, Container environment)
   {
-  	if(key == null) throw new NullPointerException("key was null");
-  	if(evaluated == null) throw new NullPointerException("evaluated was null");
+    if(key == null) throw new NullPointerException("key was null");
+    if(evaluated == null) throw new NullPointerException("evaluated was null");
     if(environment == null) throw new NullPointerException("environment was null");
-  	
+
     this.key = key;
     this.environment = environment;
     this.source = "";
-    
-    
+
   }
 
   @Override public String getKey()
@@ -130,32 +121,26 @@ public class DynamicSymbolBinding implements SymbolBinding
     return this.is_private;
   }
 
-  /**
-   * Returns the expression this binding relates to This will force the binding
-   * to update it's expression given it hasn't created one yet.
+  /** Returns the expression this binding relates to This will force the binding to update it's expression given it
+   * hasn't created one yet.
    * 
    * @return An expression object
    * @throws TokenException
-   */
-  @Override public Expression getExpression() throws TokenException
+   * @throws ExpressionException */
+  @Override public Expression getExpression() throws ParsingException
   {
     if(this.expression == null) this.generateExpression();
-    if(this.expression == null)
-      System.out
-          .println("  SymbolBinding : Expression is still null after generation.");
+    if(this.expression == null) throw new IllegalStateException();
     return this.expression;
   }
 
-  /**
-   * Forces the binding to generate it's related expression. If it's already
-   * created, then this will not generate it.
+  /** Forces the binding to generate it's related expression. If it's already created, then this will not generate it.
    * 
    * @throws TokenException
-   */
-  public void generateExpression() throws TokenException
+   * @throws ExpressionException */
+  public void generateExpression() throws ParsingException
   {
-    if(this.expression == null)
-    this.expression = Expression.parseString(this.source, this.environment);
+    if(this.expression == null) this.expression = Expression.parseString(this.source, this.environment);
   }
 
   @Override public Container getContainer()
@@ -169,20 +154,19 @@ public class DynamicSymbolBinding implements SymbolBinding
     return display;
   }
 
-  @Override public void evaluate() throws TokenException
+  @Override public void evaluate() throws ParsingException
   {
     if(this.expression == null) this.generateExpression();
   }
 
-  @Override public void collapse() throws TokenException
+  @Override public void collapse() throws ParsingException, RunTimeException
   {
     this.evaluate();
     if(this.expression == null) return;
-    if(this.collapsed == null)
-      this.collapsed = this.expression.evaluate(this.environment);
+    if(this.collapsed == null) this.collapsed = this.expression.evaluate(this.environment);
   }
 
-  @Override public Frunction get() throws TokenException
+  @Override public Frunction get() throws ParsingException, RunTimeException
   {
     if(this.collapsed != null) return this.collapsed;
     this.collapse();

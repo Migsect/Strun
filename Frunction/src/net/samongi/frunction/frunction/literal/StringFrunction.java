@@ -1,11 +1,13 @@
 package net.samongi.frunction.frunction.literal;
 
 import net.samongi.frunction.binding.SymbolBinding;
-import net.samongi.frunction.expression.exceptions.TokenException;
+import net.samongi.frunction.exceptions.parsing.ExpressionException;
+import net.samongi.frunction.exceptions.parsing.ParsingException;
+import net.samongi.frunction.exceptions.runtime.FrunctionNotEvaluatedException;
+import net.samongi.frunction.exceptions.runtime.RunTimeException;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
-import net.samongi.frunction.frunction.exceptions.FrunctionNotEvaluatedException;
 import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
 import net.samongi.frunction.frunction.literal.method.NativeExpression;
 
@@ -15,10 +17,9 @@ public class StringFrunction extends NativeFrunction
 
   private static final String TYPE = "string";
 
-  public static Frunction parseLiteral(String symbol, Container environment)
+  public static Frunction parseLiteral(String symbol, Container environment) throws ParsingException, RunTimeException
   {
-    if(!symbol.startsWith(STRING_CAPSULE) || !symbol.endsWith(STRING_CAPSULE))
-      return null;
+    if(!symbol.startsWith(STRING_CAPSULE) || !symbol.endsWith(STRING_CAPSULE)) return null;
     String str = symbol.substring(1, symbol.length() - 1); // Getting the inner
                                                            // string
     return new StringFrunction(environment, str);
@@ -31,7 +32,7 @@ public class StringFrunction extends NativeFrunction
     {
       return LiteralDictionary.getInstance().getSymbol(sym).get();
     }
-    catch(TokenException e)
+    catch(ParsingException | RunTimeException e)
     {
       e.printStackTrace();
     }
@@ -40,7 +41,7 @@ public class StringFrunction extends NativeFrunction
 
   private final String state;
 
-  public StringFrunction(Container environment, String state)
+  public StringFrunction(Container environment, String state) throws ParsingException, RunTimeException
   {
     super(environment);
 
@@ -58,7 +59,7 @@ public class StringFrunction extends NativeFrunction
     }
   }
 
-  private void addMethods() throws FrunctionNotEvaluatedException
+  private void addMethods() throws ParsingException, RunTimeException
   {
     this.addSymbol(this.methodEquals());
     this.addSymbol(this.methodString());
@@ -66,12 +67,12 @@ public class StringFrunction extends NativeFrunction
     this.addSymbol(this.methodPrintln());
   }
 
-  /**
-   * Will generate a method binding for determining if another method is equal.
+  /** Will generate a method binding for determining if another method is equal.
    * 
-   * @return
-   */
-  private SymbolBinding methodEquals()
+   * @return 
+   * @throws RunTimeException 
+   * @throws ParsingException */
+  private SymbolBinding methodEquals() throws ParsingException, RunTimeException
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -80,7 +81,7 @@ public class StringFrunction extends NativeFrunction
 
     NativeExpression expression = new NativeExpression()
     {
-      @Override public Frunction evaluate()
+      @Override public Frunction evaluate() throws ExpressionException
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
@@ -89,32 +90,29 @@ public class StringFrunction extends NativeFrunction
         // defined
         Frunction right = this.getInput("other");
 
-        if(!left.getType().equals(StringFrunction.TYPE)
-            || !(left instanceof StringFrunction)) { return null; // We should
-                                                                  // technically
-                                                                  // never get
-                                                                  // to this
-                                                                  // stage.
+        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) { return null; // We should
+                                                                                                              // technically
+                                                                                                              // never get
+                                                                                                              // to this
+                                                                                                              // stage.
         }
-        if(!right.getType().equals(StringFrunction.TYPE)
-            || !(right instanceof StringFrunction)) { return null; // We should
-                                                                   // technically
-                                                                   // never get
-                                                                   // to this
-                                                                   // stage.
+        if(!right.getType().equals(StringFrunction.TYPE) || !(right instanceof StringFrunction)) { return null; // We should
+                                                                                                                // technically
+                                                                                                                // never get
+                                                                                                                // to this
+                                                                                                                // stage.
         }
         StringFrunction s_left = (StringFrunction) left;
         StringFrunction s_right = (StringFrunction) right;
         // Performing the native operation.
-        return BooleanFrunction.getCached(s_left.getNative().equals(
-            s_right.getNative()));
+        return BooleanFrunction.getCached(s_left.getNative().equals(s_right.getNative()));
       }
 
     };
     return expression.getAsBinding("eq", this, input, types, condition);
   }
 
-  private SymbolBinding methodString()
+  private SymbolBinding methodString() throws ParsingException, RunTimeException
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -128,12 +126,11 @@ public class StringFrunction extends NativeFrunction
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
 
-        if(!left.getType().equals(StringFrunction.TYPE)
-            || !(left instanceof StringFrunction)) { return null; // We should
-                                                                  // technically
-                                                                  // never get
-                                                                  // to this
-                                                                  // stage.
+        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) { return null; // We should
+                                                                                                              // technically
+                                                                                                              // never get
+                                                                                                              // to this
+                                                                                                              // stage.
         }
         return left;
       }
@@ -142,7 +139,7 @@ public class StringFrunction extends NativeFrunction
     return expression.getAsBinding("str", this, input, types, condition);
   }
 
-  private SymbolBinding methodPrint()
+  private SymbolBinding methodPrint() throws ParsingException, RunTimeException
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -156,12 +153,11 @@ public class StringFrunction extends NativeFrunction
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
 
-        if(!left.getType().equals(StringFrunction.TYPE)
-            || !(left instanceof StringFrunction)) { return null; // We should
-                                                                  // technically
-                                                                  // never get
-                                                                  // to this
-                                                                  // stage.
+        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) { return null; // We should
+                                                                                                              // technically
+                                                                                                              // never get
+                                                                                                              // to this
+                                                                                                              // stage.
         }
 
         // Converting the type
@@ -177,7 +173,7 @@ public class StringFrunction extends NativeFrunction
     return expression.getAsBinding("print", this, input, types, condition);
   }
 
-  private SymbolBinding methodPrintln()
+  private SymbolBinding methodPrintln() throws ParsingException, RunTimeException
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -191,12 +187,11 @@ public class StringFrunction extends NativeFrunction
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
 
-        if(!left.getType().equals(StringFrunction.TYPE)
-            || !(left instanceof StringFrunction)) { return null; // We should
-                                                                  // technically
-                                                                  // never get
-                                                                  // to this
-                                                                  // stage.
+        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) { return null; // We should
+                                                                                                              // technically
+                                                                                                              // never get
+                                                                                                              // to this
+                                                                                                              // stage.
         }
 
         // Converting the type

@@ -26,8 +26,7 @@ public class FileUtil
     return FileUtil.readFile(file_path, Charset.defaultCharset());
   }
 
-  public static String readFile(String file_path, Charset encoding)
-      throws IOException
+  public static String readFile(String file_path, Charset encoding) throws IOException
   {
     byte[] encoded = Files.readAllBytes(Paths.get(file_path));
     return new String(encoded, encoding);

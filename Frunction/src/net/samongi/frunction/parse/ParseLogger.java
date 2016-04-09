@@ -7,12 +7,9 @@ public class ParseLogger
 {
   private static ParseLogger instance = null;
 
-  /**
-   * Returns the instance of the parse logger This will construct a new parse
-   * logger if one doesn't already eist
+  /** Returns the instance of the parse logger This will construct a new parse logger if one doesn't already eist
    * 
-   * @return The parse logger.
-   */
+   * @return The parse logger. */
   public static ParseLogger instance()
   {
     if(ParseLogger.instance == null) instance = new ParseLogger();
@@ -21,15 +18,14 @@ public class ParseLogger
 
   private static String ALL_CHANNELS = "ALL";
 
-  /**
-   * Represents a state of logging
+  /** Represents a state of logging
    * 
-   * @author Alex
-   *
-   */
+   * @author Alex */
   public enum LogState
   {
-    DEBUG("DEBG"), WARNING("WARN"), INFO("INFO");
+    DEBUG("DEBG"),
+    WARNING("WARN"),
+    INFO("INFO");
 
     private final String tag;
 
@@ -73,16 +69,11 @@ public class ParseLogger
     return channel_str;
   }
 
-  /**
-   * Logs the message to the system out
+  /** Logs the message to the system out
    * 
-   * @param state
-   *          The state of the logging
-   * @param channels
-   *          The channels that the message will be logged to
-   * @param message
-   *          The message to log
-   */
+   * @param state The state of the logging
+   * @param channels The channels that the message will be logged to
+   * @param message The message to log */
   public void Log(LogState state, String[] channels, String message)
   {
     if(!this.log_state.contains(state)) return; // The log state has been

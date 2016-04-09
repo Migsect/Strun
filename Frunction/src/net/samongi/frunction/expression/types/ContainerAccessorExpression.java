@@ -1,11 +1,12 @@
 package net.samongi.frunction.expression.types;
 
 import net.samongi.frunction.binding.SymbolBinding;
-import net.samongi.frunction.expression.exceptions.TokenException;
+import net.samongi.frunction.exceptions.parsing.ParsingException;
+import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.exceptions.runtime.SymbolNotFoundException;
 import net.samongi.frunction.expression.tokens.SymbolToken;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
-import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
 
 public class ContainerAccessorExpression implements Expression
 {
@@ -15,21 +16,24 @@ public class ContainerAccessorExpression implements Expression
 
   public ContainerAccessorExpression(Container left, SymbolToken token)
   {
-  	if(left == null) throw new NullPointerException("'left' was null");
-  	if(token == null) throw new NullPointerException("'token' was null");
-  	
+    if(left == null) throw new NullPointerException("'left' was null");
+    if(token == null) throw new NullPointerException("'token' was null");
+
     this.left = left;
     this.token = token;
   }
 
-  @Override public Type getType(){return Expression.Type.CONTAINER_ACCESSOR;}
-  
+  @Override public Type getType()
+  {
+    return Expression.Type.CONTAINER_ACCESSOR;
+  }
+
   @Override public String getDisplay()
   {
     return "C<'" + token.getSource() + "': E>";
   }
 
-  @Override public Frunction evaluate(Container environment)
+  @Override public Frunction evaluate(Container environment) throws ParsingException, RunTimeException
   {
     if(environment == null) throw new NullPointerException("'environment' was null");
 
@@ -52,22 +56,14 @@ public class ContainerAccessorExpression implements Expression
 
     // We can now evaluate the expression.
     // This is using the environment of the frunction it is apart of.
-    Frunction accessed = null;
-    try
-    {
-      accessed = l_binding.get();
-    }
-    catch(TokenException e)
-    {
-      e.printStackTrace();
-    }
+    Frunction accessed = l_binding.get();
     if(DEBUG) System.out.println("  A-Evaluate accessed_source: " + accessed.getSource());
     if(accessed == null)
     {
-    	// TODO throw proper exception?
-    	System.out.println("Accessed Frunction turned out to be null");
+      // TODO throw proper exception?
+      System.out.println("Accessed Frunction turned out to be null");
     }
-    
+
     // Returning the accessed expression
     return accessed;
   }

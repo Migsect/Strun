@@ -2,6 +2,8 @@ package net.samongi.frunction;
 
 import java.io.File;
 
+import net.samongi.frunction.exceptions.parsing.ParsingException;
+import net.samongi.frunction.exceptions.runtime.RunTimeException;
 import net.samongi.frunction.file.FileUtil;
 import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.parse.Commenting;
@@ -36,7 +38,15 @@ public class Main
     text_body = ParseUtil.squeeze(text_body);
 
     DynamicFrunction main_frunction = new DynamicFrunction(null, text_body);
-    main_frunction.evaluate();
+    try
+    {
+      main_frunction.evaluate();
+    }
+    catch(ParsingException | RunTimeException e)
+    {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
 
     // System.out.println("Displaying Mains Hierarchy:");
     // main_frunction.displayHierarchy(2);

@@ -6,34 +6,29 @@ import java.util.List;
 import net.samongi.frunction.binding.DynamicSymbolBinding;
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
+import net.samongi.frunction.exceptions.parsing.ParsingException;
+import net.samongi.frunction.exceptions.runtime.RunTimeException;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
 import net.samongi.frunction.frunction.literal.NativeFrunction;
 import net.samongi.frunction.frunction.literal.StringFrunction;
 
-/**
- * Represents a container that stores and creates all instances of literals
- * Literals are native frunctions that are generally defined in their simplistic
- * literla form in the source.
+/** Represents a container that stores and creates all instances of literals Literals are native frunctions that are
+ * generally defined in their simplistic literla form in the source.
  * 
  * Some types are: - boolean - integer - real - string
  * 
- * This class shall be a singleton and furthermore shall be called for all
- * literal parsing.
- */
+ * This class shall be a singleton and furthermore shall be called for all literal parsing. */
 public class LiteralDictionary implements Container
 {
   public static final boolean DEBUG = false;
 
   private static LiteralDictionary instance = null;
 
-  /**
-   * Will create a new dictionary if one doesn't exist, otherwise it return the
-   * current singleton that does exists.
+  /** Will create a new dictionary if one doesn't exist, otherwise it return the current singleton that does exists.
    * 
-   * @return
-   */
+   * @return */
   public static LiteralDictionary getInstance()
   {
     if(instance == null) instance = new LiteralDictionary();
@@ -60,15 +55,19 @@ public class LiteralDictionary implements Container
   @Override public SymbolBinding getSymbol(String symbol)
   {
     // Returning it if it already exists
-    if(this.stored_literals.containsKey(symbol))
-      return this.stored_literals.get(symbol);
+    if(this.stored_literals.containsKey(symbol)) return this.stored_literals.get(symbol);
 
-    Frunction f = NativeFrunction.parseLiteral(symbol, this);
-    if(f == null) return null;
+    Frunction f = null;
+    try
+    {
+      f = NativeFrunction.parseLiteral(symbol, this);
+    }
+    catch(ParsingException | RunTimeException e)
+    {
+      e.printStackTrace();
+    }
 
-    if(DEBUG)
-      System.out.println("  Created literal binding for '" + symbol
-          + "' with type '" + f.getType() + "'");
+    if(DEBUG) System.out.println("  Created literal binding for '" + symbol + "' with type '" + f.getType() + "'");
 
     // Creating the binding and adding it to the map
     SymbolBinding b = new DynamicSymbolBinding(symbol, f, this);
@@ -91,20 +90,15 @@ public class LiteralDictionary implements Container
     return null;
   }
 
-  /**
-   * Will return true if the symbol can be depicted as a literal.
+  /** Will return true if the symbol can be depicted as a literal.
    * 
-   * @param symbol
-   *          The symbol to check for.
-   * @return True if the symbol represents a literal
-   */
+   * @param symbol The symbol to check for.
+   * @return True if the symbol represents a literal */
   public boolean isLiteral(String symbol)
   {
     symbol = symbol.trim();
-    if(symbol.startsWith(StringFrunction.STRING_CAPSULE)
-        && symbol.endsWith(StringFrunction.STRING_CAPSULE)) return true;
-    if(symbol.equals(BooleanFrunction.TRUE_LITERAL)
-        || symbol.equals(BooleanFrunction.FALSE_LITERAL)) return true;
+    if(symbol.startsWith(StringFrunction.STRING_CAPSULE) && symbol.endsWith(StringFrunction.STRING_CAPSULE)) return true;
+    if(symbol.equals(BooleanFrunction.TRUE_LITERAL) || symbol.equals(BooleanFrunction.FALSE_LITERAL)) return true;
 
     // testing for double
     Double double_test = null;

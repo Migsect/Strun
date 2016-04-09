@@ -7,16 +7,13 @@ import java.util.Map;
 import net.samongi.frunction.binding.DynamicSymbolBinding;
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
-import net.samongi.frunction.frunction.exceptions.FrunctionNotEvaluatedException;
-import net.samongi.frunction.frunction.exceptions.SymbolNotFoundException;
+import net.samongi.frunction.exceptions.parsing.ParsingException;
+import net.samongi.frunction.exceptions.runtime.RunTimeException;
 import net.samongi.frunction.parse.ParseUtil;
 
-/**
- * Used as an intermeditary for methods to contain the extra symbols.
+/** Used as an intermeditary for methods to contain the extra symbols.
  * 
- * @author Alex
- *
- */
+ * @author Alex */
 public class MethodContainer implements Container
 {
   private Map<String, SymbolBinding> override_symbols = new HashMap<>();;
@@ -24,42 +21,37 @@ public class MethodContainer implements Container
 
   public MethodContainer(Container environment)
   {
-  	if(environment == null) throw new NullPointerException("'environment was null'");
-  	
+    if(environment == null) throw new NullPointerException("'environment was null'");
+
     this.environment = environment;
   }
 
-  /**
-   * Adds a symbol to this method container This will override symbols in the
-   * environment
+  /** Adds a symbol to this method container This will override symbols in the environment
    * 
    * @param symbol
-   * @param frunction
-   */
+   * @param frunction */
   public void addSymbol(String symbol, Frunction frunction)
   {
-  	if(frunction == null) throw new NullPointerException("'frunction' was null");
-  	
+    if(frunction == null) throw new NullPointerException("'frunction' was null");
+
     SymbolBinding s_binding = new DynamicSymbolBinding(symbol, frunction, this.environment);
     this.override_symbols.put(symbol, s_binding);
   }
 
   // Calling the inner environment for get method
-  @Override public MethodBinding getMethod(String[] types, Frunction[] inputs)
+  @Override public MethodBinding getMethod(String[] types, Frunction[] inputs) throws ParsingException, RunTimeException
   {
     return this.environment.getMethod(types, inputs);
   }
 
   // Calling the inner environment for the get symbol given that this doesn't
   // wish to override it.
-  @Override public SymbolBinding getSymbol(String symbol)
-      throws SymbolNotFoundException
+  @Override public SymbolBinding getSymbol(String symbol) throws ParsingException, RunTimeException
   {
     symbol = symbol.trim();
     System.out.println("MethodContainer, grabbing: '" + symbol + "'");
     System.out.println("  Does Contain '" + override_symbols.containsKey(symbol) + "'");
-    if(override_symbols.containsKey(symbol))
-      return override_symbols.get(symbol);
+    if(override_symbols.containsKey(symbol)) return override_symbols.get(symbol);
     return this.environment.getSymbol(symbol);
   }
 
@@ -71,11 +63,9 @@ public class MethodContainer implements Container
     return this.environment.getEnvironment();
   }
 
-  /**
-   * Will return the environment that this wraps.
+  /** Will return the environment that this wraps.
    * 
-   * @return The environment that the method container wraps.
-   */
+   * @return The environment that the method container wraps. */
   public Container getWrappedEnvironment()
   {
     return this.environment;
@@ -88,7 +78,7 @@ public class MethodContainer implements Container
       // Calling the inner's method for this.
       this.environment.addMethod(binding);
     }
-    catch(FrunctionNotEvaluatedException e)
+    catch(RunTimeException e)
     {
       e.printStackTrace();
     }
@@ -108,15 +98,15 @@ public class MethodContainer implements Container
   {
     return this.environment.getSymbols();
   }
-  
+
   @Override public void displayHierarchy(int spacing)
   {
-  	System.out.println(ParseUtil.spacing(spacing) +"Container Overrides:");
-  	for(SymbolBinding b : this.override_symbols.values())
-  	{
-  		System.out.println(ParseUtil.spacing(spacing) +"- " + b.toDisplay());
-  	}
-  	System.out.println(ParseUtil.spacing(spacing) + "Masked Structure:");
-  	this.environment.displayHierarchy(spacing + 2);
+    System.out.println(ParseUtil.spacing(spacing) + "Container Overrides:");
+    for(SymbolBinding b : this.override_symbols.values())
+    {
+      System.out.println(ParseUtil.spacing(spacing) + "- " + b.toDisplay());
+    }
+    System.out.println(ParseUtil.spacing(spacing) + "Masked Structure:");
+    this.environment.displayHierarchy(spacing + 2);
   }
 }

@@ -3,7 +3,7 @@ package net.samongi.frunction.expression.tokens;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.samongi.frunction.expression.exceptions.TokenException;
+import net.samongi.frunction.exceptions.parsing.TokenException;
 import net.samongi.frunction.parse.ParseUtil;
 
 public class InputToken implements Token
@@ -28,15 +28,11 @@ public class InputToken implements Token
     List<String> section_list = new ArrayList<>();
     while(i < source.length())
     {
-      String section = ParseUtil.getSection(this.source, i, SEPERATOR,
-          Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers(),
-          Token.getScopeeToggleIdentifiers());
+      String section = ParseUtil.getSection(this.source, i, SEPERATOR, Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers(), Token.getScopeeToggleIdentifiers());
       i += section.length();
 
       // if it ends with the seperator, remove it.
-      if(ParseUtil.matchesAt(section, section.length() - SEPERATOR.length(),
-          SEPERATOR)) section_list.add(section.substring(0, section.length()
-          - SEPERATOR.length()));
+      if(ParseUtil.matchesAt(section, section.length() - SEPERATOR.length(), SEPERATOR)) section_list.add(section.substring(0, section.length() - SEPERATOR.length()));
       else section_list.add(section);
     }
     // System.out.println("  InputTokens - Section Amount: " +

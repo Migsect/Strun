@@ -1,11 +1,12 @@
 package net.samongi.frunction.frunction.literal;
 
 import net.samongi.frunction.binding.SymbolBinding;
-import net.samongi.frunction.expression.exceptions.TokenException;
+import net.samongi.frunction.exceptions.parsing.ParsingException;
+import net.samongi.frunction.exceptions.runtime.FrunctionNotEvaluatedException;
+import net.samongi.frunction.exceptions.runtime.RunTimeException;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
-import net.samongi.frunction.frunction.exceptions.FrunctionNotEvaluatedException;
 import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
 import net.samongi.frunction.frunction.literal.method.NativeExpression;
 
@@ -13,8 +14,7 @@ public class RealFrunction extends NativeFrunction
 {
   private static final String TYPE = "real";
 
-  public static final Frunction parseLiteral(String symbol,
-      Container environment)
+  public static final Frunction parseLiteral(String symbol, Container environment) throws ParsingException, RunTimeException
   {
     Double converted = null;
     try
@@ -35,7 +35,7 @@ public class RealFrunction extends NativeFrunction
     {
       return LiteralDictionary.getInstance().getSymbol(sym).get();
     }
-    catch(TokenException e)
+    catch(ParsingException | RunTimeException e)
     {
       e.printStackTrace();
     }
@@ -44,7 +44,7 @@ public class RealFrunction extends NativeFrunction
 
   private final double state;
 
-  public RealFrunction(Container environment, double state)
+  public RealFrunction(Container environment, double state) throws ParsingException, RunTimeException
   {
     super(environment);
 
@@ -61,18 +61,18 @@ public class RealFrunction extends NativeFrunction
     }
   }
 
-  private void addMethods() throws FrunctionNotEvaluatedException
+  private void addMethods() throws ParsingException, RunTimeException
   {
     this.addSymbol(this.methodEquals());
     this.addSymbol(this.methodString());
   }
 
-  /**
-   * Will generate a method binding for determining if another method is equal.
+  /** Will generate a method binding for determining if another method is equal.
    * 
-   * @return
-   */
-  private SymbolBinding methodEquals()
+   * @return 
+   * @throws RunTimeException 
+   * @throws ParsingException */
+  private SymbolBinding methodEquals() throws ParsingException, RunTimeException
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -90,30 +90,27 @@ public class RealFrunction extends NativeFrunction
         // defined
         Frunction right = this.getInput("other");
 
-        if(!left.getType().equals(RealFrunction.TYPE)
-            || !(left instanceof RealFrunction)) { return null; // We should
-                                                                // technically
-                                                                // never get to
-                                                                // this stage.
+        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) { return null; // We should
+                                                                                                          // technically
+                                                                                                          // never get to
+                                                                                                          // this stage.
         }
-        if(!right.getType().equals(RealFrunction.TYPE)
-            || !(right instanceof RealFrunction)) { return null; // We should
-                                                                 // technically
-                                                                 // never get to
-                                                                 // this stage.
+        if(!right.getType().equals(RealFrunction.TYPE) || !(right instanceof RealFrunction)) { return null; // We should
+                                                                                                            // technically
+                                                                                                            // never get to
+                                                                                                            // this stage.
         }
         RealFrunction r_left = (RealFrunction) left;
         RealFrunction r_right = (RealFrunction) right;
         // Performing the native operation.
-        return BooleanFrunction.getCached(r_left.getNative() == r_right
-            .getNative());
+        return BooleanFrunction.getCached(r_left.getNative() == r_right.getNative());
       }
 
     };
     return expression.getAsBinding("eq", this, input, types, condition);
   }
 
-  private SymbolBinding methodString()
+  private SymbolBinding methodString() throws ParsingException, RunTimeException
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -127,11 +124,10 @@ public class RealFrunction extends NativeFrunction
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
 
-        if(!left.getType().equals(RealFrunction.TYPE)
-            || !(left instanceof RealFrunction)) { return null; // We should
-                                                                // technically
-                                                                // never get to
-                                                                // this stage.
+        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) { return null; // We should
+                                                                                                          // technically
+                                                                                                          // never get to
+                                                                                                          // this stage.
         }
         RealFrunction r_left = (RealFrunction) left;
         // Performing the native operation.
