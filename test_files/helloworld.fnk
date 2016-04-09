@@ -30,3 +30,20 @@ c_2 : Coord(3,4);
 
 c_1.print();
 c_2.print();
+
+bool_test : {
+  (input) -> input.str().eq("nil").str().println();
+};
+
+if : {
+  (expr, t, f) ?(expr)-> t.str().println();
+  (expr, t, f) -> f.str().println();
+};
+
+if(true, "Should Happen", "Shouldn't happen");
+if(false, "Shouldn't Happen", "Should happen");
+
+if(true, 
+  if(false, "A", "B"), 
+  if(true, "C", "D")
+);

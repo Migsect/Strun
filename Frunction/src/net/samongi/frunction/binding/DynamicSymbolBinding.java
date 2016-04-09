@@ -29,7 +29,7 @@ public class DynamicSymbolBinding implements SymbolBinding
     if(text_section == null) throw new NullPointerException("'text_section' was null");
     if(environment == null) throw new NullPointerException("'environment' was null");
 
-    System.out.println("Parsing Symbol Binding: '" + text_section + "'");
+    // System.out.println("Parsing Symbol Binding: '" + text_section + "'");
     
     // Splitting the section based on the first bound binding operator
     String[] split_section = text_section.split(BINDING, 2);
@@ -46,8 +46,8 @@ public class DynamicSymbolBinding implements SymbolBinding
       key = split_section[0].trim();
       source = split_section[1].trim();
     }
-    System.out.println("  Key: '" + key + "'");
-    System.out.println("  Source: '" + source + "'");
+    //System.out.println("  Key: '" + key + "'");
+    //System.out.println("  Source: '" + source + "'");
     if(key == null) return null;
     if(source == null) return null;
 

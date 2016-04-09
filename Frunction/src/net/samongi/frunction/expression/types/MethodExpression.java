@@ -12,7 +12,7 @@ import net.samongi.frunction.frunction.MethodContainer;
 
 public class MethodExpression implements Expression
 {
-  private static final boolean DEBUG = true;
+  private static final boolean DEBUG = false;
 
   private final Expression left_expression;
   private final InputToken right_token;
@@ -36,7 +36,9 @@ public class MethodExpression implements Expression
   @Override public Frunction evaluate(Container environment) throws ParsingException, RunTimeException
   {
     if(environment == null) throw new NullPointerException("'environment' was null");
-
+     
+    // System.out.println("InputToken Contents: " + this.right_token.getSource());
+    
     // Getting group tokens included in the input token.
     GroupToken[] group_tokens = this.right_token.getTokens();;
 
@@ -60,8 +62,6 @@ public class MethodExpression implements Expression
     // This is where we will attempt to get the method from.
     Frunction eval = left_expression.evaluate(environment);
     if(DEBUG) if(eval == null) System.out.println("  Issue in M-Evaluate: Evaluated left expression is null");
-    // System.out.println("Left Expression Type: " +
-    // left_expression.getClass().toGenericString());
 
     // Evaluating all the inputs because it is needed to get the types.
     // The inputs should be evaluated based on the expression environment and not on the
@@ -78,8 +78,7 @@ public class MethodExpression implements Expression
     // Getting the types of the evaluated expression.
     // The types will be used to get the method.
     String[] types = new String[evaluated_inputs.length];
-    for(int i = 0; i < types.length; i++)
-      types[i] = evaluated_inputs[i].getType(); // type may become null?
+    for(int i = 0; i < types.length; i++) types[i] = evaluated_inputs[i].getType(); // type may become null?
     // TODO see if we need to check if the types include a null string
 
     // Retrieving the method biniding.
@@ -95,17 +94,13 @@ public class MethodExpression implements Expression
     // Adding all the frunction inputs.
     for(int i = 0; i < input_symbols.length; i++)
     {
-      System.out.println("  M-expr: Added sym '" + input_symbols[i] + "' to container");
+      //System.out.println("  M-expr: Added sym '" + input_symbols[i] + "' to container");
       container.addSymbol(input_symbols[i], evaluated_inputs[i]);
     }
 
     // Getting the expression
     Expression expr = binding.getExpression(); 
     if(expr == null) throw new NullPointerException();
-
-    if(DEBUG) System.out.println(expr.getClass().toGenericString());
-
-    container.displayHierarchy(2);
 
     // Evaluating the expression using the method container.
     return expr.evaluate(container);

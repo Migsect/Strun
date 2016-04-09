@@ -78,7 +78,7 @@ public interface Expression
       {
         if(i != 0) throw new BadlyPlacedExpressionException(Expression.Type.CONTAINER_ACCESSOR, source);
         
-        ContainerAccessorExpression expr = new ContainerAccessorExpression(environment, (SymbolToken) t);
+        ContainerAccessorExpression expr = new ContainerAccessorExpression((SymbolToken) t);
         left_expr = expr; // Setting it to be the left expression
         i += 1;
       }

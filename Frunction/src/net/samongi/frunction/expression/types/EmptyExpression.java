@@ -5,9 +5,10 @@ import net.samongi.frunction.exceptions.runtime.RunTimeException;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
 
-/**
- * 
- * @author Alex
+/**At the moment this class is a theoretical one
+ * May not be used
+ * meant to return from empty inputs for the expression parse
+ * but chose not to yet since that would allow empty expressions (which have no purpose yet)
  *
  */
 public class EmptyExpression implements Expression

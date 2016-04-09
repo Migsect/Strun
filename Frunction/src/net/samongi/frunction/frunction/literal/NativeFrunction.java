@@ -35,7 +35,7 @@ public abstract class NativeFrunction extends DynamicFrunction
     f = StringFrunction.parseLiteral(symbol, environment);
     if(f != null) return f;
 
-    return null;
+    throw new ParsingException();
   }
 
   public NativeFrunction(Container environment) throws ParsingException, RunTimeException

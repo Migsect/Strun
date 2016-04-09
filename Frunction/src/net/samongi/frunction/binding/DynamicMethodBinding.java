@@ -1,6 +1,7 @@
 package net.samongi.frunction.binding;
 
 import net.samongi.frunction.exceptions.parsing.ExpressionException;
+import net.samongi.frunction.exceptions.parsing.ParsingException;
 import net.samongi.frunction.exceptions.parsing.TokenException;
 import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.expression.types.Expression;
@@ -82,7 +83,7 @@ public class DynamicMethodBinding implements MethodBinding
       // Now we should have the condition expression;
     }
     if(condition == null) condition = ""; // making sure it aint null;
-
+    
     if(input_section.length() == 0) return new DynamicMethodBinding(environment, new String[0], new String[0], condition, expression);
 
     // Splitting the input
@@ -108,18 +109,30 @@ public class DynamicMethodBinding implements MethodBinding
 
   public DynamicMethodBinding(Container container, String[] input_symbols, String[] input_types, Expression condition, Expression expression)
   {
+    if(container == null) throw new NullPointerException("'container' was null");
+    if(input_symbols == null) throw new NullPointerException("'input_symbols' was null");
+    if(input_types == null) throw new NullPointerException("'input_types' was null");
+    if(condition == null) throw new NullPointerException("'condition' was null");
+    if(expression == null) throw new NullPointerException("'expression' was null");
+    
     this.container = container;
     this.input_symbols = input_symbols;
     this.input_types = input_types;
 
-    this.source = null;
-    this.condition_source = null;
+    this.source = "";
+    this.condition_source = "";
     this.condition = condition;
     this.expression = expression;
   }
 
   public DynamicMethodBinding(Container container, String[] input_symbols, String[] input_types, String cond_source, String source)
   {
+    if(container == null) throw new NullPointerException("'container' was null");
+    if(input_symbols == null) throw new NullPointerException("'input_symbols' was null");
+    if(input_types == null) throw new NullPointerException("'input_types' was null");
+    if(cond_source == null) throw new NullPointerException("'cond_source' was null");
+    if(source == null) throw new NullPointerException("'source' was null");
+    
     this.container = container;
     this.input_symbols = input_symbols;
     this.input_types = input_types;
@@ -137,14 +150,14 @@ public class DynamicMethodBinding implements MethodBinding
    * 
    * @throws TokenException
    * @throws ExpressionException */
-  public void generateCondition() throws TokenException, ExpressionException
+  public void generateCondition() throws ParsingException
   {
-    if(this.expression != null) return;
-    this.condition = Expression.parseString(condition_source, container);
-    if(this.condition == null) this.condition = BooleanFrunction.getTautology();
+    if(this.condition != null) return; // don't need to reparse the expression
+    if(this.condition_source.length() == 0) this.condition = BooleanFrunction.getTautology();
+    else this.condition = Expression.parseString(condition_source, container);
   }
 
-  @Override public Expression getConditional() throws TokenException, ExpressionException
+  @Override public Expression getConditional() throws ParsingException
   {
     if(this.condition == null) this.generateCondition();
     return this.condition;
@@ -156,12 +169,9 @@ public class DynamicMethodBinding implements MethodBinding
    * @throws ExpressionException */
   public void generateExpression() throws TokenException, ExpressionException
   {
-    if(this.expression != null) return;
+    if(this.expression != null) return; // don't need to reparse the expression
     this.expression = Expression.parseString(source, container);
-    if(this.expression == null)
-    {
-      if(DEBUG) System.out.println("  MethodBinding: Generated a null expression!");
-    }
+    if(this.expression == null) throw new IllegalStateException();
 
   }
 
@@ -209,7 +219,7 @@ public class DynamicMethodBinding implements MethodBinding
     return this.input_types;
   }
 
-  @Override public void evaluate() throws TokenException, ExpressionException
+  @Override public void evaluate() throws ParsingException
   {
     this.generateCondition();
     this.generateExpression();

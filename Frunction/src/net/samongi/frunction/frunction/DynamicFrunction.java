@@ -97,32 +97,13 @@ public class DynamicFrunction implements Frunction
       MethodBinding met_binding = DynamicMethodBinding.parseBinding(section, this);
       if(met_binding != null)
       {
-        // System.out.println("Found met_b in: '" + section.trim() + "'");
-
-        try
-        {
-          this.addMethod(met_binding);
-        }
-        catch(FrunctionNotEvaluatedException e)
-        {
-          e.printStackTrace();
-        }
+        this.addMethod(met_binding);
         continue;
       }
       SymbolBinding sym_binding = DynamicSymbolBinding.parseBinding(section, this);
       if(sym_binding != null)
       {
-        // System.out.println("Found sym_b '" + sym_binding.getKey() + "' in: '"
-        // + section.trim() + "'");
-
-        try
-        {
-          this.addSymbol(sym_binding);
-        }
-        catch(FrunctionNotEvaluatedException e)
-        {
-          e.printStackTrace();
-        }
+        this.addSymbol(sym_binding);
         continue;
       }
 
@@ -205,7 +186,7 @@ public class DynamicFrunction implements Frunction
       // If it is not, we are going to assume the expression evaluates to true
       // This is done such that only false-hood will prevent a method from
       // working.
-      if(result.getType().equals("Boolean") && result instanceof BooleanFrunction)
+      if(result.getType().equals(BooleanFrunction.TYPE) && result instanceof BooleanFrunction)
       {
         // Casting to a boolean frunction
         BooleanFrunction b_result = (BooleanFrunction) result;
@@ -228,7 +209,7 @@ public class DynamicFrunction implements Frunction
     for(MethodBinding b : bindings)
     {
       String[] input_types = b.getTypes();
-      boolean do_skip = false;
+      boolean do_skip = false; // Used as a flag to skip on to the next binding.
       for(int i = 0; i < input_types.length; i++)
       {
         if(!types[i].equals(input_types[i]))
@@ -257,14 +238,14 @@ public class DynamicFrunction implements Frunction
       }
 
       // Getting the boolean result.
-      Frunction result = b.getConditional().evaluate(m_container);;
+      Frunction result = b.getConditional().evaluate(m_container);
       // Evaluated the conditional expression using the inputs
 
       // We are now going to test and see if the method is a boolean type
       // If it is not, we are going to assume the expression evaluates to true
       // This is done such that only false-hood will prevent a method from
       // working.
-      if(result.getType().equals("Boolean") && result instanceof BooleanFrunction)
+      if(result.getType().equals(BooleanFrunction.TYPE) && result instanceof BooleanFrunction)
       {
         // Casting to a boolean frunction
         BooleanFrunction b_result = (BooleanFrunction) result;
@@ -335,7 +316,7 @@ public class DynamicFrunction implements Frunction
       binding = this.symbol_bindings.get(symbol);
       if(binding == null)
       {
-        this.displayHierarchy(2);
+        // this.displayHierarchy(2);
         if(this.environment == null) throw new SymbolNotFoundException(symbol);
         binding = this.environment.getSymbol(symbol);
       }

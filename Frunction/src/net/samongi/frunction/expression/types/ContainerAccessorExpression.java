@@ -9,16 +9,12 @@ import net.samongi.frunction.frunction.Frunction;
 
 public class ContainerAccessorExpression implements Expression
 {
-
-  private final Container left;
   private final SymbolToken token;
 
-  public ContainerAccessorExpression(Container left, SymbolToken token)
+  public ContainerAccessorExpression(SymbolToken token)
   {
-    if(left == null) throw new NullPointerException("'left' was null");
     if(token == null) throw new NullPointerException("'token' was null");
 
-    this.left = left;
     this.token = token;
   }
 
@@ -39,7 +35,7 @@ public class ContainerAccessorExpression implements Expression
     // Getting the symbol from the token
     String symbol = token.getSource();
     // Getting the binding associated with the symbol.
-    SymbolBinding l_binding = left.getSymbol(symbol);
+    SymbolBinding l_binding = environment.getSymbol(symbol);
 
     // Getting the binded expression
 

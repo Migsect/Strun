@@ -64,9 +64,11 @@ public class LiteralDictionary implements Container
     }
     catch(ParsingException | RunTimeException e)
     {
+      System.out.println("Failed on: '" + symbol + "'");
       e.printStackTrace();
     }
-
+    
+    
     if(DEBUG) System.out.println("  Created literal binding for '" + symbol + "' with type '" + f.getType() + "'");
 
     // Creating the binding and adding it to the map

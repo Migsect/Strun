@@ -5,6 +5,7 @@ import java.io.File;
 import net.samongi.frunction.exceptions.parsing.ExpressionException;
 import net.samongi.frunction.exceptions.parsing.ParsingException;
 import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.exceptions.runtime.SymbolNotFoundException;
 import net.samongi.frunction.file.FileUtil;
 import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.parse.Commenting;
@@ -50,6 +51,10 @@ public class Main
       if(e instanceof ExpressionException)
       {
         System.out.println("Source : '" + ((ExpressionException) e).getSource() + "'");
+      }
+      if(e instanceof SymbolNotFoundException)
+      {
+        System.out.println("Symbol Not Found : '" + ((SymbolNotFoundException) e).getSymbol() + "'");
       }
     }
 

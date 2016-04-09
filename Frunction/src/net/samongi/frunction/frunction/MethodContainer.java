@@ -33,9 +33,9 @@ public class MethodContainer implements Container
   public void addSymbol(String symbol, Frunction frunction)
   {
     if(frunction == null) throw new NullPointerException("'frunction' was null");
-
-    SymbolBinding s_binding = new DynamicSymbolBinding(symbol, frunction, this.environment);
-    this.override_symbols.put(symbol, s_binding);
+    
+    SymbolBinding s_binding = new DynamicSymbolBinding(symbol, frunction, this);
+    this.addSymbol(s_binding);
   }
 
   // Calling the inner environment for get method
@@ -49,8 +49,6 @@ public class MethodContainer implements Container
   @Override public SymbolBinding getSymbol(String symbol) throws ParsingException, RunTimeException
   {
     symbol = symbol.trim();
-    System.out.println("MethodContainer, grabbing: '" + symbol + "'");
-    System.out.println("  Does Contain '" + override_symbols.containsKey(symbol) + "'");
     if(override_symbols.containsKey(symbol)) return override_symbols.get(symbol);
     return this.environment.getSymbol(symbol);
   }

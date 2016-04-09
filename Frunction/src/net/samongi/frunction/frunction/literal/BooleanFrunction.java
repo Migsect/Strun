@@ -15,7 +15,7 @@ public class BooleanFrunction extends NativeFrunction
   public static final String TRUE_LITERAL = "true";
   public static final String FALSE_LITERAL = "false";
 
-  private static final String TYPE = "bool";
+  public static final String TYPE = "bool";
 
   public static Frunction parseLiteral(String symbol, Container environment) throws ParsingException, RunTimeException
   {

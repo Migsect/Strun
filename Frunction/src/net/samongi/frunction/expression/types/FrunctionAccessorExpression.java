@@ -36,7 +36,7 @@ public class FrunctionAccessorExpression implements Expression
 
     // Evaluate the left expression such that we can access its bindings
     // System.out.println("Is left null?: " + (left == null));
-    System.out.println("What is left's type?: " + left.getClass().getCanonicalName());
+    // System.out.println("What is left's type?: " + left.getClass().getCanonicalName());
     Frunction eval = left.evaluate(environment);
 
     // System.out.println("Is eval null?: " + (eval == null));
