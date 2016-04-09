@@ -20,8 +20,9 @@ public class StringFrunction extends NativeFrunction
   public static Frunction parseLiteral(String symbol, Container environment) throws ParsingException, RunTimeException
   {
     if(!symbol.startsWith(STRING_CAPSULE) || !symbol.endsWith(STRING_CAPSULE)) return null;
-    String str = symbol.substring(1, symbol.length() - 1); // Getting the inner
-                                                           // string
+    if(symbol.length() < 2) return null;
+    
+    String str = symbol.substring(1, symbol.length() - 1);
     return new StringFrunction(environment, str);
   }
 

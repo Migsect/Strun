@@ -1,0 +1,26 @@
+a : 1;
+b : -1;
+c : a.add(b);
+
+a.div(b).str().println();
+
+a.neg().str().println();
+b.neg().str().println();
+c.str().println();
+
+F : {
+  (n) ?(n.lssr(2))-> 1;
+  (n) -> F(n.add(-1)).add(F(n.add(-2)));  
+};
+
+for : {
+  (s, n, i, f) ?(s.add(i).grtr(n))-> f(s).str().println();
+  (s, n, i, f) -> {
+    f(s).str().println();
+    for(s.add(i), n, i, f);
+  };
+};
+
+d : 1020;
+e : 57;
+d.mult(e).str().println();

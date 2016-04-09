@@ -99,7 +99,7 @@ public class LiteralDictionary implements Container
   public boolean isLiteral(String symbol)
   {
     symbol = symbol.trim();
-    if(symbol.startsWith(StringFrunction.STRING_CAPSULE) && symbol.endsWith(StringFrunction.STRING_CAPSULE)) return true;
+    if(symbol.startsWith(StringFrunction.STRING_CAPSULE) && symbol.endsWith(StringFrunction.STRING_CAPSULE) && symbol.length() > 1) return true;
     if(symbol.equals(BooleanFrunction.TRUE_LITERAL) || symbol.equals(BooleanFrunction.FALSE_LITERAL)) return true;
 
     // testing for double
