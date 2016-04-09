@@ -2,6 +2,7 @@ package net.samongi.frunction;
 
 import java.io.File;
 
+import net.samongi.frunction.exceptions.parsing.ExpressionException;
 import net.samongi.frunction.exceptions.parsing.ParsingException;
 import net.samongi.frunction.exceptions.runtime.RunTimeException;
 import net.samongi.frunction.file.FileUtil;
@@ -46,6 +47,10 @@ public class Main
     {
       // TODO Auto-generated catch block
       e.printStackTrace();
+      if(e instanceof ExpressionException)
+      {
+        System.out.println("Source : '" + ((ExpressionException) e).getSource() + "'");
+      }
     }
 
     // System.out.println("Displaying Mains Hierarchy:");

@@ -29,24 +29,25 @@ public class DynamicSymbolBinding implements SymbolBinding
     if(text_section == null) throw new NullPointerException("'text_section' was null");
     if(environment == null) throw new NullPointerException("'environment' was null");
 
+    System.out.println("Parsing Symbol Binding: '" + text_section + "'");
+    
     // Splitting the section based on the first bound binding operator
     String[] split_section = text_section.split(BINDING, 2);
     // System.out.println("Split_section length: " + split_section.length);
     String key = null;
     String source = null;
-    if(split_section.length < 2) // This means that the second expression isn't
-                                 // being binding to an actual key
+    if(split_section.length < 2) 
     {
       key = DEF_KEY;
-      source = split_section[0].trim(); // The text is all there is.
+      source = split_section[0].trim(); 
     }
     else
     {
-      key = split_section[0].trim(); // Getting the first element of the
-                                     // split_section
-      source = split_section[1].trim(); // The text is second in this case
+      key = split_section[0].trim();
+      source = split_section[1].trim();
     }
-
+    System.out.println("  Key: '" + key + "'");
+    System.out.println("  Source: '" + source + "'");
     if(key == null) return null;
     if(source == null) return null;
 
@@ -54,20 +55,7 @@ public class DynamicSymbolBinding implements SymbolBinding
     if(!do_eval) key = key.replaceFirst(DELAY_EVAL, "");
 
     DynamicSymbolBinding binding = new DynamicSymbolBinding(key, source, environment);
-    if(do_eval)
-    {
-      binding.collapse();
-
-      try
-      {
-        if(binding.getExpression() == null) System.out.println("  " + binding.getKey() + " >>> null");
-        else if(DEBUG) System.out.println("  " + binding.getKey() + " >>> " + binding.getExpression().getDisplay());
-      }
-      catch(TokenException e)
-      {
-        System.out.println(binding.getKey() + " >>> Could not get expression");
-      }
-    }
+    if(do_eval) binding.collapse();
 
     return binding;
   }
@@ -102,6 +90,8 @@ public class DynamicSymbolBinding implements SymbolBinding
 
     this.key = key;
     this.environment = environment;
+    this.collapsed = evaluated;
+    this.expression = evaluated.toExpression();
     this.source = "";
 
   }
@@ -129,18 +119,9 @@ public class DynamicSymbolBinding implements SymbolBinding
    * @throws ExpressionException */
   @Override public Expression getExpression() throws ParsingException
   {
-    if(this.expression == null) this.generateExpression();
+    if(this.expression == null) this.evaluate();
     if(this.expression == null) throw new IllegalStateException();
     return this.expression;
-  }
-
-  /** Forces the binding to generate it's related expression. If it's already created, then this will not generate it.
-   * 
-   * @throws TokenException
-   * @throws ExpressionException */
-  public void generateExpression() throws ParsingException
-  {
-    if(this.expression == null) this.expression = Expression.parseString(this.source, this.environment);
   }
 
   @Override public Container getContainer()
@@ -156,13 +137,23 @@ public class DynamicSymbolBinding implements SymbolBinding
 
   @Override public void evaluate() throws ParsingException
   {
-    if(this.expression == null) this.generateExpression();
+    if(this.expression == null) try
+    {
+      this.expression = Expression.parseString(this.source, this.environment);
+    }
+    catch (ParsingException e)
+    {
+      System.out.println("Under Binding : '" + this.getKey() + "'");
+      throw e;
+    }
+    if(this.expression == null) throw new IllegalStateException();
   }
 
   @Override public void collapse() throws ParsingException, RunTimeException
   {
+    // First we need to evaluate the symbol.
     this.evaluate();
-    if(this.expression == null) return;
+    // Now we need to set collapsed
     if(this.collapsed == null) this.collapsed = this.expression.evaluate(this.environment);
   }
 

@@ -3,7 +3,6 @@ package net.samongi.frunction.expression.types;
 import net.samongi.frunction.binding.SymbolBinding;
 import net.samongi.frunction.exceptions.parsing.ParsingException;
 import net.samongi.frunction.exceptions.runtime.RunTimeException;
-import net.samongi.frunction.exceptions.runtime.SymbolNotFoundException;
 import net.samongi.frunction.expression.tokens.SymbolToken;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
@@ -40,17 +39,7 @@ public class ContainerAccessorExpression implements Expression
     // Getting the symbol from the token
     String symbol = token.getSource();
     // Getting the binding associated with the symbol.
-    SymbolBinding l_binding = null;
-
-    try
-    {
-      l_binding = left.getSymbol(symbol);
-    }
-    catch(SymbolNotFoundException e)
-    {
-      e.displayError();
-      return null;
-    }
+    SymbolBinding l_binding = left.getSymbol(symbol);
 
     // Getting the binded expression
 
@@ -58,11 +47,7 @@ public class ContainerAccessorExpression implements Expression
     // This is using the environment of the frunction it is apart of.
     Frunction accessed = l_binding.get();
     if(DEBUG) System.out.println("  A-Evaluate accessed_source: " + accessed.getSource());
-    if(accessed == null)
-    {
-      // TODO throw proper exception?
-      System.out.println("Accessed Frunction turned out to be null");
-    }
+    if(accessed == null) throw new NullPointerException();
 
     // Returning the accessed expression
     return accessed;
