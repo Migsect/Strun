@@ -50,14 +50,13 @@ public class BooleanFrunction extends NativeFrunction
    */
   public static Expression getTautology()
   {
-    return new Expression()
+    return new NativeExpression()
     {
-      @Override public Frunction evaluate(Container environment)
+      @Override public Frunction evaluate()
       {
         try
         {
-          return LiteralDictionary.getInstance().getSymbol(TRUE_LITERAL)
-              .getExpression().evaluate(environment);
+          return LiteralDictionary.getInstance().getSymbol(TRUE_LITERAL).get();
         }
         catch(TokenException e)
         {
@@ -78,14 +77,13 @@ public class BooleanFrunction extends NativeFrunction
    */
   public static Expression getContradiction()
   {
-    return new Expression()
+    return new NativeExpression()
     {
-      @Override public Frunction evaluate(Container environment)
+      @Override public Frunction evaluate()
       {
         try
         {
-          return LiteralDictionary.getInstance().getSymbol(FALSE_LITERAL)
-              .getExpression().evaluate(environment);
+          return LiteralDictionary.getInstance().getSymbol(FALSE_LITERAL).get();
         }
         catch(TokenException e)
         {

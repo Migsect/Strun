@@ -64,7 +64,7 @@ public class DynamicFrunction implements Frunction
    */
   public DynamicFrunction(Container environment, String source)
   {
-  	if(environment == null) throw new NullPointerException("'environment' was null");
+    // Environment can be null
   	if(source == null) throw new NullPointerException("'source' was null");
   	
     this.environment = environment;

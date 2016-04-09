@@ -2,11 +2,11 @@ Coord : {(x,y) -> {
   x : x;
   y : y;
   print : {->{
-    _:"[".print();
-    _:x.print();
-    _:" ".print();
-    _:y.print();
-    _:"]".println();
+    "[".print();
+    x.print();
+    " ".print();
+    y.print();
+    "]".println();
   };};
 };};
 

@@ -110,7 +110,6 @@ public class IntegerFrunction extends NativeFrunction
         return BooleanFrunction.getCached(i_left.getNative() == i_right
             .getNative());
       }
-
     };
     return expression.getAsBinding("eq", this, input, types, condition);
   }

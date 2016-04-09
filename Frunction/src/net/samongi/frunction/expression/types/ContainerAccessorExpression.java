@@ -22,6 +22,8 @@ public class ContainerAccessorExpression implements Expression
     this.token = token;
   }
 
+  @Override public Type getType(){return Expression.Type.CONTAINER_ACCESSOR;}
+  
   @Override public String getDisplay()
   {
     return "C<'" + token.getSource() + "': E>";
@@ -29,7 +31,7 @@ public class ContainerAccessorExpression implements Expression
 
   @Override public Frunction evaluate(Container environment)
   {
-    // System.out.println("  Expr: Evaluating a ContainerAccessorExpression");
+    if(environment == null) throw new NullPointerException("'environment' was null");
 
     // Getting the symbol from the token
     String symbol = token.getSource();

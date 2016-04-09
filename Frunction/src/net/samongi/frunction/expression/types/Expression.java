@@ -13,6 +13,17 @@ public interface Expression
 {
   public static final boolean DEBUG = false;
 
+  public enum Type
+  {
+    CONTAINER_ACCESSOR,
+    FRUNCTION_ACCESSOR,
+    METHOD,
+    FRUNCTION,
+    NATIVE,
+    FRUNCTION_CONVERSION,
+    MEMORY;
+  }
+  
   /**
    * Parses a string to make an expression this uses Token.parseTokens and
    * Expression.parseExpression to do so As such this is a utility method and
@@ -94,18 +105,14 @@ public interface Expression
         if(left_expr == null)
         {
           // TODO proper error?
-          if(DEBUG)
-            System.out
-                .println("  Issue in Expression Parser: Accessor found left expr to be null.");
+          if(DEBUG) System.out.println("  Issue in Expression Parser: Accessor found left expr to be null.");
           return null;
         }
         // Checking to see if there is a next index
         if(tokens.length < i + 1)
         {
           // TODO proper error?
-          if(DEBUG)
-            System.out
-                .println("  Issue in Expression Parser: Accessor found right symbol to be null.");
+          if(DEBUG) System.out.println("  Issue in Expression Parser: Accessor found right symbol to be null.");
           return null; // We need a right hand symbol.
         }
         if(!tokens[i + 1].getType().equals(Token.Type.SYMBOL))
@@ -127,9 +134,7 @@ public interface Expression
       {
         if(i != 0)
         {
-          if(DEBUG)
-            System.out
-                .println("  Issue in Expression Parser: Frunction found it was not first.");
+          if(DEBUG) System.out.println("  Issue in Expression Parser: Frunction found it was not first.");
           return null; // must be first
         }
         FrunctionExpression expr = new FrunctionExpression((FrunctionToken) t);
@@ -143,9 +148,7 @@ public interface Expression
         if(left_expr == null)
 
         {
-          if(DEBUG)
-            System.out
-                .println("  Issue in Expression Parser: Input left expression was null.");
+          if(DEBUG) System.out.println("  Issue in Expression Parser: Input left expression was null.");
           return null; // We need a left hand expression
         }
         MethodExpression expr = new MethodExpression(left_expr, (InputToken) t);
@@ -159,9 +162,7 @@ public interface Expression
         System.out.println("  For some reason there was a group token?!?!");
         if(i != 0)
         {
-          if(DEBUG)
-            System.out
-                .println("  Issue in Expression Parser: Group found it was not first.");
+          if(DEBUG) System.out.println("  Issue in Expression Parser: Group found it was not first.");
           return null; // must be first
         }
         GroupToken g_t = (GroupToken) t;
@@ -190,6 +191,8 @@ public interface Expression
 
   public Frunction evaluate(Container environment);
 
+  public Expression.Type getType();
+  
   public default String getDisplay()
   {
     return "Generic";

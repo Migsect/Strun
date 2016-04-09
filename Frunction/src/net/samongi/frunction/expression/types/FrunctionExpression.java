@@ -14,6 +14,8 @@ public class FrunctionExpression implements Expression
     this.token = token;
   }
 
+  @Override public Type getType(){return Expression.Type.FRUNCTION;}
+  
   @Override public String getDisplay()
   {
     return "F<" + token.getSource() + ">";
@@ -21,7 +23,7 @@ public class FrunctionExpression implements Expression
 
   @Override public Frunction evaluate(Container environment)
   {
-    // System.out.println("  Expr: Evaluating a FrunctionException");
+    if(environment == null) throw new NullPointerException("'environment' was null");
 
     DynamicFrunction frunction = new DynamicFrunction(environment,
         token.getSource());

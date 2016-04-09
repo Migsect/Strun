@@ -51,15 +51,16 @@ public interface Frunction extends Container
   public default Expression toExpression()
   {
     Frunction this_frunction = this;
+    
     return new Expression()
     {
-      @Override public String getDisplay()
-      {
-        return "E";
-      }
+      @Override public String getDisplay(){return "FC";}
+      @Override public Type getType(){return Expression.Type.FRUNCTION_CONVERSION;}
 
       @Override public Frunction evaluate(Container environment)
       {
+        if(environment == null) throw new NullPointerException("'environment' was null");
+        
         return this_frunction;
       }
     };

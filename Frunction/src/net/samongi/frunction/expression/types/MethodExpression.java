@@ -22,6 +22,8 @@ public class MethodExpression implements Expression
     this.right_token = right_token;
   }
 
+  @Override public Type getType(){return Expression.Type.METHOD;}
+  
   @Override public String getDisplay()
   {
     return "M<(" + right_token.getSource() + ")->["
@@ -30,7 +32,7 @@ public class MethodExpression implements Expression
 
   @Override public Frunction evaluate(Container environment)
   {
-    // System.out.println("  Expr: Evaluating a MethodExpression");
+    if(environment == null) throw new NullPointerException("'environment' was null");
 
     // Getting group tokens included in the input token.
     GroupToken[] group_tokens = null;
@@ -87,10 +89,7 @@ public class MethodExpression implements Expression
     // evaluating the left expression
     // This is where we will attempt to get the method from.
     Frunction eval = left_expression.evaluate(environment);
-    if(DEBUG)
-      if(eval == null)
-        System.out
-            .println("  Issue in M-Evaluate: Evaluated left expression is null");
+    if(DEBUG) if(eval == null) System.out.println("  Issue in M-Evaluate: Evaluated left expression is null");
     // System.out.println("Left Expression Type: " +
     // left_expression.getClass().toGenericString());
 
@@ -105,8 +104,7 @@ public class MethodExpression implements Expression
       Frunction i_eval = exprs[i].evaluate(environment);
       if(i_eval == null)
       {
-        if(DEBUG)
-          System.out.println("  Issue in M-Evaluate: Evaluated input '" + i + "' is null");
+        if(DEBUG) System.out.println("  Issue in M-Evaluate: Evaluated input '" + i + "' is null");
         return null;
       }
       r_evals[i] = i_eval;
@@ -167,5 +165,6 @@ public class MethodExpression implements Expression
     // Evaluating the expression using the method container.
     return expr.evaluate(container);
   }
+
 
 }

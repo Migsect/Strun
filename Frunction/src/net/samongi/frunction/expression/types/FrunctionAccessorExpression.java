@@ -20,6 +20,8 @@ public class FrunctionAccessorExpression implements Expression
     this.token = token;
   }
 
+  @Override public Type getType(){return Expression.Type.FRUNCTION_ACCESSOR;}
+  
   @Override public String getDisplay()
   {
     return "A<'" + token.getSource() + "':" + left.getDisplay() + ">";
@@ -27,12 +29,13 @@ public class FrunctionAccessorExpression implements Expression
 
   @Override public Frunction evaluate(Container environment)
   {
-    // System.out.println("  Expr: Evaluating a FrunctionAccessorExpression");
+    if(environment == null) throw new NullPointerException("'environment' was null");
 
     // Evaluate the left expression such that we can access its bindings
   	//System.out.println("Is left null?: " + (left == null));
     System.out.println("What is left's type?: " + left.getClass().getCanonicalName());
     Frunction eval = left.evaluate(environment);
+    
     //System.out.println("Is eval null?: " + (eval == null));
     
     // The symbol that is going to be expressed from the right expression.

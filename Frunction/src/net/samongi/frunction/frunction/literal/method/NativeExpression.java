@@ -114,4 +114,6 @@ public abstract class NativeExpression implements Expression
     binding.setCountable(false);
     return binding;
   }
+  
+  @Override public Expression.Type getType(){return Expression.Type.NATIVE;}
 }

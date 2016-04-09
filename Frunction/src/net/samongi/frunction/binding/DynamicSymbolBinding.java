@@ -110,7 +110,7 @@ public class DynamicSymbolBinding implements SymbolBinding
   	
     this.key = key;
     this.environment = environment;
-    this.source = null;
+    this.source = "";
     
     
   }

@@ -21,6 +21,8 @@ public class MemoryExpression implements Expression
     this.inner = expr;
   }
 
+  @Override public Type getType(){return Expression.Type.MEMORY;}
+  
   @Override public String getDisplay()
   {
     return this.inner.getDisplay();
@@ -28,6 +30,8 @@ public class MemoryExpression implements Expression
 
   @Override public Frunction evaluate(Container environment)
   {
+    if(environment == null) throw new NullPointerException("'environment' was null");
+    
     if(evaluated == null) this.evaluated = this.inner.evaluate(environment);
     return this.evaluated;
   }
