@@ -64,8 +64,14 @@ public class StringFrunction extends NativeFrunction
   {
     this.addSymbol(this.methodEquals());
     this.addSymbol(this.methodString());
+    
     this.addSymbol(this.methodPrint());
     this.addSymbol(this.methodPrintln());
+
+    this.addSymbol(this.methodLength());
+    
+    this.addSymbol(this.methodConcatinate());
+    this.addSymbol(this.methodSubstring());
   }
 
   /** Will generate a method binding for determining if another method is equal.
@@ -91,18 +97,8 @@ public class StringFrunction extends NativeFrunction
         // defined
         Frunction right = this.getInput("other");
 
-        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) { return null; // We should
-                                                                                                              // technically
-                                                                                                              // never get
-                                                                                                              // to this
-                                                                                                              // stage.
-        }
-        if(!right.getType().equals(StringFrunction.TYPE) || !(right instanceof StringFrunction)) { return null; // We should
-                                                                                                                // technically
-                                                                                                                // never get
-                                                                                                                // to this
-                                                                                                                // stage.
-        }
+        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null; 
+        if(!right.getType().equals(StringFrunction.TYPE) || !(right instanceof StringFrunction)) return null; 
         StringFrunction s_left = (StringFrunction) left;
         StringFrunction s_right = (StringFrunction) right;
         // Performing the native operation.
@@ -127,12 +123,7 @@ public class StringFrunction extends NativeFrunction
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
 
-        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) { return null; // We should
-                                                                                                              // technically
-                                                                                                              // never get
-                                                                                                              // to this
-                                                                                                              // stage.
-        }
+        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null; 
         return left;
       }
 
@@ -154,12 +145,7 @@ public class StringFrunction extends NativeFrunction
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
 
-        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) { return null; // We should
-                                                                                                              // technically
-                                                                                                              // never get
-                                                                                                              // to this
-                                                                                                              // stage.
-        }
+        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null;
 
         // Converting the type
         StringFrunction s_left = (StringFrunction) left;
@@ -188,12 +174,7 @@ public class StringFrunction extends NativeFrunction
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
 
-        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) { return null; // We should
-                                                                                                              // technically
-                                                                                                              // never get
-                                                                                                              // to this
-                                                                                                              // stage.
-        }
+        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null; 
 
         // Converting the type
         StringFrunction s_left = (StringFrunction) left;
@@ -206,6 +187,96 @@ public class StringFrunction extends NativeFrunction
 
     };
     return expression.getAsBinding("println", this, input, types, condition);
+  }
+  
+  private SymbolBinding methodLength() throws ParsingException, RunTimeException
+  {
+    // Generating the first method
+    String[] input = new String[] {};
+    String[] types = new String[] {};
+    Expression condition = BooleanFrunction.getTautology();
+
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+
+        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null;
+
+        // Converting the type
+        StringFrunction s_left = (StringFrunction) left;
+        
+        return IntegerFrunction.getCached(s_left.getNative().length());
+      }
+
+    };
+    return expression.getAsBinding("len", this, input, types, condition);
+  }
+  
+  private SymbolBinding methodConcatinate() throws ParsingException, RunTimeException
+  {
+    // Generating the first method
+    String[] input = new String[] { "other" };
+    String[] types = new String[] { StringFrunction.TYPE };
+    Expression condition = BooleanFrunction.getTautology();
+
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate() throws ExpressionException
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+
+        // Getting the right argument which should be the "other" argument as
+        // defined
+        Frunction right = this.getInput("other");
+
+        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null; 
+        if(!right.getType().equals(StringFrunction.TYPE) || !(right instanceof StringFrunction)) return null; 
+        StringFrunction s_left = (StringFrunction) left;
+        StringFrunction s_right = (StringFrunction) right;
+        // Performing the native operation.
+        return StringFrunction.getCached(s_left.getNative().concat(s_right.getNative()));
+      }
+
+    };
+    return expression.getAsBinding("con", this, input, types, condition);
+  }
+  
+  private SymbolBinding methodSubstring() throws ParsingException, RunTimeException
+  {
+    // Generating the first method
+    String[] input = new String[] { "start" , "end" };
+    String[] types = new String[] { IntegerFrunction.TYPE, IntegerFrunction.TYPE };
+    Expression condition = BooleanFrunction.getTautology();
+
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate() throws ExpressionException
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+
+        // Getting the right argument which should be the "other" argument as
+        // defined
+        Frunction start = this.getInput("start");
+        Frunction end = this.getInput("end");
+
+        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null; 
+        if(!start.getType().equals(IntegerFrunction.TYPE) || !(start instanceof IntegerFrunction)) return null; 
+        if(!end.getType().equals(IntegerFrunction.TYPE) || !(end instanceof IntegerFrunction)) return null; 
+        
+        StringFrunction s_left = (StringFrunction) left;
+        IntegerFrunction i_start = (IntegerFrunction) start;
+        IntegerFrunction i_end = (IntegerFrunction) end;
+        // Performing the native operation.
+        return StringFrunction.getCached(s_left.getNative().substring((int)i_start.getNative(), (int)i_end.getNative()));
+      }
+
+    };
+    return expression.getAsBinding("sub", this, input, types, condition);
   }
 
   @Override public String getType()

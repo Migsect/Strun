@@ -12,7 +12,7 @@ import net.samongi.frunction.frunction.literal.method.NativeExpression;
 
 public class IntegerFrunction extends NativeFrunction
 {
-  private static final String TYPE = "int";
+  public static final String TYPE = "int";
 
   public static final Frunction parseLiteral(String symbol, Container environment) throws ParsingException, RunTimeException
   {

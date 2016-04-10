@@ -9,3 +9,8 @@ a.round().int().str().println();
 b : 456.789;
 a.mult(b).str().println();
 a.div(b).str().println();
+
+"hello".con(" world").println();
+
+s1 : "foobar";
+s1_l : s1.len();
