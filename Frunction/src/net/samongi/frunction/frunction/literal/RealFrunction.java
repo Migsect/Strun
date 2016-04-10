@@ -64,7 +64,21 @@ public class RealFrunction extends NativeFrunction
   private void addMethods() throws ParsingException, RunTimeException
   {
     this.addSymbol(this.methodEquals());
+    this.addSymbol(this.methodGreater());
+    this.addSymbol(this.methodLesser());
+    
+    this.addSymbol(this.methodNegative());
+    this.addSymbol(this.methodAbsolute());
+    this.addSymbol(this.methodRound());
+    this.addSymbol(this.methodCeiling());
+    this.addSymbol(this.methodFloor());
+    
     this.addSymbol(this.methodString());
+    this.addSymbol(this.methodInt());
+    
+    this.addSymbol(this.methodAddition());
+    this.addSymbol(this.methodDivision());
+    this.addSymbol(this.methodMultiplication());
   }
 
   /** Will generate a method binding for determining if another method is equal.
@@ -73,6 +87,204 @@ public class RealFrunction extends NativeFrunction
    * @throws RunTimeException 
    * @throws ParsingException */
   private SymbolBinding methodEquals() throws ParsingException, RunTimeException
+  {
+    // Generating the first method
+    String[] input = new String[] { "other" };
+    String[] types = new String[] { RealFrunction.TYPE };
+    Expression condition = BooleanFrunction.getTautology();
+
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+
+        // Getting the right argument which should be the "other" argument as
+        // defined
+        Frunction right = this.getInput("other");
+
+        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null; 
+        if(!right.getType().equals(RealFrunction.TYPE) || !(right instanceof RealFrunction)) return null;
+        RealFrunction r_left = (RealFrunction) left;
+        RealFrunction r_right = (RealFrunction) right;
+        // Performing the native operation.
+        return BooleanFrunction.getCached(r_left.getNative() == r_right.getNative());
+      }
+
+    };
+    return expression.getAsBinding("eq", this, input, types, condition);
+  }
+
+  private SymbolBinding methodString() throws ParsingException, RunTimeException
+  {
+    // Generating the first method
+    String[] input = new String[] {};
+    String[] types = new String[] {};
+    Expression condition = BooleanFrunction.getTautology();
+
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+
+        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null; 
+        RealFrunction r_left = (RealFrunction) left;
+        // Performing the native operation.
+        return StringFrunction.getCached("" + r_left.getNative());
+      }
+
+    };
+    return expression.getAsBinding("str", this, input, types, condition);
+  }
+  
+  private SymbolBinding methodInt() throws ParsingException, RunTimeException
+  {
+    // Generating the first method
+    String[] input = new String[] {};
+    String[] types = new String[] {};
+    Expression condition = BooleanFrunction.getTautology();
+
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+
+        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null; 
+        RealFrunction r_left = (RealFrunction) left;
+        // Performing the native operation.
+        return IntegerFrunction.getCached((long)r_left.getNative());
+      }
+
+    };
+    return expression.getAsBinding("int", this, input, types, condition);
+  }
+  
+  private SymbolBinding methodRound() throws ParsingException, RunTimeException
+  {
+    // Generating the first method
+    String[] input = new String[] {};
+    String[] types = new String[] {};
+    Expression condition = BooleanFrunction.getTautology();
+
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+
+        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null;
+        RealFrunction r_left = (RealFrunction) left;
+        // Performing the native operation.
+        return RealFrunction.getCached(Math.round(r_left.getNative()));
+      }
+
+    };
+    return expression.getAsBinding("round", this, input, types, condition);
+  }
+  
+  private SymbolBinding methodFloor() throws ParsingException, RunTimeException
+  {
+    // Generating the first method
+    String[] input = new String[] {};
+    String[] types = new String[] {};
+    Expression condition = BooleanFrunction.getTautology();
+
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+
+        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null;
+        RealFrunction r_left = (RealFrunction) left;
+        // Performing the native operation.
+        return RealFrunction.getCached(Math.floor(r_left.getNative()));
+      }
+
+    };
+    return expression.getAsBinding("floor", this, input, types, condition);
+  }
+  
+  private SymbolBinding methodCeiling() throws ParsingException, RunTimeException
+  {
+    // Generating the first method
+    String[] input = new String[] {};
+    String[] types = new String[] {};
+    Expression condition = BooleanFrunction.getTautology();
+
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+
+        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null;
+        RealFrunction r_left = (RealFrunction) left;
+        // Performing the native operation.
+        return RealFrunction.getCached(Math.ceil(r_left.getNative()));
+      }
+
+    };
+    return expression.getAsBinding("ceil", this, input, types, condition);
+  }
+  
+  private SymbolBinding methodNegative() throws ParsingException, RunTimeException
+  {
+    // Generating the first method
+    String[] input = new String[] {};
+    String[] types = new String[] {};
+    Expression condition = BooleanFrunction.getTautology();
+
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+
+        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null; 
+        RealFrunction r_left = (RealFrunction) left;
+        // Performing the native operation.
+        return RealFrunction.getCached( -r_left.getNative());
+      }
+
+    };
+    return expression.getAsBinding("neg", this, input, types, condition);
+  }
+  
+  private SymbolBinding methodAbsolute() throws ParsingException, RunTimeException
+  {
+    // Generating the first method
+    String[] input = new String[] {};
+    String[] types = new String[] {};
+    Expression condition = BooleanFrunction.getTautology();
+
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+
+        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null; 
+        RealFrunction r_left = (RealFrunction) left;
+        // Performing the native operation.
+        return RealFrunction.getCached(Math.abs(r_left.getNative()));
+      }
+
+    };
+    return expression.getAsBinding("abs", this, input, types, condition);
+  }
+  
+  private SymbolBinding methodGreater() throws ParsingException, RunTimeException
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -103,18 +315,17 @@ public class RealFrunction extends NativeFrunction
         RealFrunction r_left = (RealFrunction) left;
         RealFrunction r_right = (RealFrunction) right;
         // Performing the native operation.
-        return BooleanFrunction.getCached(r_left.getNative() == r_right.getNative());
+        return BooleanFrunction.getCached(r_left.getNative() > r_right.getNative());
       }
 
     };
-    return expression.getAsBinding("eq", this, input, types, condition);
+    return expression.getAsBinding("grtr", this, input, types, condition);
   }
-
-  private SymbolBinding methodString() throws ParsingException, RunTimeException
+  private SymbolBinding methodLesser() throws ParsingException, RunTimeException
   {
     // Generating the first method
-    String[] input = new String[] {};
-    String[] types = new String[] {};
+    String[] input = new String[] { "other" };
+    String[] types = new String[] { RealFrunction.TYPE };
     Expression condition = BooleanFrunction.getTautology();
 
     NativeExpression expression = new NativeExpression()
@@ -124,18 +335,134 @@ public class RealFrunction extends NativeFrunction
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
 
+        // Getting the right argument which should be the "other" argument as
+        // defined
+        Frunction right = this.getInput("other");
+
+        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null;   
+        if(!right.getType().equals(RealFrunction.TYPE) || !(right instanceof RealFrunction)) return null;         
+        RealFrunction r_left = (RealFrunction) left;
+        RealFrunction r_right = (RealFrunction) right;
+        // Performing the native operation.
+        return BooleanFrunction.getCached(r_left.getNative() < r_right.getNative());
+      }
+
+    };
+    return expression.getAsBinding("lssr", this, input, types, condition);
+  }
+  
+  private SymbolBinding methodAddition() throws ParsingException, RunTimeException
+  {
+    // Generating the first method
+    String[] input = new String[] { "other" };
+    String[] types = new String[] { RealFrunction.TYPE };
+    Expression condition = BooleanFrunction.getTautology();
+
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+
+        // Getting the right argument which should be the "other" argument as
+        // defined
+        Frunction right = this.getInput("other");
+
         if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) { return null; // We should
                                                                                                           // technically
                                                                                                           // never get to
                                                                                                           // this stage.
         }
+        if(!right.getType().equals(RealFrunction.TYPE) || !(right instanceof RealFrunction)) { return null; // We should
+                                                                                                            // technically
+                                                                                                            // never get to
+                                                                                                            // this stage.
+        }
         RealFrunction r_left = (RealFrunction) left;
+        RealFrunction r_right = (RealFrunction) right;
         // Performing the native operation.
-        return StringFrunction.getCached("" + r_left.getNative());
+        return RealFrunction.getCached(r_left.getNative() + r_right.getNative());
       }
 
     };
-    return expression.getAsBinding("str", this, input, types, condition);
+    return expression.getAsBinding("add", this, input, types, condition);
+  }
+  
+  private SymbolBinding methodMultiplication() throws ParsingException, RunTimeException
+  {
+    // Generating the first method
+    String[] input = new String[] { "other" };
+    String[] types = new String[] { RealFrunction.TYPE };
+    Expression condition = BooleanFrunction.getTautology();
+
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+
+        // Getting the right argument which should be the "other" argument as
+        // defined
+        Frunction right = this.getInput("other");
+
+        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) { return null; // We should
+                                                                                                          // technically
+                                                                                                          // never get to
+                                                                                                          // this stage.
+        }
+        if(!right.getType().equals(RealFrunction.TYPE) || !(right instanceof RealFrunction)) { return null; // We should
+                                                                                                            // technically
+                                                                                                            // never get to
+                                                                                                            // this stage.
+        }
+        RealFrunction r_left = (RealFrunction) left;
+        RealFrunction r_right = (RealFrunction) right;
+        // Performing the native operation.
+        return RealFrunction.getCached(r_left.getNative() * r_right.getNative());
+      }
+
+    };
+    return expression.getAsBinding("mult", this, input, types, condition);
+  }
+  
+  private SymbolBinding methodDivision() throws ParsingException, RunTimeException
+  {
+    // Generating the first method
+    String[] input = new String[] { "other" };
+    String[] types = new String[] { RealFrunction.TYPE };
+    Expression condition = BooleanFrunction.getTautology();
+
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+
+        // Getting the right argument which should be the "other" argument as
+        // defined
+        Frunction right = this.getInput("other");
+
+        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) { return null; // We should
+                                                                                                          // technically
+                                                                                                          // never get to
+                                                                                                          // this stage.
+        }
+        if(!right.getType().equals(RealFrunction.TYPE) || !(right instanceof RealFrunction)) { return null; // We should
+                                                                                                            // technically
+                                                                                                            // never get to
+                                                                                                            // this stage.
+        }
+        RealFrunction r_left = (RealFrunction) left;
+        RealFrunction r_right = (RealFrunction) right;
+        // Performing the native operation.
+        return RealFrunction.getCached(r_left.getNative() / r_right.getNative());
+      }
+
+    };
+    return expression.getAsBinding("div", this, input, types, condition);
   }
 
   @Override public String getType()

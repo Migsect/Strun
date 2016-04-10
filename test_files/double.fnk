@@ -1,0 +1,11 @@
+a : 123.456;
+a.str().println();
+a.neg().str().println();
+a.round().str().println();
+a.ceil().str().println();
+a.floor().str().println();
+a.round().int().str().println();
+
+b : 456.789;
+a.mult(b).str().println();
+a.div(b).str().println();
