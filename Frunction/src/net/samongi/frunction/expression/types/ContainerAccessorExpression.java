@@ -41,7 +41,7 @@ public class ContainerAccessorExpression implements Expression
 
     // We can now evaluate the expression.
     // This is using the environment of the frunction it is apart of.
-    Frunction accessed = l_binding.get();
+    Frunction accessed = l_binding.get(environment);
     if(DEBUG) System.out.println("  A-Evaluate accessed_source: " + accessed.getSource());
     if(accessed == null) throw new NullPointerException();
 

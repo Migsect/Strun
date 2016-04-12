@@ -31,7 +31,7 @@ public class BooleanFrunction extends NativeFrunction
     else sym = FALSE_LITERAL;
     try
     {
-      return LiteralDictionary.getInstance().getSymbol(sym).get();
+      return LiteralDictionary.getInstance().getSymbol(sym).get(LiteralDictionary.getInstance());
     }
     catch(ParsingException | RunTimeException e)
     {
@@ -50,7 +50,7 @@ public class BooleanFrunction extends NativeFrunction
     {
       @Override public Frunction evaluate() throws ParsingException, RunTimeException
       {
-        return LiteralDictionary.getInstance().getSymbol(TRUE_LITERAL).get();
+        return LiteralDictionary.getInstance().getSymbol(TRUE_LITERAL).get(LiteralDictionary.getInstance());
       }
     };
   }
@@ -65,7 +65,7 @@ public class BooleanFrunction extends NativeFrunction
     {
       @Override public Frunction evaluate() throws ParsingException, RunTimeException
       {
-        return LiteralDictionary.getInstance().getSymbol(FALSE_LITERAL).get();
+        return LiteralDictionary.getInstance().getSymbol(FALSE_LITERAL).get(LiteralDictionary.getInstance());
       }
     };
   }

@@ -72,7 +72,7 @@ public class LiteralDictionary implements Container
     if(DEBUG) System.out.println("  Created literal binding for '" + symbol + "' with type '" + f.getType() + "'");
 
     // Creating the binding and adding it to the map
-    SymbolBinding b = new DynamicSymbolBinding(symbol, f, this);
+    SymbolBinding b = new DynamicSymbolBinding(symbol, f);
     this.stored_literals.put(symbol, b);
 
     // Returning the new binding.

@@ -186,11 +186,6 @@ public class DynamicMethodBinding implements MethodBinding
     return this.source;
   }
 
-  @Override public Container getContainer()
-  {
-    return this.container;
-  }
-
   @Override public String toDisplay()
   {
     String inputs = "( ";
@@ -219,7 +214,9 @@ public class DynamicMethodBinding implements MethodBinding
     return this.input_types;
   }
 
-  @Override public void evaluate() throws ParsingException
+  // Note that the environment is not needed to evaluate a method binding
+  // This is due to it never actually "touching" a frunction.
+  @Override public void evaluate(Container environment) throws ParsingException
   {
     this.generateCondition();
     this.generateExpression();

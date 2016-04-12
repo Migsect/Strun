@@ -76,7 +76,7 @@ public interface Container
       Frunction f = null;
       try
       {
-        f = b.get();
+        f = b.get(this);
       }
       catch(RunTimeException e)
       {

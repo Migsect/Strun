@@ -29,7 +29,6 @@ public class DynamicSymbolBinding implements SymbolBinding
   public static DynamicSymbolBinding parseBinding(String text_section, Container environment) throws ParsingException, RunTimeException
   {
     if(text_section == null) throw new NullPointerException("'text_section' was null");
-    if(environment == null) throw new NullPointerException("'environment' was null");
     
     int i = 0;
     
@@ -54,28 +53,14 @@ public class DynamicSymbolBinding implements SymbolBinding
       source = text_section.substring(i);
     }
     
-    // Splitting the section based on the first bound binding operator
-    /*
-    String[] split_section = text_section.split(BINDING, 2);
-    if(split_section.length < 2) 
-    {
-      key = DEF_KEY;
-      source = split_section[0].trim(); 
-    }
-    else
-    {
-      key = split_section[0].trim();
-      source = split_section[1].trim();
-    }
-    */
     if(key == null) throw new NullPointerException("'key' was null");
     if(source == null) throw new NullPointerException("'source' was null");
 
     boolean do_eval = !key.startsWith(DELAY_EVAL);
     if(!do_eval) key = key.replaceFirst(DELAY_EVAL, "");
 
-    DynamicSymbolBinding binding = new DynamicSymbolBinding(key, source, environment);
-    if(do_eval) binding.collapse();
+    DynamicSymbolBinding binding = new DynamicSymbolBinding(key, source);
+    if(do_eval) binding.collapse(environment);
 
     return binding;
   }
@@ -88,28 +73,21 @@ public class DynamicSymbolBinding implements SymbolBinding
   private Expression expression = null;
   private Frunction collapsed = null;
 
-  // The container of this
-  private final Container environment;
-
-  public DynamicSymbolBinding(String key, String source, Container environment)
+  public DynamicSymbolBinding(String key, String source)
   {
     if(key == null) throw new NullPointerException("'key' was null");
-    if(environment == null) throw new NullPointerException("environment was null");
     if(source == null) throw new NullPointerException("'source' was null");
 
     this.key = key;
     this.source = source;
-    this.environment = environment;
   }
 
-  public DynamicSymbolBinding(String key, Frunction evaluated, Container environment)
+  public DynamicSymbolBinding(String key, Frunction evaluated)
   {
     if(key == null) throw new NullPointerException("key was null");
     if(evaluated == null) throw new NullPointerException("evaluated was null");
-    if(environment == null) throw new NullPointerException("environment was null");
 
     this.key = key;
-    this.environment = environment;
     this.collapsed = evaluated;
     this.expression = evaluated.toExpression();
     this.source = "";
@@ -137,16 +115,11 @@ public class DynamicSymbolBinding implements SymbolBinding
    * @return An expression object
    * @throws TokenException
    * @throws ExpressionException */
-  @Override public Expression getExpression() throws ParsingException
+  @Override public Expression getExpression(Container environment) throws ParsingException
   {
-    if(this.expression == null) this.evaluate();
+    if(this.expression == null) this.evaluate(environment);
     if(this.expression == null) throw new IllegalStateException();
     return this.expression;
-  }
-
-  @Override public Container getContainer()
-  {
-    return this.environment;
   }
 
   @Override public String toDisplay()
@@ -155,11 +128,11 @@ public class DynamicSymbolBinding implements SymbolBinding
     return display;
   }
 
-  @Override public void evaluate() throws ParsingException
+  @Override public void evaluate(Container environment) throws ParsingException
   {
     if(this.expression == null) try
     {
-      this.expression = Expression.parseString(this.source, this.environment);
+      this.expression = Expression.parseString(this.source, environment);
     }
     catch (ParsingException e)
     {
@@ -169,18 +142,18 @@ public class DynamicSymbolBinding implements SymbolBinding
     if(this.expression == null) throw new IllegalStateException();
   }
 
-  @Override public void collapse() throws ParsingException, RunTimeException
+  @Override public void collapse(Container environment) throws ParsingException, RunTimeException
   {
     // First we need to evaluate the symbol.
-    this.evaluate();
+    this.evaluate(environment);
     // Now we need to set collapsed
-    if(this.collapsed == null) this.collapsed = this.expression.evaluate(this.environment);
+    if(this.collapsed == null) this.collapsed = this.expression.evaluate(environment);
   }
 
-  @Override public Frunction get() throws ParsingException, RunTimeException
+  @Override public Frunction get(Container environment) throws ParsingException, RunTimeException
   {
     if(this.collapsed != null) return this.collapsed;
-    this.collapse();
+    this.collapse(environment);
     return this.collapsed;
   }
 

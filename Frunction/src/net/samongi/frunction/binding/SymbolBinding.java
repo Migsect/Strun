@@ -6,6 +6,7 @@ import net.samongi.frunction.exceptions.parsing.TokenException;
 import net.samongi.frunction.exceptions.runtime.RunTimeException;
 import net.samongi.frunction.exceptions.runtime.SymbolNotFoundException;
 import net.samongi.frunction.expression.types.Expression;
+import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
 
 public interface SymbolBinding extends Binding
@@ -25,7 +26,7 @@ public interface SymbolBinding extends Binding
    * @return An expression the symbol binding represents
    * @throws TokenException
    * @throws ExpressionException */
-  public Expression getExpression() throws ParsingException;
+  public Expression getExpression(Container environment) throws ParsingException;
 
   /** Returns a string representation of the binding that is more human readable.
    * 
@@ -37,7 +38,7 @@ public interface SymbolBinding extends Binding
    * 
    * @throws ExpressionException 
    * @throws SymbolNotFoundException */
-  public void collapse() throws ParsingException, RunTimeException;
+  public void collapse(Container environment) throws ParsingException, RunTimeException;
 
   /** Returns a frunction that this symbol may be representing. This will force a collapse as well as an evaluation of
    * symbol binding.
@@ -46,7 +47,7 @@ public interface SymbolBinding extends Binding
    * @throws RunTimeException 
    * @throws ExpressionException 
    * @throws SymbolNotFoundException */
-  public Frunction get() throws ParsingException, RunTimeException;
+  public Frunction get(Container environment) throws ParsingException, RunTimeException;
 
   /** Determines if the symbol is countable for certain methods
    * 

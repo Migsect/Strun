@@ -6,7 +6,7 @@ a.println();
 
 count_str : {
   (n) ?(n.lssr(1))-> n.str();
-  (n) -> n.str().con(count_str(n.add(-1)));
+  (n)             -> n.str().con(count_str(n.add(-1)));
 };
 count_str_print : {
   (n) -> count_str(n).println();
@@ -17,7 +17,4 @@ for : {
   (n, f)             -> {f(n); for(n.add(-1),f)}; 
 };
 
-#b : count_str(9);
-#b.println();
-
-for(1000, count_str_print);
+for(125, count_str_print);

@@ -31,7 +31,7 @@ public class StringFrunction extends NativeFrunction
     String sym = "\"" + str + "\"";
     try
     {
-      return LiteralDictionary.getInstance().getSymbol(sym).get();
+      return LiteralDictionary.getInstance().getSymbol(sym).get(LiteralDictionary.getInstance());
     }
     catch(ParsingException | RunTimeException e)
     {

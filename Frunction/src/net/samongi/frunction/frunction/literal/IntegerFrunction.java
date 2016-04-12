@@ -33,7 +33,7 @@ public class IntegerFrunction extends NativeFrunction
     String sym = "" + integer;
     try
     {
-      return LiteralDictionary.getInstance().getSymbol(sym).get();
+      return LiteralDictionary.getInstance().getSymbol(sym).get(LiteralDictionary.getInstance());
     }
     catch(ParsingException | RunTimeException e)
     {

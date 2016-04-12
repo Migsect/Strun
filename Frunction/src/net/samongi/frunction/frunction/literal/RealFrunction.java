@@ -33,7 +33,7 @@ public class RealFrunction extends NativeFrunction
     String sym = "" + real;
     try
     {
-      return LiteralDictionary.getInstance().getSymbol(sym).get();
+      return LiteralDictionary.getInstance().getSymbol(sym).get(LiteralDictionary.getInstance());
     }
     catch(ParsingException | RunTimeException e)
     {

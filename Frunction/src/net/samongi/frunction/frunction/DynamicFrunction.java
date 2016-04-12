@@ -288,7 +288,7 @@ public class DynamicFrunction implements Frunction
                                    // need to be accessed.
     {
       // System.out.println("  Frunction: getSymbol > Symbol was self accessor");
-      SymbolBinding self_bind = new DynamicSymbolBinding(SELF_SYMBOL, this, this);
+      SymbolBinding self_bind = new DynamicSymbolBinding(SELF_SYMBOL, this);
       self_bind.setCountable(false); // it shouldn't be countable
 
       // Adding the new symbol for the self
