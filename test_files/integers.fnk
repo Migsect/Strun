@@ -21,6 +21,9 @@ for : {
   };
 };
 
+double : {(n) -> n.mult;};
+z : double(10);
+
 d : 1020;
 e : 57;
 d.mult(e).str().println();

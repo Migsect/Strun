@@ -4,9 +4,11 @@ import net.samongi.frunction.exceptions.parsing.ExpressionException;
 import net.samongi.frunction.exceptions.parsing.ParsingException;
 import net.samongi.frunction.exceptions.parsing.TokenException;
 import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
+import net.samongi.frunction.parse.ParseUtil;
 
 public class DynamicSymbolBinding implements SymbolBinding
 {
@@ -28,14 +30,33 @@ public class DynamicSymbolBinding implements SymbolBinding
   {
     if(text_section == null) throw new NullPointerException("'text_section' was null");
     if(environment == null) throw new NullPointerException("'environment' was null");
-
-    // System.out.println("Parsing Symbol Binding: '" + text_section + "'");
     
-    // Splitting the section based on the first bound binding operator
-    String[] split_section = text_section.split(BINDING, 2);
-    // System.out.println("Split_section length: " + split_section.length);
+    int i = 0;
+    
+    // Getting the prior section
+    String prior = ParseUtil.getSection(text_section, i, BINDING, Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers(), Token.getScopeeToggleIdentifiers());
+    i += prior.length();
+    prior.trim();
+    // Removing the binding if it exists
+    if(prior.endsWith(BINDING)) prior = prior.substring(0, prior.length() - BINDING.length()).trim();
+    
+    // if i == text_section.length then that means prior represents everything
     String key = null;
     String source = null;
+    if(i >= text_section.length())
+    {
+      key = DEF_KEY;
+      source = prior;
+    }
+    else
+    {
+      key = prior;
+      source = text_section.substring(i);
+    }
+    
+    // Splitting the section based on the first bound binding operator
+    /*
+    String[] split_section = text_section.split(BINDING, 2);
     if(split_section.length < 2) 
     {
       key = DEF_KEY;
@@ -46,10 +67,9 @@ public class DynamicSymbolBinding implements SymbolBinding
       key = split_section[0].trim();
       source = split_section[1].trim();
     }
-    //System.out.println("  Key: '" + key + "'");
-    //System.out.println("  Source: '" + source + "'");
-    if(key == null) return null;
-    if(source == null) return null;
+    */
+    if(key == null) throw new NullPointerException("'key' was null");
+    if(source == null) throw new NullPointerException("'source' was null");
 
     boolean do_eval = !key.startsWith(DELAY_EVAL);
     if(!do_eval) key = key.replaceFirst(DELAY_EVAL, "");
