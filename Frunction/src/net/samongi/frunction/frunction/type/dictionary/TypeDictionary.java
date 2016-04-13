@@ -29,6 +29,18 @@ public class TypeDictionary extends DynamicFrunction
     super(null);
   }
   
+  public boolean containsType(String type)
+  {
+    return this.hasSymbol(type);
+  }
+  
+  /**Will generate the type in the library.
+   * This will set the type as the symbol
+   * The type will not overwrite an already pre-existing instantiation
+   * of the type frunction
+   * 
+   * @param type
+   */
   public void generateType(String type)
   {
     SymbolBinding binding = new DynamicSymbolBinding(type, "");
@@ -38,7 +50,6 @@ public class TypeDictionary extends DynamicFrunction
     }
     catch(FrunctionNotEvaluatedException e)
     {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }

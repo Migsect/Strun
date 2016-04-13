@@ -259,7 +259,7 @@ public class DynamicFrunction implements Frunction
     return null;
   }
 
-  @Override public void addMethod(MethodBinding binding) throws FrunctionNotEvaluatedException
+  @Override public void addMethod(MethodBinding binding) throws RunTimeException
   {
     if(!this.isEvaluated()) throw new FrunctionNotEvaluatedException();
 
@@ -276,38 +276,32 @@ public class DynamicFrunction implements Frunction
     if(DEBUG) System.out.println("    List size: " + binding_list.size());
   }
 
+  // We need to grab the symbol
   @Override public SymbolBinding getSymbol(String symbol) throws ParsingException, RunTimeException
   {
+    // Trimming the symbol
     symbol = symbol.trim();
+    // Evaluating the frunction if it isn't already
     if(!this.isEvaluated()) this.evaluate();
 
     // First step is to consult if the symbol is a literal
     if(LiteralDictionary.getInstance().isLiteral(symbol)) return LiteralDictionary.getInstance().getSymbol(symbol);
 
-    if(symbol.equals(SELF_SYMBOL)) // time to create the self binding that will
-                                   // need to be accessed.
+    // We now determine if it is a self binding
+    if(symbol.equals(SELF_SYMBOL)) 
     {
       // System.out.println("  Frunction: getSymbol > Symbol was self accessor");
       SymbolBinding self_bind = new DynamicSymbolBinding(SELF_SYMBOL, this);
       self_bind.setCountable(false); // it shouldn't be countable
-
-      // Adding the new symbol for the self
-      try
-      {
-        this.addSymbol(self_bind);
-      }
-      catch(FrunctionNotEvaluatedException e)
-      {
-        e.printStackTrace();
-      }
+      
+      this.addSymbol(self_bind);
     }
-
+    
     SymbolBinding binding = null;
     // First case is to check if it will force an environment pop-up
     if(symbol.startsWith(CONTAINER_ENV_SYMBOL))
     {
-      // System.out.println("  .  .  Found use of '^', upping the environment. New Sym: '"
-      // + symbol.substring(CONTAINER_ENV_SYMBOL.length()) + "'");
+      // Throwing an exception if the upper environment is not found
       if(this.environment == null) throw new SymbolNotFoundException(symbol);
       binding = this.environment.getSymbol(symbol.substring(CONTAINER_ENV_SYMBOL.length()));
     }
@@ -316,7 +310,7 @@ public class DynamicFrunction implements Frunction
       binding = this.symbol_bindings.get(symbol);
       if(binding == null)
       {
-        // this.displayHierarchy(2);
+        // Trying to get a raised symbol
         if(this.environment == null) throw new SymbolNotFoundException(symbol);
         binding = this.environment.getSymbol(symbol);
       }
@@ -359,6 +353,45 @@ public class DynamicFrunction implements Frunction
   {
     return this.source;
   }
+  
+  /**Checks to see if the frunction contains the symbol.
+   * This will detect any symbol and does not take into account "countable"
+   * 
+   * @param symbol The symbol to check for
+   * @return True if the frunction has the symbol
+   */
+  public boolean hasSymbol(String symbol)
+  {
+    return this.symbol_bindings.containsKey(symbol);
+  }
+  
+  /**Will count the symbols in the frunction.
+   * This will take into account if a symbol is "countable" or not.
+   * The symbol will specify if it is countable or not.
+   * 
+   * @return The number of countable symbols
+   */
+  public int countSymbols()
+  {
+    int sum = 0;
+    for(SymbolBinding b : this.symbol_bindings.values())
+    {
+      if(b.isCountable()) sum ++;
+    }
+    return sum;
+  }
+  /**Will return the total amount of symbols in this frunction
+   * These symbols will be defined to this frunction and not the
+   * type frunction.
+   * 
+   * @return The total number of symbols
+   */
+  public int countAllSymbols()
+  {
+    return this.symbol_bindings.size();
+  }
+  
+  
 
   @Override public List<MethodBinding> getMethods()
   {
