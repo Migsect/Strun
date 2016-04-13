@@ -39,7 +39,7 @@ public abstract class NativeExpression implements Expression
   {
     try
     {
-      return this.environment.getSymbol("^@").get(this.evaluate());
+      return this.environment.getSymbol("^@").get(this.environment);
     }
     catch(ParsingException e)
     {
@@ -60,7 +60,7 @@ public abstract class NativeExpression implements Expression
   {
     try
     {
-      return this.environment.getSymbol(symbol).get(this.evaluate());
+      return this.environment.getSymbol(symbol).get(this.environment);
     }
     catch(ParsingException e)
     {
