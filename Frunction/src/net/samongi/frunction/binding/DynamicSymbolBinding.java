@@ -158,7 +158,7 @@ public class DynamicSymbolBinding implements SymbolBinding
   {
     if(this.expression == null) try
     {
-      this.expression = Expression.parseString(this.source, environment);
+      this.expression = Expression.parseString(this.source);
     }
     catch (ParsingException e)
     {

@@ -83,7 +83,7 @@ public class MethodExpression implements Expression
 
     // Retrieving the method biniding.
     MethodBinding binding = eval.getMethod(types, evaluated_inputs);
-    if(DEBUG) System.out.println("  M-Left: " + left_expression.getDisplay());
+    //System.out.println("  M-Left: " + left_expression.getDisplay());
     if(binding == null) throw new NullPointerException();
 
     // The left expression is the container

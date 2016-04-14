@@ -28,8 +28,7 @@ public interface Expression
     METHOD,
     FRUNCTION,
     NATIVE,
-    FRUNCTION_CONVERSION,
-    MEMORY;
+    FRUNCTION_CONVERSION;
   }
 
   /** Parses a string to make an expression this uses Token.parseTokens and Expression.parseExpression to do so As such

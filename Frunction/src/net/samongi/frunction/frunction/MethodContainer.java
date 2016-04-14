@@ -46,11 +46,11 @@ public class MethodContainer implements Container
 
   // Calling the inner environment for the get symbol given that this doesn't
   // wish to override it.
-  @Override public SymbolBinding getSymbol(String symbol) throws ParsingException, RunTimeException
+  @Override public SymbolBinding getSymbol(String symbol, Container proxy) throws ParsingException, RunTimeException
   {
     symbol = symbol.trim();
     if(override_symbols.containsKey(symbol)) return override_symbols.get(symbol);
-    return this.environment.getSymbol(symbol);
+    return this.environment.getSymbol(symbol, proxy);
   }
 
   // This will return the environment above the environment this wraps

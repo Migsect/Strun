@@ -59,6 +59,7 @@ public class TypeDictionary extends DynamicFrunction
   {
     if(!this.containsType(type)) this.generateType(type);
     SymbolBinding binding = this.getSymbol(type);
+    //System.out.println("Fetched type : '" + type + "'");
     return binding.get(this);
   }
 }

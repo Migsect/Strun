@@ -35,10 +35,22 @@ public interface Container
   /** Gets the symbol binding for the corresponding symbol
    * 
    * @param symbol The symbol to retrieve
+   * @return A SymbolBinding
+   * @throws ExpressionException 
+   * @throws TokenException */
+  public default SymbolBinding getSymbol(String symbol) throws ParsingException, RunTimeException
+  {
+    return this.getSymbol(symbol, this.getEnvironment());
+  }
+  
+  /** Gets the symbol binding for the corresponding symbol
+   * 
+   * @param symbol The symbol to retrieve
+   * @param prozy This will treat getting the symbol as if the proxy was the container's environment
    * @return A SymbolBinding, otherwise null 
    * @throws ExpressionException 
    * @throws TokenException */
-  public SymbolBinding getSymbol(String symbol) throws ParsingException, RunTimeException;
+  public SymbolBinding getSymbol(String symbol, Container proxy) throws ParsingException, RunTimeException;
 
   /** Adds the binding to this container
    * 

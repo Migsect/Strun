@@ -81,14 +81,11 @@ public class DynamicMethodBinding implements MethodBinding
     String[] input_types = new String[split_input.length];
     for(int k = 0; k < split_input.length; k++)
     {
-      String part = split_input[k].trim(); // removing whitespace as well as
-                                           // squeezing
-      String[] parts = part.split(" +"); // splitting the part, this is how
-                                         // types are specified.
+      String part = split_input[k].trim();
+      String[] parts = part.split(" +"); 
 
-      input_symbols[k] = parts[0]; // first is going to be the symbol
-      if(parts.length > 1) input_types[k] = parts[1]; // second might be the
-                                                      // type if it exists
+      input_symbols[k] = parts[0];
+      if(parts.length > 1) input_types[k] = parts[1]; 
       else input_types[k] = "";;
     }
 

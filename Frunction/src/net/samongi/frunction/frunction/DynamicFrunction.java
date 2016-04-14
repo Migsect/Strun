@@ -270,8 +270,6 @@ public class DynamicFrunction implements Frunction
 
     String[] types = binding.getTypes();
     if(DEBUG) System.out.println("  Adding with types:" + ParseUtil.concatStringArray(types));
-    // System.out.println("Binding with types: " +
-    // ParseUtil.concatStringArray(types));
     // Generating the list if it doesn't exist
     if(!this.method_bindings.containsKey(types.length)) this.method_bindings.put(types.length, new ArrayList<MethodBinding>());
     // Retrieving the list
@@ -282,7 +280,7 @@ public class DynamicFrunction implements Frunction
   }
 
   // We need to grab the symbol
-  @Override public SymbolBinding getSymbol(String symbol) throws ParsingException, RunTimeException
+  @Override public SymbolBinding getSymbol(String symbol, Container proxy) throws ParsingException, RunTimeException
   {
     // cleaning up the symbol
     symbol = symbol.trim();
@@ -295,7 +293,6 @@ public class DynamicFrunction implements Frunction
     // <<< Check to see if it is the self-binding >>>
     if(symbol.equals(SELF_SYMBOL)) 
     {
-      // System.out.println("  Frunction: getSymbol > Symbol was self accessor");
       SymbolBinding self_bind = new DynamicSymbolBinding(SELF_SYMBOL, this);
       self_bind.setCountable(false); // it shouldn't be countable
       self_bind.setPrivate(true);
@@ -305,9 +302,9 @@ public class DynamicFrunction implements Frunction
     
     
     // <<< Starts with the raise modifier >>>
-    if(symbol.startsWith(CONTAINER_RAISE_SYMBOL) && this.environment != null)
+    if(symbol.startsWith(CONTAINER_RAISE_SYMBOL) && proxy != null)
     {
-      return this.environment.getSymbol(symbol.substring(CONTAINER_RAISE_SYMBOL.length()));
+      return proxy.getSymbol(symbol.substring(CONTAINER_RAISE_SYMBOL.length()));
     }
     // <<< Starts with the type raise modifier >>>
     if(symbol.startsWith(TYPE_RAISE_SYMBOL))
@@ -319,8 +316,8 @@ public class DynamicFrunction implements Frunction
     // <<< Starts with the absolute raise modifier >>>
     if(symbol.startsWith(ABSOLUTE_RAISE_SYMBOL))
     {
-      if(this.environment == null) return this.getSymbol(symbol.substring(ABSOLUTE_RAISE_SYMBOL.length()));
-      else return this.environment.getSymbol(symbol);
+      if(proxy == null) return this.getSymbol(symbol.substring(ABSOLUTE_RAISE_SYMBOL.length()));
+      else return proxy.getSymbol(symbol);
     }
 
     SymbolBinding binding = null;
@@ -334,8 +331,8 @@ public class DynamicFrunction implements Frunction
     if(binding != null) return binding;
     
     // <<< Raise environment check >>>
-    if(this.environment == null) return null;
-    binding = this.environment.getSymbol(symbol);
+    if(proxy == null) return null;
+    binding = proxy.getSymbol(symbol);
 
     // Returning the binding, it may be null
     return binding;
