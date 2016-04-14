@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import net.samongi.frunction.binding.Binding;
 import net.samongi.frunction.binding.DynamicMethodBinding;
 import net.samongi.frunction.binding.DynamicSymbolBinding;
+import net.samongi.frunction.binding.EnvironmentChangeSymbolBinding;
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
 import net.samongi.frunction.exceptions.parsing.ParsingException;
@@ -72,10 +73,31 @@ public class DynamicFrunction implements Frunction
   public DynamicFrunction(Container environment) throws ParsingException, RunTimeException
   {
     this.environment = environment;
-    this.source = null;
+    this.source = "";
     this.evaluate();
   }
+  
+  /**Creates a copy of the base frunction with the new environment
+   * 
+   * @param environment The new environment to set it to
+   * @param base The base to base it off of.
+   * @throws ParsingException
+   * @throws RunTimeException
+   */
+  public DynamicFrunction(Container environment, DynamicFrunction base) throws ParsingException, RunTimeException
+  {
+    this.environment = environment;
+    this.source = base.source;
+    this.type = base.type;
+    this.method_bindings = base.method_bindings;
+    this.symbol_bindings = base.symbol_bindings;
+  }
 
+  @Override public Frunction clone(Container new_environment) throws ParsingException, RunTimeException
+  {
+    return new DynamicFrunction(new_environment, this);
+  }
+  
   @Override public void evaluate() throws ParsingException, RunTimeException
   {
     if(this.isEvaluated()) return;
@@ -311,7 +333,7 @@ public class DynamicFrunction implements Frunction
     {
       Frunction type_frunction = this.getTypeFrunction();
       if(type_frunction == null) return null;
-      return type_frunction.getSymbol(symbol.substring(TYPE_RAISE_SYMBOL.length()));
+      return new EnvironmentChangeSymbolBinding((DynamicSymbolBinding) type_frunction.getSymbol(symbol.substring(TYPE_RAISE_SYMBOL.length())), this);
     }
     // <<< Starts with the absolute raise modifier >>>
     if(symbol.startsWith(ABSOLUTE_RAISE_SYMBOL))
@@ -326,9 +348,11 @@ public class DynamicFrunction implements Frunction
     if(binding != null) return binding;
     
     // <<< Type environment check >>>
+    DynamicSymbolBinding t_binding = null;
     Frunction type_frunction = this.getTypeFrunction();
-    if(type_frunction != null) binding = type_frunction.getSymbol(symbol);
-    if(binding != null) return binding;
+    // TODO possible problems here if we ever have another base type of symbol binding.
+    if(type_frunction != null) t_binding = (DynamicSymbolBinding) type_frunction.getSymbol(symbol); 
+    if(t_binding != null) return new EnvironmentChangeSymbolBinding(t_binding, this);
     
     // <<< Raise environment check >>>
     if(proxy == null) return null;

@@ -47,6 +47,13 @@ public interface Frunction extends Container
     return type_frunction;
   }
   
+  /**Will clone the frunction and base it in the new specified environment
+   * 
+   * @param new_environment The new environment to base it in
+   * @return The new frunction that has a new environment
+   */
+  public Frunction clone(Container new_environment) throws ParsingException, RunTimeException;
+  
   /**Will check to see if there is an accessible symbol in the frunction.
    * This also includes the frunction's type.
    * 

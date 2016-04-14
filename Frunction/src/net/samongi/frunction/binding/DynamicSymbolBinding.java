@@ -96,6 +96,20 @@ public class DynamicSymbolBinding implements SymbolBinding
   
   /**The clone constructor
    * 
+   * @param binding
+   */
+  public DynamicSymbolBinding(DynamicSymbolBinding binding)
+  {
+    if(binding == null) throw new NullPointerException("'binding' was null");
+    
+    this.key = binding.key;
+    this.collapsed = binding.collapsed;
+    this.expression = binding.expression;
+    this.source = binding.source;
+  }
+  
+  /**The clone-change key constructor
+   * 
    * @param key The key to set as the binding
    * @param binding
    */
