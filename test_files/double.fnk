@@ -62,3 +62,31 @@ a.a.println();
 "4====================================================".println();
 a.f();
 a.g();
+
+A : {
+  type : "1";
+  %string : "This is type-1's string";
+};
+A2 : {
+  type : "1";
+};
+B : {
+  type : "2";
+  %type : "1";
+};
+C : {
+  type : "3";
+  %type : "1";
+};
+
+A2.string.println();
+
+A.type.println();
+B.type.println();
+B.%type.println();
+C.type.println();
+C.%type.println();
+
+
+
+B.string.println();

@@ -302,7 +302,7 @@ public class DynamicFrunction implements Frunction
   }
 
   // We need to grab the symbol
-  @Override public SymbolBinding getSymbol(String symbol, Container proxy) throws ParsingException, RunTimeException
+  @Override public SymbolBinding getSymbol(String symbol) throws ParsingException, RunTimeException
   {
     // cleaning up the symbol
     symbol = symbol.trim();
@@ -324,9 +324,9 @@ public class DynamicFrunction implements Frunction
     
     
     // <<< Starts with the raise modifier >>>
-    if(symbol.startsWith(CONTAINER_RAISE_SYMBOL) && proxy != null)
+    if(symbol.startsWith(CONTAINER_RAISE_SYMBOL) && this.environment != null)
     {
-      return proxy.getSymbol(symbol.substring(CONTAINER_RAISE_SYMBOL.length()));
+      return this.environment.getSymbol(symbol.substring(CONTAINER_RAISE_SYMBOL.length()));
     }
     // <<< Starts with the type raise modifier >>>
     if(symbol.startsWith(TYPE_RAISE_SYMBOL))
@@ -338,8 +338,8 @@ public class DynamicFrunction implements Frunction
     // <<< Starts with the absolute raise modifier >>>
     if(symbol.startsWith(ABSOLUTE_RAISE_SYMBOL))
     {
-      if(proxy == null) return this.getSymbol(symbol.substring(ABSOLUTE_RAISE_SYMBOL.length()));
-      else return proxy.getSymbol(symbol);
+      if(this.environment == null) return this.getSymbol(symbol.substring(ABSOLUTE_RAISE_SYMBOL.length()));
+      else return this.environment.getSymbol(symbol);
     }
 
     SymbolBinding binding = null;
@@ -348,15 +348,16 @@ public class DynamicFrunction implements Frunction
     if(binding != null) return binding;
     
     // <<< Type environment check >>>
-    DynamicSymbolBinding t_binding = null;
     Frunction type_frunction = this.getTypeFrunction();
     // TODO possible problems here if we ever have another base type of symbol binding.
-    if(type_frunction != null) t_binding = (DynamicSymbolBinding) type_frunction.getSymbol(symbol); 
-    if(t_binding != null) return new EnvironmentChangeSymbolBinding(t_binding, this);
+    if(type_frunction != null) binding = type_frunction.getSymbol(symbol); 
+    if(binding != null) return new EnvironmentChangeSymbolBinding((DynamicSymbolBinding) binding, this);
+    
+    System.out.println("Symbol: '" + symbol + "'");
     
     // <<< Raise environment check >>>
-    if(proxy == null) return null;
-    binding = proxy.getSymbol(symbol);
+    if(this.environment == null) return null;
+    binding = this.environment.getSymbol(symbol);
 
     // Returning the binding, it may be null
     return binding;

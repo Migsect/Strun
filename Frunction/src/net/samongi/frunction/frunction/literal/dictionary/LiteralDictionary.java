@@ -52,7 +52,7 @@ public class LiteralDictionary implements Container
     return null;
   }
 
-  @Override public SymbolBinding getSymbol(String symbol, Container proxy)
+  @Override public SymbolBinding getSymbol(String symbol)
   {
     // Returning it if it already exists
     if(this.stored_literals.containsKey(symbol)) return this.stored_literals.get(symbol);
