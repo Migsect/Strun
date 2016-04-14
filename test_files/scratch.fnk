@@ -1,0 +1,21 @@
+factorial : {
+  (n int) ?(n.lssr(2))-> 1;
+  (n int) -> n.mult(factorial(n.add(-1)));
+};
+
+for : {
+  (strt int, maxm int, incr int, f) ?(strt.add(incr).grtr(maxm))-> 
+      {
+        f(strt);
+      };
+  (strt int, maxm int, incr int, f) -> 
+      {
+        f(strt);
+        for(strt.add(incr), maxm, incr, f);
+      };
+};
+
+factorial(6).str().println();
+for(0 , 100 , 1,
+  {(n int) -> factorial(n).str().println();}
+);
