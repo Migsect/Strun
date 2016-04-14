@@ -36,7 +36,7 @@ public class DynamicSymbolBinding implements SymbolBinding
     String prior = ParseUtil.getSection(text_section, i, BINDING, Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers(), Token.getScopeeToggleIdentifiers());
     i += prior.length();
     prior.trim();
-    // Removing the binding if it exists
+    // Removing the binding operator if it exists
     if(prior.endsWith(BINDING)) prior = prior.substring(0, prior.length() - BINDING.length()).trim();
     
     // if i == text_section.length then that means prior represents everything
@@ -57,7 +57,7 @@ public class DynamicSymbolBinding implements SymbolBinding
     if(source == null) throw new NullPointerException("'source' was null");
 
     boolean do_eval = !key.startsWith(DELAY_EVAL);
-    if(!do_eval) key = key.replaceFirst(DELAY_EVAL, "");
+    if(!do_eval) key = key.substring(DELAY_EVAL.length());
 
     DynamicSymbolBinding binding = new DynamicSymbolBinding(key, source);
     if(do_eval) binding.collapse(environment);
@@ -65,9 +65,10 @@ public class DynamicSymbolBinding implements SymbolBinding
     return binding;
   }
 
-  private final String key;
+  private String key;
   private final String source;
-  private final boolean is_private = false; // TODO implement binding privacy
+  
+  private boolean is_private = false;
   private boolean countable = true;
 
   private Expression expression = null;
@@ -84,19 +85,39 @@ public class DynamicSymbolBinding implements SymbolBinding
 
   public DynamicSymbolBinding(String key, Frunction evaluated)
   {
-    if(key == null) throw new NullPointerException("key was null");
-    if(evaluated == null) throw new NullPointerException("evaluated was null");
+    if(key == null) throw new NullPointerException("'key' was null");
+    if(evaluated == null) throw new NullPointerException("'evaluated' was null");
 
     this.key = key;
     this.collapsed = evaluated;
     this.expression = evaluated.toExpression();
     this.source = "";
-
+  }
+  
+  /**The clone constructor
+   * 
+   * @param key The key to set as the binding
+   * @param binding
+   */
+  public DynamicSymbolBinding(String key, DynamicSymbolBinding binding)
+  {
+    if(key == null) throw new NullPointerException("'key' was null");
+    if(binding == null) throw new NullPointerException("'binding' was null");
+    
+    this.key = key;
+    this.collapsed = binding.collapsed;
+    this.expression = binding.expression;
+    this.source = binding.source;
   }
 
   @Override public String getKey()
   {
     return this.key;
+  }
+  
+  @Override public SymbolBinding clone(String new_key)
+  {
+    return new DynamicSymbolBinding(new_key, this);
   }
 
   @Override public String getSource()
@@ -107,6 +128,11 @@ public class DynamicSymbolBinding implements SymbolBinding
   @Override public boolean isPrivate()
   {
     return this.is_private;
+  }
+  
+  @Override public void setPrivate(boolean state)
+  {
+    this.is_private = state;
   }
 
   /** Returns the expression this binding relates to This will force the binding to update it's expression given it

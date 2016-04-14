@@ -40,14 +40,13 @@ public interface Expression
    * @return
    * @throws TokenException
    * @throws ExpressionException */
-  public static Expression parseString(String source, Container environment) throws TokenException, ExpressionException
+  public static Expression parseString(String source) throws TokenException, ExpressionException
   {
     if(source == null) throw new NullPointerException("'source' was null");
-    if(environment == null) throw new NullPointerException("'environment' was null");
 
     source = source.trim();
     GroupToken token = Token.parseTokens(source);
-    return Expression.parseTokens(source, token.getTokens(), environment);
+    return Expression.parseTokens(source, token.getTokens());
   }
 
   /** Parses tokens to make an expression object
@@ -57,9 +56,8 @@ public interface Expression
    * @param environment The environment the tokens are being parsed in
    * @return An expression parsed from the tokens
    * @throws TokenException */
-  public static Expression parseTokens(String source, Token[] tokens, Container environment) throws TokenException, ExpressionException
+  public static Expression parseTokens(String source, Token[] tokens) throws TokenException, ExpressionException
   {
-    if(environment == null) throw new NullPointerException("'environment' was null");
     if(tokens == null) throw new NullPointerException("'tokens' was null");
     
     // Note that the left expression is null.
@@ -69,8 +67,6 @@ public interface Expression
     {
 
       Token t = tokens[i];
-      // System.out.println("Token is of type: " + t.getType().toString() +
-      // " with source '" + t.getSource() + "'");
       // Case 1: We have a token without an accessor before it.
       // This means that it is accessing the current environment
       // This only occurs if we start on a symbol
@@ -121,7 +117,7 @@ public interface Expression
         System.out.println("  For some reason there was a group token?!?!");
         if(i != 0) throw new ExpressionException(Expression.Type.GENERIC, source);
         GroupToken g_t = (GroupToken) t;
-        Expression expr = Expression.parseTokens(source, g_t.getTokens(), environment);
+        Expression expr = Expression.parseTokens(source, g_t.getTokens());
         left_expr = expr; // setting it to be the left expression
         i += 1;
       }

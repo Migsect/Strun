@@ -8,6 +8,7 @@ import net.samongi.frunction.exceptions.parsing.ExpressionException;
 import net.samongi.frunction.exceptions.parsing.ParsingException;
 import net.samongi.frunction.exceptions.runtime.FrunctionNotEvaluatedException;
 import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.exceptions.runtime.SymbolNotFoundException;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.DynamicFrunction;
@@ -39,7 +40,10 @@ public abstract class NativeExpression implements Expression
   {
     try
     {
-      return this.environment.getSymbol("^@").get(this.environment);
+      SymbolBinding binding =  this.environment.getSymbol("^@");
+      if(binding == null) throw new SymbolNotFoundException("^@");
+      
+      return binding.get(this.environment);
     }
     catch(ParsingException e)
     {
@@ -60,7 +64,10 @@ public abstract class NativeExpression implements Expression
   {
     try
     {
-      return this.environment.getSymbol(symbol).get(this.environment);
+      SymbolBinding binding = this.environment.getSymbol(symbol);
+      if(binding == null) throw new SymbolNotFoundException(symbol);
+      
+      return binding.get(this.environment);
     }
     catch(ParsingException e)
     {
@@ -87,7 +94,7 @@ public abstract class NativeExpression implements Expression
   {
     Frunction method_holder = new DynamicFrunction(environment);
 
-    MethodBinding method = new DynamicMethodBinding(environment, input, types, condition, this);
+    MethodBinding method = new DynamicMethodBinding(input, types, condition, this);
     try
     {
       method_holder.addMethod(method);

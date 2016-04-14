@@ -15,12 +15,24 @@ public interface SymbolBinding extends Binding
    * 
    * @return The key of the symbol binding */
   public String getKey();
+  
+  /**Creates a clone of the symbol binding with the new key.
+   * 
+   * @param key The key to set to
+   */
+  public SymbolBinding clone(String new_key);
 
   /** Returns the privacy state of the binding. This determines if the key can be accessed from outside of its container
    * 
    * @return True if the symbol is private */
   public boolean isPrivate();
-
+ 
+  /**Sets the privacy state of the symbol
+   * 
+   * @param state The state to set privacy to
+   */
+  public void setPrivate(boolean state);
+  
   /** Returns the expression that this symbol binding represents.
    * 
    * @return An expression the symbol binding represents

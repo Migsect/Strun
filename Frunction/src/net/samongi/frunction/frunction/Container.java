@@ -43,8 +43,9 @@ public interface Container
   /** Adds the binding to this container
    * 
    * @param symbol The symbol's string to add
-   * @param binding The binding to add */
-  public void addSymbol(SymbolBinding binding) throws RunTimeException;
+   * @param binding The binding to add 
+   * @throws ParsingException */
+  public void addSymbol(SymbolBinding binding) throws RunTimeException, ParsingException;
 
   /** Returns all the symbols stored in the container This returns all of the symbols sorted.
    * 

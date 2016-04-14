@@ -1,16 +1,39 @@
-a : 123.456;
-a.str().println();
-a.neg().str().println();
-a.round().str().println();
-a.ceil().str().println();
-a.floor().str().println();
-a.round().int().str().println();
 
-b : 456.789;
-a.mult(b).str().println();
-a.div(b).str().println();
+type_test : {
+  type: "test";
+  %binding_1 : "This is a type binding";
+};
 
-"hello".con(" world").println();
+type_test.binding_1.println();
 
-s1 : "foobar";
-s1_l : s1.len();
+not_type_test : {
+  type: "test";
+};
+not_type_test.binding_1.println();
+
+Coord : {
+  typing : { 
+    type : "coord";
+    %message : "I am me the type";
+    %self : {() -> ^@;};
+    %str : {() -> "(".con(^@.x.str().con(", ").con(^@.y.str()).con(")"));};
+    %add : {(other) -> Coord(^@.x.add(other.x),^@.y.add(other.y));};
+  };
+  (x, y) -> {
+    type : "coord";
+    message : "Will be shown";
+    x : x;
+    y : y;
+  };
+};
+
+a : Coord(10,20);
+a.x.str().println();
+a.y.str().println();
+#a.str().println();
+
+b : Coord(1,2);
+
+a.message.println();
+a.self().message.println();
+a.self().x.str().println();
