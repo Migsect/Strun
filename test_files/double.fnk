@@ -65,7 +65,7 @@ a.g();
 
 A : {
   type : "1";
-  %string : "This is type-1's string";
+  string : "This is type-1's string";
 };
 A2 : {
   type : "1";

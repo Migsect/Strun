@@ -21,7 +21,6 @@ public class TypeDictionary extends DynamicFrunction
       e.printStackTrace();
     }
     return instance;
-    
   }
   
   /**Creating the type dictionary
@@ -51,6 +50,7 @@ public class TypeDictionary extends DynamicFrunction
    */
   public void generateType(String type) throws ParsingException, RunTimeException
   {
+    // The environment of the type frunction will be the type dictionary
     Frunction type_frunction = new DynamicFrunction(this);
     SymbolBinding binding = new DynamicSymbolBinding(type, type_frunction);
     this.addSymbol(binding);
@@ -59,7 +59,6 @@ public class TypeDictionary extends DynamicFrunction
   {
     if(!this.containsType(type)) this.generateType(type);
     SymbolBinding binding = this.getSymbol(type);
-    //System.out.println("Fetched type : '" + type + "'");
     return binding.get(this);
   }
 }

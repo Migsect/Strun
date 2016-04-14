@@ -353,8 +353,6 @@ public class DynamicFrunction implements Frunction
     if(type_frunction != null) binding = type_frunction.getSymbol(symbol); 
     if(binding != null) return new EnvironmentChangeSymbolBinding((DynamicSymbolBinding) binding, this);
     
-    System.out.println("Symbol: '" + symbol + "'");
-    
     // <<< Raise environment check >>>
     if(this.environment == null) return null;
     binding = this.environment.getSymbol(symbol);
