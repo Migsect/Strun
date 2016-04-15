@@ -11,10 +11,10 @@ import net.samongi.frunction.binding.DynamicMethodBinding;
 import net.samongi.frunction.binding.DynamicSymbolBinding;
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.FrunctionNotEvaluatedException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
-import net.samongi.frunction.exceptions.runtime.SymbolNotFoundException;
+import net.samongi.frunction.error.runtime.FrunctionNotEvaluatedError;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.runtime.SymbolNotFoundError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
 import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
@@ -62,16 +62,16 @@ public class DynamicFrunction implements Frunction
    * call evaluate to ensure that the hashmaps are made
    * 
    * @param environment 
-   * @throws RunTimeException 
-   * @throws ParsingException */
-  public DynamicFrunction(Container environment) throws ParsingException, RunTimeException
+   * @throws RunTimeError 
+   * @throws SyntaxError */
+  public DynamicFrunction(Container environment) throws SyntaxError, RunTimeError
   {
     this.environment = environment;
     this.source = null;
     this.evaluate();
   }
 
-  @Override public void evaluate() throws ParsingException, RunTimeException
+  @Override public void evaluate() throws SyntaxError, RunTimeError
   {
     if(this.isEvaluated()) return;
 
@@ -121,7 +121,7 @@ public class DynamicFrunction implements Frunction
     return true;
   }
 
-  @Override public MethodBinding getMethod(String[] types, Frunction[] inputs) throws ParsingException, RunTimeException
+  @Override public MethodBinding getMethod(String[] types, Frunction[] inputs) throws SyntaxError, RunTimeError
   {
     if(DEBUG) System.out.println("  Fetching method with types:" + ParseUtil.concatStringArray(types));
     if(types.length != inputs.length)
@@ -153,7 +153,7 @@ public class DynamicFrunction implements Frunction
     return null; // We didn't find the method for the types
   }
 
-  private MethodBinding searchMethodsUntyped(List<MethodBinding> bindings, String[] types, Frunction[] inputs) throws ParsingException, RunTimeException
+  private MethodBinding searchMethodsUntyped(List<MethodBinding> bindings, String[] types, Frunction[] inputs) throws SyntaxError, RunTimeError
   {
     if(bindings == null) throw new NullPointerException("'bindings' was null");
     if(types == null) throw new NullPointerException("'types' was null");
@@ -200,7 +200,7 @@ public class DynamicFrunction implements Frunction
     return null;
   }
 
-  private MethodBinding searchMethodsTyped(List<MethodBinding> bindings, String[] types, Frunction[] inputs) throws ParsingException, RunTimeException
+  private MethodBinding searchMethodsTyped(List<MethodBinding> bindings, String[] types, Frunction[] inputs) throws SyntaxError, RunTimeError
   {
     if(bindings == null) throw new NullPointerException("'bindings' was null");
     if(types == null) throw new NullPointerException("'types' was null");
@@ -259,9 +259,9 @@ public class DynamicFrunction implements Frunction
     return null;
   }
 
-  @Override public void addMethod(MethodBinding binding) throws FrunctionNotEvaluatedException
+  @Override public void addMethod(MethodBinding binding) throws FrunctionNotEvaluatedError
   {
-    if(!this.isEvaluated()) throw new FrunctionNotEvaluatedException();
+    if(!this.isEvaluated()) throw new FrunctionNotEvaluatedError();
 
     String[] types = binding.getTypes();
     if(DEBUG) System.out.println("  Adding with types:" + ParseUtil.concatStringArray(types));
@@ -276,7 +276,7 @@ public class DynamicFrunction implements Frunction
     if(DEBUG) System.out.println("    List size: " + binding_list.size());
   }
 
-  @Override public SymbolBinding getSymbol(String symbol) throws ParsingException, RunTimeException
+  @Override public SymbolBinding getSymbol(String symbol) throws SyntaxError, RunTimeError
   {
     symbol = symbol.trim();
     if(!this.isEvaluated()) this.evaluate();
@@ -296,7 +296,7 @@ public class DynamicFrunction implements Frunction
       {
         this.addSymbol(self_bind);
       }
-      catch(FrunctionNotEvaluatedException e)
+      catch(FrunctionNotEvaluatedError e)
       {
         e.printStackTrace();
       }
@@ -308,7 +308,7 @@ public class DynamicFrunction implements Frunction
     {
       // System.out.println("  .  .  Found use of '^', upping the environment. New Sym: '"
       // + symbol.substring(CONTAINER_ENV_SYMBOL.length()) + "'");
-      if(this.environment == null) throw new SymbolNotFoundException(symbol);
+      if(this.environment == null) throw new SymbolNotFoundError(symbol);
       binding = this.environment.getSymbol(symbol.substring(CONTAINER_ENV_SYMBOL.length()));
     }
     else
@@ -317,21 +317,21 @@ public class DynamicFrunction implements Frunction
       if(binding == null)
       {
         // this.displayHierarchy(2);
-        if(this.environment == null) throw new SymbolNotFoundException(symbol);
+        if(this.environment == null) throw new SymbolNotFoundError(symbol);
         binding = this.environment.getSymbol(symbol);
       }
     }
 
-    if(binding == null) { throw new SymbolNotFoundException(symbol); }
+    if(binding == null) { throw new SymbolNotFoundError(symbol); }
 
     // Returning the binding, it may be null
     return binding;
   }
 
-  @Override public void addSymbol(SymbolBinding binding) throws FrunctionNotEvaluatedException
+  @Override public void addSymbol(SymbolBinding binding) throws FrunctionNotEvaluatedError
   {
     if(binding == null) throw new NullPointerException("'binding' was null");
-    if(!this.isEvaluated()) throw new FrunctionNotEvaluatedException();
+    if(!this.isEvaluated()) throw new FrunctionNotEvaluatedError();
 
     // Simply adding the symbol
     // This will override any existing symbols in that place, but it is expected

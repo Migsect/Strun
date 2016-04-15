@@ -1,0 +1,21 @@
+a : {
+ (x, y) -> x.add(y);
+};
+
+c : {
+    add : {
+        (x) -> 6.str().println();
+    };
+};
+
+!a : { 
+    b: 11; 
+    c : c.add(10);
+    () -> ^b.add(c); 
+};
+
+b : 10;
+
+c : 5;
+
+a().str().println();

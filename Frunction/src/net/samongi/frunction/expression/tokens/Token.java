@@ -1,6 +1,6 @@
 package net.samongi.frunction.expression.tokens;
 
-import net.samongi.frunction.exceptions.parsing.TokenException;
+import net.samongi.frunction.error.syntax.TokenError;
 import net.samongi.frunction.frunction.literal.StringFrunction;
 
 public interface Token
@@ -51,8 +51,8 @@ public interface Token
    * 
    * @param source
    * @return
-   * @throws TokenException */
-  public static GroupToken parseTokens(String source) throws TokenException
+   * @throws TokenError */
+  public static GroupToken parseTokens(String source) throws TokenError
   {
     return new GroupToken(source);
   }

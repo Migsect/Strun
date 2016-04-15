@@ -1,10 +1,10 @@
 package net.samongi.frunction.frunction.literal;
 
 import net.samongi.frunction.binding.SymbolBinding;
-import net.samongi.frunction.exceptions.parsing.ExpressionException;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.FrunctionNotEvaluatedException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.FrunctionNotEvaluatedError;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.ExpressionError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
@@ -17,7 +17,7 @@ public class StringFrunction extends NativeFrunction
 
   private static final String TYPE = "string";
 
-  public static Frunction parseLiteral(String symbol, Container environment) throws ParsingException, RunTimeException
+  public static Frunction parseLiteral(String symbol, Container environment) throws SyntaxError, RunTimeError
   {
     if(!symbol.startsWith(STRING_CAPSULE) || !symbol.endsWith(STRING_CAPSULE)) return null;
     if(symbol.length() < 2) return null;
@@ -33,7 +33,7 @@ public class StringFrunction extends NativeFrunction
     {
       return LiteralDictionary.getInstance().getSymbol(sym).get();
     }
-    catch(ParsingException | RunTimeException e)
+    catch(SyntaxError | RunTimeError e)
     {
       e.printStackTrace();
     }
@@ -42,7 +42,7 @@ public class StringFrunction extends NativeFrunction
 
   private final String state;
 
-  public StringFrunction(Container environment, String state) throws ParsingException, RunTimeException
+  public StringFrunction(Container environment, String state) throws SyntaxError, RunTimeError
   {
     super(environment);
 
@@ -54,13 +54,13 @@ public class StringFrunction extends NativeFrunction
     {
       this.addMethods();
     }
-    catch(FrunctionNotEvaluatedException e)
+    catch(FrunctionNotEvaluatedError e)
     {
       e.printStackTrace();
     }
   }
 
-  private void addMethods() throws ParsingException, RunTimeException
+  private void addMethods() throws SyntaxError, RunTimeError
   {
     this.addSymbol(this.methodEquals());
     this.addSymbol(this.methodString());
@@ -77,9 +77,9 @@ public class StringFrunction extends NativeFrunction
   /** Will generate a method binding for determining if another method is equal.
    * 
    * @return 
-   * @throws RunTimeException 
-   * @throws ParsingException */
-  private SymbolBinding methodEquals() throws ParsingException, RunTimeException
+   * @throws RunTimeError 
+   * @throws SyntaxError */
+  private SymbolBinding methodEquals() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -88,7 +88,7 @@ public class StringFrunction extends NativeFrunction
 
     NativeExpression expression = new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ExpressionException
+      @Override public Frunction evaluate() throws ExpressionError
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
@@ -109,7 +109,7 @@ public class StringFrunction extends NativeFrunction
     return expression.getAsBinding("eq", this, input, types, condition);
   }
 
-  private SymbolBinding methodString() throws ParsingException, RunTimeException
+  private SymbolBinding methodString() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -131,7 +131,7 @@ public class StringFrunction extends NativeFrunction
     return expression.getAsBinding("str", this, input, types, condition);
   }
 
-  private SymbolBinding methodPrint() throws ParsingException, RunTimeException
+  private SymbolBinding methodPrint() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -160,7 +160,7 @@ public class StringFrunction extends NativeFrunction
     return expression.getAsBinding("print", this, input, types, condition);
   }
 
-  private SymbolBinding methodPrintln() throws ParsingException, RunTimeException
+  private SymbolBinding methodPrintln() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -189,7 +189,7 @@ public class StringFrunction extends NativeFrunction
     return expression.getAsBinding("println", this, input, types, condition);
   }
   
-  private SymbolBinding methodLength() throws ParsingException, RunTimeException
+  private SymbolBinding methodLength() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -215,7 +215,7 @@ public class StringFrunction extends NativeFrunction
     return expression.getAsBinding("len", this, input, types, condition);
   }
   
-  private SymbolBinding methodConcatinate() throws ParsingException, RunTimeException
+  private SymbolBinding methodConcatinate() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -224,7 +224,7 @@ public class StringFrunction extends NativeFrunction
 
     NativeExpression expression = new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ExpressionException
+      @Override public Frunction evaluate() throws ExpressionError
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
@@ -245,7 +245,7 @@ public class StringFrunction extends NativeFrunction
     return expression.getAsBinding("con", this, input, types, condition);
   }
   
-  private SymbolBinding methodSubstring() throws ParsingException, RunTimeException
+  private SymbolBinding methodSubstring() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "start" , "end" };
@@ -254,7 +254,7 @@ public class StringFrunction extends NativeFrunction
 
     NativeExpression expression = new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ExpressionException
+      @Override public Frunction evaluate() throws ExpressionError
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();

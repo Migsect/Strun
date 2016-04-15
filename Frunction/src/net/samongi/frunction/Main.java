@@ -2,20 +2,30 @@ package net.samongi.frunction;
 
 import java.io.File;
 
-import net.samongi.frunction.exceptions.parsing.ExpressionException;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
-import net.samongi.frunction.exceptions.runtime.SymbolNotFoundException;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.runtime.SymbolNotFoundError;
+import net.samongi.frunction.error.syntax.ExpressionError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.file.FileUtil;
 import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.parse.Commenting;
 import net.samongi.frunction.parse.ParseUtil;
+
+import net.samongi.frunction.error.FrunctionError;
 
 public class Main
 {
 
   public static void main(String[] args)
   {
+    try {
+      throw new FrunctionError(1234, 5);
+    }
+    catch (FrunctionError er) {
+      System.out.println(er.getFormattedMessage());
+    }
+    
+    
     if(args.length < 1) return;
     String file_loc = args[0];
     // System.out.println("Attempting to parse: " + file_loc);
@@ -44,17 +54,17 @@ public class Main
     {
       main_frunction.evaluate();
     }
-    catch(ParsingException | RunTimeException e)
+    catch(SyntaxError | RunTimeError e)
     {
       // TODO Auto-generated catch block
       e.printStackTrace();
-      if(e instanceof ExpressionException)
+      if(e instanceof ExpressionError)
       {
-        System.out.println("Source : '" + ((ExpressionException) e).getSource() + "'");
+        System.out.println("Source : '" + ((ExpressionError) e).getSource() + "'");
       }
-      if(e instanceof SymbolNotFoundException)
+      if(e instanceof SymbolNotFoundError)
       {
-        System.out.println("Symbol Not Found : '" + ((SymbolNotFoundException) e).getSymbol() + "'");
+        System.out.println("Symbol Not Found : '" + ((SymbolNotFoundError) e).getSymbol() + "'");
       }
     }
 

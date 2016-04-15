@@ -3,7 +3,7 @@ package net.samongi.frunction.expression.tokens;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.samongi.frunction.exceptions.parsing.TokenException;
+import net.samongi.frunction.error.syntax.TokenError;
 import net.samongi.frunction.parse.ParseUtil;
 
 public class InputToken implements Token
@@ -21,7 +21,7 @@ public class InputToken implements Token
     this.source = source.trim();
   }
 
-  public void evaluate() throws TokenException
+  public void evaluate() throws TokenError
   {
     if(this.input_tokens != null) return;
     int i = 0;
@@ -52,7 +52,7 @@ public class InputToken implements Token
                                                                          // any.
   }
 
-  public GroupToken[] getTokens() throws TokenException
+  public GroupToken[] getTokens() throws TokenError
   {
     if(this.input_tokens == null) this.evaluate();
     return this.input_tokens;

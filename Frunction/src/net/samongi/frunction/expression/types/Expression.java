@@ -1,13 +1,13 @@
 package net.samongi.frunction.expression.types;
 
-import net.samongi.frunction.exceptions.parsing.BadlyPlacedExpressionException;
-import net.samongi.frunction.exceptions.parsing.ExpressionException;
-import net.samongi.frunction.exceptions.parsing.MissingExpectedTokensException;
-import net.samongi.frunction.exceptions.parsing.MissingLeftExpressionException;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.parsing.TokenException;
-import net.samongi.frunction.exceptions.parsing.UnexpectedTokenException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.ExpressionError;
+import net.samongi.frunction.error.syntax.MissingExpectedTokensError;
+import net.samongi.frunction.error.syntax.MissingLeftExpressionError;
+import net.samongi.frunction.error.syntax.SyntaxError;
+import net.samongi.frunction.error.syntax.TokenError;
+import net.samongi.frunction.error.syntax.UnexpectedExpressionError;
+import net.samongi.frunction.error.syntax.UnexpectedTokenError;
 import net.samongi.frunction.expression.tokens.FrunctionToken;
 import net.samongi.frunction.expression.tokens.GroupToken;
 import net.samongi.frunction.expression.tokens.InputToken;
@@ -38,9 +38,9 @@ public interface Expression
    * @param source
    * @param environment
    * @return
-   * @throws TokenException
-   * @throws ExpressionException */
-  public static Expression parseString(String source, Container environment) throws TokenException, ExpressionException
+   * @throws TokenError
+   * @throws ExpressionError */
+  public static Expression parseString(String source, Container environment) throws TokenError, ExpressionError
   {
     if(source == null) throw new NullPointerException("'source' was null");
     if(environment == null) throw new NullPointerException("'environment' was null");
@@ -56,8 +56,8 @@ public interface Expression
    * @param tokens The tokens to parse
    * @param environment The environment the tokens are being parsed in
    * @return An expression parsed from the tokens
-   * @throws TokenException */
-  public static Expression parseTokens(String source, Token[] tokens, Container environment) throws TokenException, ExpressionException
+   * @throws TokenError */
+  public static Expression parseTokens(String source, Token[] tokens, Container environment) throws TokenError, ExpressionError
   {
     if(environment == null) throw new NullPointerException("'environment' was null");
     if(tokens == null) throw new NullPointerException("'tokens' was null");
@@ -76,7 +76,7 @@ public interface Expression
       // This only occurs if we start on a symbol
       if(t.getType().equals(Token.Type.SYMBOL))
       {
-        if(i != 0) throw new BadlyPlacedExpressionException(Expression.Type.CONTAINER_ACCESSOR, source);
+        if(i != 0) throw new UnexpectedExpressionError(Expression.Type.CONTAINER_ACCESSOR, source);
         
         ContainerAccessorExpression expr = new ContainerAccessorExpression((SymbolToken) t);
         left_expr = expr; // Setting it to be the left expression
@@ -85,10 +85,10 @@ public interface Expression
       // Case 2: We come across an accessor token
       else if(t.getType().equals(Token.Type.ACCESSOR))
       {
-        if(left_expr == null) throw new MissingLeftExpressionException(Expression.Type.FRUNCTION_ACCESSOR, source);
+        if(left_expr == null) throw new MissingLeftExpressionError(Expression.Type.FRUNCTION_ACCESSOR, source);
         // Checking to see if there is a next index
-        if(tokens.length < i + 1) throw new MissingExpectedTokensException(Expression.Type.FRUNCTION_ACCESSOR, source);
-        if(!tokens[i + 1].getType().equals(Token.Type.SYMBOL)) throw new MissingExpectedTokensException(Expression.Type.FRUNCTION_ACCESSOR, source);
+        if(tokens.length < i + 1) throw new MissingExpectedTokensError(Expression.Type.FRUNCTION_ACCESSOR, source);
+        if(!tokens[i + 1].getType().equals(Token.Type.SYMBOL)) throw new MissingExpectedTokensError(Expression.Type.FRUNCTION_ACCESSOR, source);
 
         Token r_t = tokens[i + 1]; // Getting the next token
         FrunctionAccessorExpression expr = new FrunctionAccessorExpression(left_expr, (SymbolToken) r_t);
@@ -100,7 +100,7 @@ public interface Expression
       // This is a very similar case to the symbol token
       else if(t.getType().equals(Token.Type.FRUNCTION))
       {
-        if(i != 0) new BadlyPlacedExpressionException(Expression.Type.FRUNCTION, source);
+        if(i != 0) new UnexpectedExpressionError(Expression.Type.FRUNCTION, source);
         FrunctionExpression expr = new FrunctionExpression((FrunctionToken) t);
         left_expr = expr; // setting it to be the left expression
         i += 1;
@@ -109,7 +109,7 @@ public interface Expression
       // This requires a symbol to be before it.
       else if(t.getType().equals(Token.Type.INPUT))
       {
-        if(left_expr == null) throw new MissingLeftExpressionException(Expression.Type.METHOD, source);
+        if(left_expr == null) throw new MissingLeftExpressionError(Expression.Type.METHOD, source);
         MethodExpression expr = new MethodExpression(left_expr, (InputToken) t);
         left_expr = expr; // setting it to be the left expression
         i += 1;
@@ -119,21 +119,21 @@ public interface Expression
       else if(t.getType().equals(Token.Type.GROUP))
       {
         System.out.println("  For some reason there was a group token?!?!");
-        if(i != 0) throw new ExpressionException(Expression.Type.GENERIC, source);
+        if(i != 0) throw new ExpressionError(Expression.Type.GENERIC, source);
         GroupToken g_t = (GroupToken) t;
         Expression expr = Expression.parseTokens(source, g_t.getTokens(), environment);
         left_expr = expr; // setting it to be the left expression
         i += 1;
       }
-      else throw new UnexpectedTokenException(source);
+      else throw new UnexpectedTokenError(source);
       
     }
-    if(left_expr == null) throw new ExpressionException(Expression.Type.GENERIC, source);
+    if(left_expr == null) throw new ExpressionError(Expression.Type.GENERIC, source);
     
     return left_expr; // Returning the final left expression
   }
 
-  public Frunction evaluate(Container environment) throws ParsingException, RunTimeException;
+  public Frunction evaluate(Container environment) throws SyntaxError, RunTimeError;
 
   public Expression.Type getType();
 

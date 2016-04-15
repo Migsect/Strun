@@ -1,7 +1,8 @@
 package net.samongi.frunction.parse;
 
 import static org.junit.Assert.*;
-import net.samongi.frunction.exceptions.parsing.TokenException;
+
+import net.samongi.frunction.error.syntax.TokenError;
 import net.samongi.frunction.expression.tokens.GroupToken;
 import net.samongi.frunction.expression.tokens.Token;
 
@@ -20,7 +21,7 @@ public class TokenTest
     {
       output = Token.arrayToTypeArray(parsed.getTokens());
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -40,7 +41,7 @@ public class TokenTest
     {
       output = Token.arrayToTypeArray(parsed.getTokens());
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -60,7 +61,7 @@ public class TokenTest
     {
       output = Token.arrayToTypeArray(parsed.getTokens());
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -80,7 +81,7 @@ public class TokenTest
     {
       output = Token.arrayToTypeArray(parsed.getTokens());
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -100,7 +101,7 @@ public class TokenTest
     {
       output = Token.arrayToTypeArray(parsed.getTokens());
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -120,7 +121,7 @@ public class TokenTest
     {
       output = Token.arrayToTypeArray(parsed.getTokens());
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -140,7 +141,7 @@ public class TokenTest
     {
       output = Token.arrayToTypeArray(parsed.getTokens());
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -160,7 +161,7 @@ public class TokenTest
     {
       output = Token.arrayToTypeArray(parsed.getTokens());
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -180,7 +181,7 @@ public class TokenTest
     {
       output = Token.arrayToTypeArray(parsed.getTokens());
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -200,7 +201,7 @@ public class TokenTest
     {
       output = Token.arrayToTypeArray(parsed.getTokens());
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -220,7 +221,7 @@ public class TokenTest
     {
       output = Token.arrayToTypeArray(parsed.getTokens());
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -240,7 +241,7 @@ public class TokenTest
     {
       output = Token.arrayToTypeArray(parsed.getTokens());
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -260,7 +261,7 @@ public class TokenTest
     {
       output = Token.arrayToTypeArray(parsed.getTokens());
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -280,7 +281,7 @@ public class TokenTest
     {
       output = Token.arrayToTypeArray(parsed.getTokens());
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -300,7 +301,7 @@ public class TokenTest
     {
       output = Token.arrayToTypeArray(parsed.getTokens());
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -320,7 +321,7 @@ public class TokenTest
     {
       output = parsed.getTokens()[0].getSource();
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -340,7 +341,7 @@ public class TokenTest
     {
       output = parsed.getTokens()[0].getSource();
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -372,7 +373,7 @@ public class TokenTest
     {
       output = parsed.getTokens()[0].getSource();
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -392,7 +393,7 @@ public class TokenTest
     {
       output = parsed.getTokens()[0].getSource();
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -412,7 +413,7 @@ public class TokenTest
     {
       output = parsed.getTokens()[0].getSource();
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();
@@ -432,7 +433,7 @@ public class TokenTest
     {
       output = parsed.getTokens()[0].getSource();
     }
-    catch(TokenException e)
+    catch(TokenError e)
     {
       e.printStackTrace();
       fail();

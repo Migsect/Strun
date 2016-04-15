@@ -1,18 +1,18 @@
 package net.samongi.frunction.frunction;
 
-import net.samongi.frunction.exceptions.parsing.ExpressionException;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.ExpressionError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.expression.types.Expression;
 
 public interface Frunction extends Container
 {
   /** Evaluates the frunction if it needs to be evaluated This will do nothing on native frunctions but on source-based
    * frunctions this will parse the source to generate the frunction 
-   * @throws ExpressionException 
-   * @throws RunTimeException 
-   * @throws ParsingException */
-  public void evaluate() throws ParsingException, RunTimeException;
+   * @throws ExpressionError 
+   * @throws RunTimeError 
+   * @throws SyntaxError */
+  public void evaluate() throws SyntaxError, RunTimeError;
 
   /** This will return the evaluation state of the frunction If the frunction is native then this will generally return
    * true

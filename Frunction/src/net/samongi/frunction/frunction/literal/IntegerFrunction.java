@@ -1,9 +1,9 @@
 package net.samongi.frunction.frunction.literal;
 
 import net.samongi.frunction.binding.SymbolBinding;
-import net.samongi.frunction.exceptions.parsing.ExpressionException;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.ExpressionError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
@@ -14,7 +14,7 @@ public class IntegerFrunction extends NativeFrunction
 {
   public static final String TYPE = "int";
 
-  public static final Frunction parseLiteral(String symbol, Container environment) throws ParsingException, RunTimeException
+  public static final Frunction parseLiteral(String symbol, Container environment) throws SyntaxError, RunTimeError
   {
     Long converted = null;
     try
@@ -35,7 +35,7 @@ public class IntegerFrunction extends NativeFrunction
     {
       return LiteralDictionary.getInstance().getSymbol(sym).get();
     }
-    catch(ParsingException | RunTimeException e)
+    catch(SyntaxError | RunTimeError e)
     {
       e.printStackTrace();
     }
@@ -44,7 +44,7 @@ public class IntegerFrunction extends NativeFrunction
 
   private final long state;
 
-  public IntegerFrunction(Container environment, long state) throws ParsingException, RunTimeException
+  public IntegerFrunction(Container environment, long state) throws SyntaxError, RunTimeError
   {
     super(environment);
 
@@ -55,13 +55,13 @@ public class IntegerFrunction extends NativeFrunction
     {
       this.addMethods();
     }
-    catch(ParsingException | RunTimeException e)
+    catch(SyntaxError | RunTimeError e)
     {
       e.printStackTrace();
     }
   }
 
-  private void addMethods() throws ParsingException, RunTimeException
+  private void addMethods() throws SyntaxError, RunTimeError
   {
     this.addSymbol(this.methodEquals());
     this.addSymbol(this.methodString());
@@ -79,9 +79,9 @@ public class IntegerFrunction extends NativeFrunction
   /** Will generate a method binding for determining if another method is equal.
    * 
    * @return 
-   * @throws RunTimeException 
-   * @throws ParsingException */
-  private SymbolBinding methodEquals() throws ParsingException, RunTimeException
+   * @throws RunTimeError 
+   * @throws SyntaxError */
+  private SymbolBinding methodEquals() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -90,7 +90,7 @@ public class IntegerFrunction extends NativeFrunction
 
     NativeExpression expression = new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ExpressionException
+      @Override public Frunction evaluate() throws ExpressionError
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
@@ -111,7 +111,7 @@ public class IntegerFrunction extends NativeFrunction
     return expression.getAsBinding("eq", this, input, types, condition);
   }
 
-  private SymbolBinding methodString() throws ParsingException, RunTimeException
+  private SymbolBinding methodString() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -136,7 +136,7 @@ public class IntegerFrunction extends NativeFrunction
     return expression.getAsBinding("str", this, input, types, condition);
   }
   
-  private SymbolBinding methodReal() throws ParsingException, RunTimeException
+  private SymbolBinding methodReal() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -161,7 +161,7 @@ public class IntegerFrunction extends NativeFrunction
     return expression.getAsBinding("real", this, input, types, condition);
   }
   
-  private SymbolBinding methodGreater() throws ParsingException, RunTimeException
+  private SymbolBinding methodGreater() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -170,7 +170,7 @@ public class IntegerFrunction extends NativeFrunction
 
     NativeExpression expression = new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ExpressionException
+      @Override public Frunction evaluate() throws ExpressionError
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
@@ -191,7 +191,7 @@ public class IntegerFrunction extends NativeFrunction
     return expression.getAsBinding("grtr", this, input, types, condition);
   }
   
-  private SymbolBinding methodLesser() throws ParsingException, RunTimeException
+  private SymbolBinding methodLesser() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -200,7 +200,7 @@ public class IntegerFrunction extends NativeFrunction
 
     NativeExpression expression = new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ExpressionException
+      @Override public Frunction evaluate() throws ExpressionError
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
@@ -221,7 +221,7 @@ public class IntegerFrunction extends NativeFrunction
     return expression.getAsBinding("lssr", this, input, types, condition);
   }
   
-  private SymbolBinding methodNegative() throws ParsingException, RunTimeException
+  private SymbolBinding methodNegative() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -230,7 +230,7 @@ public class IntegerFrunction extends NativeFrunction
 
     NativeExpression expression = new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ExpressionException
+      @Override public Frunction evaluate() throws ExpressionError
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
@@ -245,7 +245,7 @@ public class IntegerFrunction extends NativeFrunction
     return expression.getAsBinding("neg", this, input, types, condition);
   }
   
-  private SymbolBinding methodAbsolute() throws ParsingException, RunTimeException
+  private SymbolBinding methodAbsolute() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -254,7 +254,7 @@ public class IntegerFrunction extends NativeFrunction
 
     NativeExpression expression = new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ExpressionException
+      @Override public Frunction evaluate() throws ExpressionError
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
@@ -269,7 +269,7 @@ public class IntegerFrunction extends NativeFrunction
     return expression.getAsBinding("abs", this, input, types, condition);
   }
   
-  private SymbolBinding methodAddition() throws ParsingException, RunTimeException
+  private SymbolBinding methodAddition() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -278,7 +278,7 @@ public class IntegerFrunction extends NativeFrunction
 
     NativeExpression expression = new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ExpressionException
+      @Override public Frunction evaluate() throws ExpressionError
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
@@ -299,7 +299,7 @@ public class IntegerFrunction extends NativeFrunction
     return expression.getAsBinding("add", this, input, types, condition);
   }
   
-  private SymbolBinding methodMultiplication() throws ParsingException, RunTimeException
+  private SymbolBinding methodMultiplication() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -308,7 +308,7 @@ public class IntegerFrunction extends NativeFrunction
 
     NativeExpression expression = new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ExpressionException
+      @Override public Frunction evaluate() throws ExpressionError
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
@@ -329,7 +329,7 @@ public class IntegerFrunction extends NativeFrunction
     return expression.getAsBinding("mult", this, input, types, condition);
   }
   
-  private SymbolBinding methodDivision() throws ParsingException, RunTimeException
+  private SymbolBinding methodDivision() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -338,7 +338,7 @@ public class IntegerFrunction extends NativeFrunction
 
     NativeExpression expression = new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ExpressionException
+      @Override public Frunction evaluate() throws ExpressionError
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
@@ -359,7 +359,7 @@ public class IntegerFrunction extends NativeFrunction
     return expression.getAsBinding("div", this, input, types, condition);
   }
   
-  private SymbolBinding methodRemainder() throws ParsingException, RunTimeException
+  private SymbolBinding methodRemainder() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -368,7 +368,7 @@ public class IntegerFrunction extends NativeFrunction
 
     NativeExpression expression = new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ExpressionException
+      @Override public Frunction evaluate() throws ExpressionError
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();

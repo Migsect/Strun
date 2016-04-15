@@ -1,7 +1,7 @@
 package net.samongi.frunction.binding;
 
-import net.samongi.frunction.exceptions.parsing.ExpressionException;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
+import net.samongi.frunction.error.syntax.ExpressionError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.frunction.Container;
 
 public interface Binding
@@ -20,7 +20,7 @@ public interface Binding
 
   /** Will force an evaluation of the symbol's expressions
    * 
-   * @throws ExpressionException 
-   * @throws ParsingException */
-  public void evaluate() throws ParsingException;
+   * @throws ExpressionError 
+   * @throws SyntaxError */
+  public void evaluate() throws SyntaxError;
 }

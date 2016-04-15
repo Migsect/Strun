@@ -6,8 +6,8 @@ import java.util.List;
 import net.samongi.frunction.binding.DynamicSymbolBinding;
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
@@ -62,7 +62,7 @@ public class LiteralDictionary implements Container
     {
       f = NativeFrunction.parseLiteral(symbol, this);
     }
-    catch(ParsingException | RunTimeException e)
+    catch(SyntaxError | RunTimeError e)
     {
       System.out.println("Failed on: '" + symbol + "'");
       e.printStackTrace();

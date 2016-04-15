@@ -1,7 +1,7 @@
 package net.samongi.frunction.expression.types;
 
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
 
@@ -14,7 +14,7 @@ import net.samongi.frunction.frunction.Frunction;
 public class EmptyExpression implements Expression
 {
 
-  @Override public Frunction evaluate(Container environment) throws ParsingException, RunTimeException
+  @Override public Frunction evaluate(Container environment) throws SyntaxError, RunTimeError
   {
     // TODO Auto-generated method stub
     return null;

@@ -1,9 +1,9 @@
 package net.samongi.frunction.frunction.literal;
 
 import net.samongi.frunction.binding.SymbolBinding;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.FrunctionNotEvaluatedException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.FrunctionNotEvaluatedError;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
@@ -14,7 +14,7 @@ public class RealFrunction extends NativeFrunction
 {
   private static final String TYPE = "real";
 
-  public static final Frunction parseLiteral(String symbol, Container environment) throws ParsingException, RunTimeException
+  public static final Frunction parseLiteral(String symbol, Container environment) throws SyntaxError, RunTimeError
   {
     Double converted = null;
     try
@@ -35,7 +35,7 @@ public class RealFrunction extends NativeFrunction
     {
       return LiteralDictionary.getInstance().getSymbol(sym).get();
     }
-    catch(ParsingException | RunTimeException e)
+    catch(SyntaxError | RunTimeError e)
     {
       e.printStackTrace();
     }
@@ -44,7 +44,7 @@ public class RealFrunction extends NativeFrunction
 
   private final double state;
 
-  public RealFrunction(Container environment, double state) throws ParsingException, RunTimeException
+  public RealFrunction(Container environment, double state) throws SyntaxError, RunTimeError
   {
     super(environment);
 
@@ -55,13 +55,13 @@ public class RealFrunction extends NativeFrunction
     {
       this.addMethods();
     }
-    catch(FrunctionNotEvaluatedException e)
+    catch(FrunctionNotEvaluatedError e)
     {
       e.printStackTrace();
     }
   }
 
-  private void addMethods() throws ParsingException, RunTimeException
+  private void addMethods() throws SyntaxError, RunTimeError
   {
     this.addSymbol(this.methodEquals());
     this.addSymbol(this.methodGreater());
@@ -84,9 +84,9 @@ public class RealFrunction extends NativeFrunction
   /** Will generate a method binding for determining if another method is equal.
    * 
    * @return 
-   * @throws RunTimeException 
-   * @throws ParsingException */
-  private SymbolBinding methodEquals() throws ParsingException, RunTimeException
+   * @throws RunTimeError 
+   * @throws SyntaxError */
+  private SymbolBinding methodEquals() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -116,7 +116,7 @@ public class RealFrunction extends NativeFrunction
     return expression.getAsBinding("eq", this, input, types, condition);
   }
 
-  private SymbolBinding methodString() throws ParsingException, RunTimeException
+  private SymbolBinding methodString() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -140,7 +140,7 @@ public class RealFrunction extends NativeFrunction
     return expression.getAsBinding("str", this, input, types, condition);
   }
   
-  private SymbolBinding methodInt() throws ParsingException, RunTimeException
+  private SymbolBinding methodInt() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -164,7 +164,7 @@ public class RealFrunction extends NativeFrunction
     return expression.getAsBinding("int", this, input, types, condition);
   }
   
-  private SymbolBinding methodRound() throws ParsingException, RunTimeException
+  private SymbolBinding methodRound() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -188,7 +188,7 @@ public class RealFrunction extends NativeFrunction
     return expression.getAsBinding("round", this, input, types, condition);
   }
   
-  private SymbolBinding methodFloor() throws ParsingException, RunTimeException
+  private SymbolBinding methodFloor() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -212,7 +212,7 @@ public class RealFrunction extends NativeFrunction
     return expression.getAsBinding("floor", this, input, types, condition);
   }
   
-  private SymbolBinding methodCeiling() throws ParsingException, RunTimeException
+  private SymbolBinding methodCeiling() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -236,7 +236,7 @@ public class RealFrunction extends NativeFrunction
     return expression.getAsBinding("ceil", this, input, types, condition);
   }
   
-  private SymbolBinding methodNegative() throws ParsingException, RunTimeException
+  private SymbolBinding methodNegative() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -260,7 +260,7 @@ public class RealFrunction extends NativeFrunction
     return expression.getAsBinding("neg", this, input, types, condition);
   }
   
-  private SymbolBinding methodAbsolute() throws ParsingException, RunTimeException
+  private SymbolBinding methodAbsolute() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -284,7 +284,7 @@ public class RealFrunction extends NativeFrunction
     return expression.getAsBinding("abs", this, input, types, condition);
   }
   
-  private SymbolBinding methodGreater() throws ParsingException, RunTimeException
+  private SymbolBinding methodGreater() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -321,7 +321,7 @@ public class RealFrunction extends NativeFrunction
     };
     return expression.getAsBinding("grtr", this, input, types, condition);
   }
-  private SymbolBinding methodLesser() throws ParsingException, RunTimeException
+  private SymbolBinding methodLesser() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -351,7 +351,7 @@ public class RealFrunction extends NativeFrunction
     return expression.getAsBinding("lssr", this, input, types, condition);
   }
   
-  private SymbolBinding methodAddition() throws ParsingException, RunTimeException
+  private SymbolBinding methodAddition() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -389,7 +389,7 @@ public class RealFrunction extends NativeFrunction
     return expression.getAsBinding("add", this, input, types, condition);
   }
   
-  private SymbolBinding methodMultiplication() throws ParsingException, RunTimeException
+  private SymbolBinding methodMultiplication() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -427,7 +427,7 @@ public class RealFrunction extends NativeFrunction
     return expression.getAsBinding("mult", this, input, types, condition);
   }
   
-  private SymbolBinding methodDivision() throws ParsingException, RunTimeException
+  private SymbolBinding methodDivision() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };

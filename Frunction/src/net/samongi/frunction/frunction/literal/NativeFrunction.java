@@ -1,9 +1,9 @@
 package net.samongi.frunction.frunction.literal;
 
-import net.samongi.frunction.exceptions.parsing.ExpressionException;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.parsing.TokenException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.ExpressionError;
+import net.samongi.frunction.error.syntax.SyntaxError;
+import net.samongi.frunction.error.syntax.TokenError;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.frunction.Frunction;
@@ -16,9 +16,9 @@ public abstract class NativeFrunction extends DynamicFrunction
    * @param symbol The symbol to parse
    * @param environment The environment that the frunction will be made in
    * @return A frunction of the literal, otherwise null 
-   * @throws RunTimeException 
-   * @throws ParsingException */
-  public static Frunction parseLiteral(String symbol, Container environment) throws ParsingException, RunTimeException
+   * @throws RunTimeError 
+   * @throws SyntaxError */
+  public static Frunction parseLiteral(String symbol, Container environment) throws SyntaxError, RunTimeError
   {
     symbol = symbol.trim();
     Frunction f = null;
@@ -35,17 +35,17 @@ public abstract class NativeFrunction extends DynamicFrunction
     f = StringFrunction.parseLiteral(symbol, environment);
     if(f != null) return f;
 
-    throw new ParsingException();
+    throw new SyntaxError();
   }
 
-  public NativeFrunction(Container environment) throws ParsingException, RunTimeException
+  public NativeFrunction(Container environment) throws SyntaxError, RunTimeError
   {
     super(environment);
     try
     {
       super.evaluate();
     }
-    catch(TokenException | ExpressionException e)
+    catch(TokenError | ExpressionError e)
     {
       e.printStackTrace();
     }

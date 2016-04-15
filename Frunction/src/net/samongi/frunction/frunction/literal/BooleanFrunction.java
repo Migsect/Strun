@@ -1,9 +1,9 @@
 package net.samongi.frunction.frunction.literal;
 
 import net.samongi.frunction.binding.SymbolBinding;
-import net.samongi.frunction.exceptions.parsing.ExpressionException;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.ExpressionError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
@@ -17,7 +17,7 @@ public class BooleanFrunction extends NativeFrunction
 
   public static final String TYPE = "bool";
 
-  public static Frunction parseLiteral(String symbol, Container environment) throws ParsingException, RunTimeException
+  public static Frunction parseLiteral(String symbol, Container environment) throws SyntaxError, RunTimeError
   {
     if(symbol.toLowerCase().equals(TRUE_LITERAL)) return new BooleanFrunction(environment, true);
     if(symbol.toLowerCase().equals(FALSE_LITERAL)) return new BooleanFrunction(environment, false);
@@ -33,7 +33,7 @@ public class BooleanFrunction extends NativeFrunction
     {
       return LiteralDictionary.getInstance().getSymbol(sym).get();
     }
-    catch(ParsingException | RunTimeException e)
+    catch(SyntaxError | RunTimeError e)
     {
       e.printStackTrace();
     }
@@ -48,7 +48,7 @@ public class BooleanFrunction extends NativeFrunction
   {
     return new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ParsingException, RunTimeException
+      @Override public Frunction evaluate() throws SyntaxError, RunTimeError
       {
         return LiteralDictionary.getInstance().getSymbol(TRUE_LITERAL).get();
       }
@@ -63,7 +63,7 @@ public class BooleanFrunction extends NativeFrunction
   {
     return new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ParsingException, RunTimeException
+      @Override public Frunction evaluate() throws SyntaxError, RunTimeError
       {
         return LiteralDictionary.getInstance().getSymbol(FALSE_LITERAL).get();
       }
@@ -73,7 +73,7 @@ public class BooleanFrunction extends NativeFrunction
   // This is a frunction that the boolean frunction wraps.
   private final boolean state;
 
-  public BooleanFrunction(Container environment, boolean state) throws ParsingException, RunTimeException
+  public BooleanFrunction(Container environment, boolean state) throws SyntaxError, RunTimeError
   {
     super(environment);
 
@@ -85,13 +85,13 @@ public class BooleanFrunction extends NativeFrunction
     {
       this.addMethods();
     }
-    catch(ParsingException | RunTimeException e)
+    catch(SyntaxError | RunTimeError e)
     {
       e.printStackTrace();
     }
   }
 
-  private void addMethods() throws ParsingException, RunTimeException
+  private void addMethods() throws SyntaxError, RunTimeError
   {
     this.addSymbol(this.methodEquals());
     this.addSymbol(this.methodString());
@@ -103,9 +103,9 @@ public class BooleanFrunction extends NativeFrunction
   /** Will generate a method binding for determining if another method is equal.
    * 
    * @return 
-   * @throws RunTimeException 
-   * @throws ParsingException */
-  private SymbolBinding methodEquals() throws ParsingException, RunTimeException
+   * @throws RunTimeError 
+   * @throws SyntaxError */
+  private SymbolBinding methodEquals() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -114,7 +114,7 @@ public class BooleanFrunction extends NativeFrunction
 
     NativeExpression expression = new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ExpressionException
+      @Override public Frunction evaluate() throws ExpressionError
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
@@ -135,7 +135,7 @@ public class BooleanFrunction extends NativeFrunction
     return expression.getAsBinding("eq", this, input, types, condition);
   }
 
-  private SymbolBinding methodString() throws ParsingException, RunTimeException
+  private SymbolBinding methodString() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -159,7 +159,7 @@ public class BooleanFrunction extends NativeFrunction
     return expression.getAsBinding("str", this, input, types, condition);
   }
   
-  private SymbolBinding methodOr() throws ParsingException, RunTimeException
+  private SymbolBinding methodOr() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -168,7 +168,7 @@ public class BooleanFrunction extends NativeFrunction
 
     NativeExpression expression = new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ExpressionException
+      @Override public Frunction evaluate() throws ExpressionError
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
@@ -189,7 +189,7 @@ public class BooleanFrunction extends NativeFrunction
     return expression.getAsBinding("or", this, input, types, condition);
   }
   
-  private SymbolBinding methodAnd() throws ParsingException, RunTimeException
+  private SymbolBinding methodAnd() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -198,7 +198,7 @@ public class BooleanFrunction extends NativeFrunction
 
     NativeExpression expression = new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ExpressionException
+      @Override public Frunction evaluate() throws ExpressionError
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
@@ -219,7 +219,7 @@ public class BooleanFrunction extends NativeFrunction
     return expression.getAsBinding("and", this, input, types, condition);
   }
   
-  private SymbolBinding methodNot() throws ParsingException, RunTimeException
+  private SymbolBinding methodNot() throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -228,7 +228,7 @@ public class BooleanFrunction extends NativeFrunction
 
     NativeExpression expression = new NativeExpression()
     {
-      @Override public Frunction evaluate() throws ExpressionException
+      @Override public Frunction evaluate() throws ExpressionError
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();

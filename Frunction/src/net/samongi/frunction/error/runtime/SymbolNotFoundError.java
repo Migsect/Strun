@@ -1,12 +1,12 @@
-package net.samongi.frunction.exceptions.runtime;
+package net.samongi.frunction.error.runtime;
 
-public class SymbolNotFoundException extends RunTimeException
+public class SymbolNotFoundError extends RunTimeError
 {
   private static final long serialVersionUID = -4459736847132831999L;
 
   private final String symbol;
 
-  public SymbolNotFoundException(String symbol)
+  public SymbolNotFoundError(String symbol)
   {
     this.symbol = symbol;
   }

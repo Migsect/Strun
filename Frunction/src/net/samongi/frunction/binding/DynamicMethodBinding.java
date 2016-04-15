@@ -1,8 +1,8 @@
 package net.samongi.frunction.binding;
 
-import net.samongi.frunction.exceptions.parsing.ExpressionException;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.parsing.TokenException;
+import net.samongi.frunction.error.syntax.ExpressionError;
+import net.samongi.frunction.error.syntax.SyntaxError;
+import net.samongi.frunction.error.syntax.TokenError;
 import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
@@ -148,16 +148,16 @@ public class DynamicMethodBinding implements MethodBinding
 
   /** Generates the condition for the method binding
    * 
-   * @throws TokenException
-   * @throws ExpressionException */
-  public void generateCondition() throws ParsingException
+   * @throws TokenError
+   * @throws ExpressionError */
+  public void generateCondition() throws SyntaxError
   {
     if(this.condition != null) return; // don't need to reparse the expression
     if(this.condition_source.length() == 0) this.condition = BooleanFrunction.getTautology();
     else this.condition = Expression.parseString(condition_source, container);
   }
 
-  @Override public Expression getConditional() throws ParsingException
+  @Override public Expression getConditional() throws SyntaxError
   {
     if(this.condition == null) this.generateCondition();
     return this.condition;
@@ -165,9 +165,9 @@ public class DynamicMethodBinding implements MethodBinding
 
   /** Will generate the expression for method.
    * 
-   * @throws TokenException
-   * @throws ExpressionException */
-  public void generateExpression() throws TokenException, ExpressionException
+   * @throws TokenError
+   * @throws ExpressionError */
+  public void generateExpression() throws TokenError, ExpressionError
   {
     if(this.expression != null) return; // don't need to reparse the expression
     this.expression = Expression.parseString(source, container);
@@ -175,7 +175,7 @@ public class DynamicMethodBinding implements MethodBinding
 
   }
 
-  @Override public Expression getExpression() throws TokenException, ExpressionException
+  @Override public Expression getExpression() throws TokenError, ExpressionError
   {
     if(this.expression == null) this.generateExpression();
     return this.expression;
@@ -207,7 +207,7 @@ public class DynamicMethodBinding implements MethodBinding
     {
       return inputs + types + "->'" + this.getExpression().getDisplay() + "'";
     }
-    catch(TokenException | ExpressionException e)
+    catch(TokenError | ExpressionError e)
     {
       e.printStackTrace();
     }
@@ -219,7 +219,7 @@ public class DynamicMethodBinding implements MethodBinding
     return this.input_types;
   }
 
-  @Override public void evaluate() throws ParsingException
+  @Override public void evaluate() throws SyntaxError
   {
     this.generateCondition();
     this.generateExpression();

@@ -4,10 +4,10 @@ import net.samongi.frunction.binding.DynamicMethodBinding;
 import net.samongi.frunction.binding.DynamicSymbolBinding;
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
-import net.samongi.frunction.exceptions.parsing.ExpressionException;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.FrunctionNotEvaluatedException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.FrunctionNotEvaluatedError;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.ExpressionError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.DynamicFrunction;
@@ -20,12 +20,12 @@ public abstract class NativeExpression implements Expression
   /** This will evaluate the expression based on the environment if was fed with.
    * 
    * @return a frunction based off of evaluation 
-   * @throws ExpressionException 
-   * @throws RunTimeException 
-   * @throws ParsingException */
-  public abstract Frunction evaluate() throws ParsingException, RunTimeException;
+   * @throws ExpressionError 
+   * @throws RunTimeError 
+   * @throws SyntaxError */
+  public abstract Frunction evaluate() throws SyntaxError, RunTimeError;
 
-  @Override public final Frunction evaluate(Container environment) throws ParsingException, RunTimeException
+  @Override public final Frunction evaluate(Container environment) throws SyntaxError, RunTimeError
   {
     this.environment = environment; // Setting the local environment;
     return this.evaluate();
@@ -41,11 +41,11 @@ public abstract class NativeExpression implements Expression
     {
       return this.environment.getSymbol("^@").get();
     }
-    catch(ParsingException e)
+    catch(SyntaxError e)
     {
       e.printStackTrace();
     }
-    catch(RunTimeException e)
+    catch(RunTimeError e)
     {
       e.printStackTrace();
     }
@@ -62,11 +62,11 @@ public abstract class NativeExpression implements Expression
     {
       return this.environment.getSymbol(symbol).get();
     }
-    catch(ParsingException e)
+    catch(SyntaxError e)
     {
       e.printStackTrace();
     }
-    catch(RunTimeException e)
+    catch(RunTimeError e)
     {
       e.printStackTrace();
     }
@@ -81,9 +81,9 @@ public abstract class NativeExpression implements Expression
    * @param types The types for the inner method binding
    * @param condition The condition for the inner method binding.
    * @return A symbol binding. 
-   * @throws RunTimeException 
-   * @throws ParsingException */
-  public SymbolBinding getAsBinding(String key, Container environment, String[] input, String[] types, Expression condition) throws ParsingException, RunTimeException
+   * @throws RunTimeError 
+   * @throws SyntaxError */
+  public SymbolBinding getAsBinding(String key, Container environment, String[] input, String[] types, Expression condition) throws SyntaxError, RunTimeError
   {
     Frunction method_holder = new DynamicFrunction(environment);
 
@@ -92,7 +92,7 @@ public abstract class NativeExpression implements Expression
     {
       method_holder.addMethod(method);
     }
-    catch(FrunctionNotEvaluatedException e)
+    catch(FrunctionNotEvaluatedError e)
     {
       e.printStackTrace();
     }
