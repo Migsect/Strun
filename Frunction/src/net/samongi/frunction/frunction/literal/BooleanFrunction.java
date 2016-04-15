@@ -31,6 +31,7 @@ public class BooleanFrunction extends NativeFrunction
     {
       @Override protected void defineType(Frunction type_frunction) throws RunTimeException, ParsingException
       {
+        type_frunction.setType("native");
         type_frunction.addSymbol(BooleanFrunction.methodAnd(type_frunction));
         type_frunction.addSymbol(BooleanFrunction.methodOr(type_frunction));
         type_frunction.addSymbol(BooleanFrunction.methodEquals(type_frunction));

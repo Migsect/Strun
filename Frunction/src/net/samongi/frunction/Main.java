@@ -9,6 +9,7 @@ import net.samongi.frunction.exceptions.runtime.SymbolNotFoundException;
 import net.samongi.frunction.file.FileUtil;
 import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
+import net.samongi.frunction.frunction.literal.IntegerFrunction;
 import net.samongi.frunction.parse.Commenting;
 import net.samongi.frunction.parse.ParseUtil;
 
@@ -32,6 +33,7 @@ public class Main
     try
     {
       BooleanFrunction.getTypeDefiner().define();
+      IntegerFrunction.getTypeDefiner().define();
     }
     catch(ParsingException | RunTimeException e)
     {

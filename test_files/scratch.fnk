@@ -1,10 +1,16 @@
+
+b1 : true.not();
+b1.str().println();
+b1.not().not().not().str().println();
+
+
 factorial : {
-  (n int) ?(n.lssr(2))-> 1;
+  (n int) ?(n.lt(2))-> 1;
   (n int) -> n.mult(factorial(n.add(-1)));
 };
 
 for : {
-  (strt int, maxm int, incr int, f) ?(strt.add(incr).grtr(maxm))-> 
+  (strt int, maxm int, incr int, f) ?(strt.add(incr).gt(maxm))-> 
       {
         f(strt);
       };
@@ -16,6 +22,6 @@ for : {
 };
 
 factorial(6).str().println();
-for(0 , 100 , 1,
+for(0 , 10 , 1,
   {(n int) -> factorial(n).str().println();}
 );
