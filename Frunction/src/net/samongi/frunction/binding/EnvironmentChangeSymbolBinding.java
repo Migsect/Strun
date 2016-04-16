@@ -1,7 +1,7 @@
 package net.samongi.frunction.binding;
 
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
 
@@ -17,7 +17,7 @@ public class EnvironmentChangeSymbolBinding extends DynamicSymbolBinding
   }
   
   // This will basically clone the frunction returned and instead set it as a part of the new environment
-  @Override public Frunction get(Container environment) throws ParsingException, RunTimeException
+  @Override public Frunction get(Container environment) throws SyntaxError, RunTimeError
   {
     return super.get(environment).clone(this.new_environment);
   }

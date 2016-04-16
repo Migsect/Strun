@@ -1,7 +1,7 @@
 package net.samongi.frunction.frunction.type;
 
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.frunction.Frunction;
 import net.samongi.frunction.frunction.type.dictionary.TypeDictionary;
 
@@ -19,11 +19,11 @@ public abstract class TypeDefiner
    * @throws ParsingException
    * @throws RunTimeException
    */
-  public void define() throws ParsingException, RunTimeException
+  public void define() throws RunTimeError, SyntaxError
   {
     Frunction type_frunction = TypeDictionary.getInstance().getType(this.type);  
     this.defineType(type_frunction);
   }
   
-  protected abstract void defineType(Frunction type_frunction) throws RunTimeException, ParsingException;
+  protected abstract void defineType(Frunction type_frunction) throws RunTimeError, SyntaxError;
 }

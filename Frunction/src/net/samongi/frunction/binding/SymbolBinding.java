@@ -1,10 +1,9 @@
 package net.samongi.frunction.binding;
 
-import net.samongi.frunction.exceptions.parsing.ExpressionException;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.parsing.TokenException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
-import net.samongi.frunction.exceptions.runtime.SymbolNotFoundException;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.ExpressionError;
+import net.samongi.frunction.error.syntax.SyntaxError;
+import net.samongi.frunction.error.syntax.TokenError;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
@@ -36,9 +35,9 @@ public interface SymbolBinding extends Binding
   /** Returns the expression that this symbol binding represents.
    * 
    * @return An expression the symbol binding represents
-   * @throws TokenException
-   * @throws ExpressionException */
-  public Expression getExpression(Container environment) throws ParsingException;
+   * @throws TokenError
+   * @throws ExpressionError */
+  public Expression getExpression(Container environment) throws SyntaxError;
 
   /** Returns a string representation of the binding that is more human readable.
    * 
@@ -46,20 +45,17 @@ public interface SymbolBinding extends Binding
   public String toDisplay();
 
   /** This will collapse the symbol to have its expression forced to evaluate to a frunction.
-   * @throws RunTimeException 
-   * 
-   * @throws ExpressionException 
-   * @throws SymbolNotFoundException */
-  public void collapse(Container environment) throws ParsingException, RunTimeException;
+   * @throws RunTimeError 
+   * @throws ExpressionError */
+  public void collapse(Container environment) throws SyntaxError, RunTimeError;
 
   /** Returns a frunction that this symbol may be representing. This will force a collapse as well as an evaluation of
    * symbol binding.
    * 
    * @return
-   * @throws RunTimeException 
-   * @throws ExpressionException 
-   * @throws SymbolNotFoundException */
-  public Frunction get(Container environment) throws ParsingException, RunTimeException;
+   * @throws RunTimeError 
+   * @throws ExpressionError  */
+  public Frunction get(Container environment) throws SyntaxError, RunTimeError;
 
   /** Determines if the symbol is countable for certain methods
    * 

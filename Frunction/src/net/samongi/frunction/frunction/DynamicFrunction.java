@@ -12,10 +12,10 @@ import net.samongi.frunction.binding.DynamicSymbolBinding;
 import net.samongi.frunction.binding.EnvironmentChangeSymbolBinding;
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.FrunctionNotEvaluatedException;
+import net.samongi.frunction.error.runtime.FrunctionNotEvaluatedError;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.exceptions.runtime.InvalidTypeException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
 import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
 import net.samongi.frunction.frunction.literal.StringFrunction;
@@ -68,9 +68,9 @@ public class DynamicFrunction implements Frunction
    * call evaluate to ensure that the hashmaps are made
    * 
    * @param environment 
-   * @throws RunTimeException 
-   * @throws ParsingException */
-  public DynamicFrunction(Container environment) throws ParsingException, RunTimeException
+   * @throws RunTimeError 
+   * @throws SyntaxError */
+  public DynamicFrunction(Container environment) throws SyntaxError, RunTimeError
   {
     this.environment = environment;
     this.source = "";
@@ -84,7 +84,7 @@ public class DynamicFrunction implements Frunction
    * @throws ParsingException
    * @throws RunTimeException
    */
-  public DynamicFrunction(Container environment, DynamicFrunction base) throws ParsingException, RunTimeException
+  public DynamicFrunction(Container environment, DynamicFrunction base) throws SyntaxError, RunTimeError
   {
     this.environment = environment;
     this.source = base.source;
@@ -93,12 +93,12 @@ public class DynamicFrunction implements Frunction
     this.symbol_bindings = base.symbol_bindings;
   }
 
-  @Override public Frunction clone(Container new_environment) throws ParsingException, RunTimeException
+  @Override public Frunction clone(Container new_environment) throws SyntaxError, RunTimeError
   {
     return new DynamicFrunction(new_environment, this);
   }
   
-  @Override public void evaluate() throws ParsingException, RunTimeException
+  @Override public void evaluate() throws SyntaxError, RunTimeError
   {
     if(this.isEvaluated()) return;
 
@@ -148,7 +148,7 @@ public class DynamicFrunction implements Frunction
     return true;
   }
 
-  @Override public MethodBinding getMethod(String[] types, Frunction[] inputs) throws ParsingException, RunTimeException
+  @Override public MethodBinding getMethod(String[] types, Frunction[] inputs) throws SyntaxError, RunTimeError
   {
     if(DEBUG) System.out.println("  Fetching method with types:" + ParseUtil.concatStringArray(types));
     if(types.length != inputs.length)
@@ -180,7 +180,7 @@ public class DynamicFrunction implements Frunction
     return null; // We didn't find the method for the types
   }
 
-  private MethodBinding searchMethodsUntyped(List<MethodBinding> bindings, String[] types, Frunction[] inputs) throws ParsingException, RunTimeException
+  private MethodBinding searchMethodsUntyped(List<MethodBinding> bindings, String[] types, Frunction[] inputs) throws SyntaxError, RunTimeError
   {
     if(bindings == null) throw new NullPointerException("'bindings' was null");
     if(types == null) throw new NullPointerException("'types' was null");
@@ -227,7 +227,7 @@ public class DynamicFrunction implements Frunction
     return null;
   }
 
-  private MethodBinding searchMethodsTyped(List<MethodBinding> bindings, String[] types, Frunction[] inputs) throws ParsingException, RunTimeException
+  private MethodBinding searchMethodsTyped(List<MethodBinding> bindings, String[] types, Frunction[] inputs) throws SyntaxError, RunTimeError
   {
     if(bindings == null) throw new NullPointerException("'bindings' was null");
     if(types == null) throw new NullPointerException("'types' was null");
@@ -286,9 +286,9 @@ public class DynamicFrunction implements Frunction
     return null;
   }
 
-  @Override public void addMethod(MethodBinding binding) throws RunTimeException
+  @Override public void addMethod(MethodBinding binding) throws RunTimeError
   {
-    if(!this.isEvaluated()) throw new FrunctionNotEvaluatedException();
+    if(!this.isEvaluated()) throw new FrunctionNotEvaluatedError();
 
     String[] types = binding.getTypes();
     if(DEBUG) System.out.println("  Adding with types:" + ParseUtil.concatStringArray(types));
@@ -302,7 +302,7 @@ public class DynamicFrunction implements Frunction
   }
 
   // We need to grab the symbol
-  @Override public SymbolBinding getSymbol(String symbol) throws ParsingException, RunTimeException
+  @Override public SymbolBinding getSymbol(String symbol) throws SyntaxError, RunTimeError
   {
     // cleaning up the symbol
     symbol = symbol.trim();
@@ -361,10 +361,10 @@ public class DynamicFrunction implements Frunction
     return binding;
   }
 
-  @Override public void addSymbol(SymbolBinding binding) throws RunTimeException, ParsingException
+  @Override public void addSymbol(SymbolBinding binding) throws RunTimeError, SyntaxError
   {
     if(binding == null) throw new NullPointerException("'binding' was null");
-    if(!this.isEvaluated()) throw new FrunctionNotEvaluatedException();
+    if(!this.isEvaluated()) throw new FrunctionNotEvaluatedError();
     
     // Setting the native-based identifier of type if it is a type.
     if(binding.getKey().toLowerCase().equals(TYPE_KEY))
@@ -424,7 +424,7 @@ public class DynamicFrunction implements Frunction
    * @throws RunTimeException 
    * @throws ParsingException 
    */
-  @Override public boolean hasAccessibleSymbol(String symbol) throws ParsingException, RunTimeException
+  @Override public boolean hasAccessibleSymbol(String symbol) throws RunTimeError, SyntaxError
   {
     if(this.symbol_bindings.containsKey(symbol)) return true;
     Frunction type_frunction = this.getTypeFrunction();

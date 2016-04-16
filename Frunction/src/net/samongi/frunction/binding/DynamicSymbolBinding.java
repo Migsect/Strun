@@ -1,9 +1,9 @@
 package net.samongi.frunction.binding;
 
-import net.samongi.frunction.exceptions.parsing.ExpressionException;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.parsing.TokenException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.ExpressionError;
+import net.samongi.frunction.error.syntax.SyntaxError;
+import net.samongi.frunction.error.syntax.TokenError;
 import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
@@ -23,10 +23,10 @@ public class DynamicSymbolBinding implements SymbolBinding
    * @param text_section The section of text to parse
    * @param environment The environment of which the binding will be made
    * @return A dynamic symbol bidning
-   * @throws RunTimeException 
-   * @throws ExpressionException
-   * @throws TokenException */
-  public static DynamicSymbolBinding parseBinding(String text_section, Container environment) throws ParsingException, RunTimeException
+   * @throws RunTimeError 
+   * @throws ExpressionError
+   * @throws TokenError */
+  public static DynamicSymbolBinding parseBinding(String text_section, Container environment) throws SyntaxError, RunTimeError
   {
     if(text_section == null) throw new NullPointerException("'text_section' was null");
     
@@ -153,9 +153,9 @@ public class DynamicSymbolBinding implements SymbolBinding
    * hasn't created one yet.
    * 
    * @return An expression object
-   * @throws TokenException
-   * @throws ExpressionException */
-  @Override public Expression getExpression(Container environment) throws ParsingException
+   * @throws TokenError
+   * @throws ExpressionError */
+  @Override public Expression getExpression(Container environment) throws SyntaxError
   {
     if(this.expression == null) this.evaluate(environment);
     if(this.expression == null) throw new IllegalStateException();
@@ -168,13 +168,13 @@ public class DynamicSymbolBinding implements SymbolBinding
     return display;
   }
 
-  @Override public void evaluate(Container environment) throws ParsingException
+  @Override public void evaluate(Container environment) throws SyntaxError
   {
     if(this.expression == null) try
     {
       this.expression = Expression.parseString(this.source);
     }
-    catch (ParsingException e)
+    catch (SyntaxError e)
     {
       System.out.println("Under Binding : '" + this.getKey() + "'");
       throw e;
@@ -182,7 +182,7 @@ public class DynamicSymbolBinding implements SymbolBinding
     if(this.expression == null) throw new IllegalStateException();
   }
 
-  @Override public void collapse(Container environment) throws ParsingException, RunTimeException
+  @Override public void collapse(Container environment) throws SyntaxError, RunTimeError
   {
     // First we need to evaluate the symbol.
     this.evaluate(environment);
@@ -190,7 +190,7 @@ public class DynamicSymbolBinding implements SymbolBinding
     if(this.collapsed == null) this.collapsed = this.expression.evaluate(environment);
   }
 
-  @Override public Frunction get(Container environment) throws ParsingException, RunTimeException
+  @Override public Frunction get(Container environment) throws SyntaxError, RunTimeError
   {
     if(this.collapsed != null) return this.collapsed;
     this.collapse(environment);

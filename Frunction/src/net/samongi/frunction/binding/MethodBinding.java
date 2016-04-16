@@ -1,6 +1,6 @@
 package net.samongi.frunction.binding;
 
-import net.samongi.frunction.exceptions.parsing.ParsingException;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.expression.types.Expression;
 
 public interface MethodBinding extends Binding
@@ -14,14 +14,14 @@ public interface MethodBinding extends Binding
    * yet created
    * 
    * @return The condition expression
-   * @throws ParsingException */
-  public Expression getConditional() throws ParsingException;
+   * @throws SyntaxError */
+  public Expression getConditional() throws SyntaxError;
 
   /** Gets the expression defined by this method binding
    * 
    * @return
-   * @throws ParsingException*/
-  public Expression getExpression() throws ParsingException;
+   * @throws SyntaxError*/
+  public Expression getExpression() throws SyntaxError;
 
   public String[] getTypes();
 

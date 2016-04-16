@@ -1,7 +1,7 @@
 package net.samongi.frunction.frunction.input;
 
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.DynamicFrunction;
 
@@ -13,7 +13,7 @@ import net.samongi.frunction.frunction.DynamicFrunction;
 public class ArgumentFrunction extends DynamicFrunction
 {
 
-  public ArgumentFrunction(Container environment) throws ParsingException, RunTimeException
+  public ArgumentFrunction(Container environment) throws SyntaxError, RunTimeError
   {
     super(environment);
   }

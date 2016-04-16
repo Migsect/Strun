@@ -1,8 +1,8 @@
 package net.samongi.frunction.frunction;
 
-import net.samongi.frunction.exceptions.parsing.ExpressionException;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.ExpressionError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.type.dictionary.TypeDictionary;
 
@@ -10,10 +10,10 @@ public interface Frunction extends Container
 {
   /** Evaluates the frunction if it needs to be evaluated This will do nothing on native frunctions but on source-based
    * frunctions this will parse the source to generate the frunction 
-   * @throws ExpressionException 
-   * @throws RunTimeException 
-   * @throws ParsingException */
-  public void evaluate() throws ParsingException, RunTimeException;
+   * @throws ExpressionError 
+   * @throws RunTimeError 
+   * @throws SyntaxError */
+  public void evaluate() throws SyntaxError, RunTimeError;
 
   /** This will return the evaluation state of the frunction If the frunction is native then this will generally return
    * true
@@ -39,7 +39,7 @@ public interface Frunction extends Container
    * @throws ParsingException
    * @throws RunTimeException
    */
-  public default Frunction getTypeFrunction() throws ParsingException, RunTimeException
+  public default Frunction getTypeFrunction() throws SyntaxError, RunTimeError
   {
     Frunction type_frunction = TypeDictionary.getInstance().getType(this.getType());
     if(type_frunction == this) return null;
@@ -52,7 +52,7 @@ public interface Frunction extends Container
    * @param new_environment The new environment to base it in
    * @return The new frunction that has a new environment
    */
-  public Frunction clone(Container new_environment) throws ParsingException, RunTimeException;
+  public Frunction clone(Container new_environment) throws SyntaxError, RunTimeError;
   
   /**Will check to see if there is an accessible symbol in the frunction.
    * This also includes the frunction's type.
@@ -62,7 +62,7 @@ public interface Frunction extends Container
    * @throws ParsingException
    * @throws RunTimeException
    */
-  public boolean hasAccessibleSymbol(String symbol) throws ParsingException, RunTimeException;
+  public boolean hasAccessibleSymbol(String symbol) throws SyntaxError, RunTimeError;
 
   /** Returns the source of this frunction If there is no source returned (null or empty) then the frunction might very
    * well be a native frunction

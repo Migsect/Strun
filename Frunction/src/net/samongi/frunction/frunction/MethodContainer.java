@@ -7,8 +7,8 @@ import java.util.Map;
 import net.samongi.frunction.binding.DynamicSymbolBinding;
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.parse.ParseUtil;
 
 /** Used as an intermeditary for methods to contain the extra symbols.
@@ -39,14 +39,14 @@ public class MethodContainer implements Container
   }
 
   // Calling the inner environment for get method
-  @Override public MethodBinding getMethod(String[] types, Frunction[] inputs) throws ParsingException, RunTimeException
+  @Override public MethodBinding getMethod(String[] types, Frunction[] inputs) throws SyntaxError, RunTimeError
   {
     return this.environment.getMethod(types, inputs);
   }
 
   // Calling the inner environment for the get symbol given that this doesn't
   // wish to override it.
-  @Override public SymbolBinding getSymbol(String symbol) throws ParsingException, RunTimeException
+  @Override public SymbolBinding getSymbol(String symbol) throws SyntaxError, RunTimeError
   {
     symbol = symbol.trim();
     if(override_symbols.containsKey(symbol)) return override_symbols.get(symbol);
@@ -76,7 +76,7 @@ public class MethodContainer implements Container
       // Calling the inner's method for this.
       this.environment.addMethod(binding);
     }
-    catch(RunTimeException e)
+    catch(RunTimeError e)
     {
       e.printStackTrace();
     }

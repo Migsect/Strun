@@ -1,12 +1,12 @@
-package net.samongi.frunction.exceptions.parsing;
+package net.samongi.frunction.error.syntax;
 
-public class TokenException extends ParsingException
+public class TokenError extends SyntaxError
 {
   private static final long serialVersionUID = 7302187024945500408L;
 
   private final String problem_source;
 
-  public TokenException(String problem_source)
+  public TokenError(String problem_source)
   {
     this.problem_source = problem_source;
   }

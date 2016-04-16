@@ -2,8 +2,8 @@ package net.samongi.frunction.frunction.type.dictionary;
 
 import net.samongi.frunction.binding.DynamicSymbolBinding;
 import net.samongi.frunction.binding.SymbolBinding;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.frunction.Frunction;
 
@@ -16,7 +16,7 @@ public class TypeDictionary extends DynamicFrunction
     {
       instance = new TypeDictionary();
     }
-    catch(ParsingException | RunTimeException e)
+    catch(SyntaxError | RunTimeError e)
     {
       e.printStackTrace();
     }
@@ -26,10 +26,10 @@ public class TypeDictionary extends DynamicFrunction
   /**Creating the type dictionary
    * This will have no container
    * 
-   * @throws ParsingException
-   * @throws RunTimeException
+   * @throws SyntaxError 
+   * @throws RunTimeError 
    */
-  private TypeDictionary() throws ParsingException, RunTimeException
+  private TypeDictionary() throws SyntaxError, RunTimeError
   {
     super(null);
   }
@@ -45,17 +45,17 @@ public class TypeDictionary extends DynamicFrunction
    * of the type frunction
    * 
    * @param type
-   * @throws RunTimeException 
-   * @throws ParsingException 
+   * @throws SyntaxError 
+   * @throws RunTimeError 
    */
-  public void generateType(String type) throws ParsingException, RunTimeException
+  public void generateType(String type) throws SyntaxError, RunTimeError
   {
     // The environment of the type frunction will be the type dictionary
     Frunction type_frunction = new DynamicFrunction(this);
     SymbolBinding binding = new DynamicSymbolBinding(type, type_frunction);
     this.addSymbol(binding);
   }
-  public Frunction getType(String type) throws ParsingException, RunTimeException
+  public Frunction getType(String type) throws SyntaxError, RunTimeError
   {
     if(!this.containsType(type)) this.generateType(type);
     SymbolBinding binding = this.getSymbol(type);

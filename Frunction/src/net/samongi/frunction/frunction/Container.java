@@ -4,10 +4,10 @@ import java.util.List;
 
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
-import net.samongi.frunction.exceptions.parsing.ExpressionException;
-import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.parsing.TokenException;
-import net.samongi.frunction.exceptions.runtime.RunTimeException;
+import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.syntax.ExpressionError;
+import net.samongi.frunction.error.syntax.SyntaxError;
+import net.samongi.frunction.error.syntax.TokenError;
 import net.samongi.frunction.parse.ParseUtil;
 
 public interface Container
@@ -16,16 +16,16 @@ public interface Container
    * 
    * @param types THe types to get a method for
    * @return A MethodBinding, otherwise null 
-   * @throws RunTimeException 
-   * @throws TokenException 
-   * @throws ExpressionException */
-  public MethodBinding getMethod(String[] types, Frunction[] inputs) throws ParsingException, RunTimeException;
+   * @throws RunTimeError 
+   * @throws TokenError 
+   * @throws ExpressionError */
+  public MethodBinding getMethod(String[] types, Frunction[] inputs) throws SyntaxError, RunTimeError;
 
   /** Adds the binding to this container
    * 
    * @param types The types of arguments the binding takes.
    * @param binding The binding to add */
-  public void addMethod(MethodBinding binding) throws RunTimeException;
+  public void addMethod(MethodBinding binding) throws RunTimeError;
 
   /** Returns a list of lists of methodbindings.
    * 
@@ -35,18 +35,19 @@ public interface Container
   /** Gets the symbol binding for the corresponding symbol
    * 
    * @param symbol The symbol to retrieve
-   * @return A SymbolBinding
-   * @throws ExpressionException 
-   * @throws TokenException */
-  public SymbolBinding getSymbol(String symbol) throws ParsingException, RunTimeException;
+   * @return A SymbolBinding, otherwise null 
+   * @throws RunTimeError 
+   * @throws ParsingError */
+  public SymbolBinding getSymbol(String symbol) throws RunTimeError, SyntaxError;
   
   /** Gets the symbol binding for the corresponding symbol
   /** Adds the binding to this container
    * 
    * @param symbol The symbol's string to add
    * @param binding The binding to add 
-   * @throws ParsingException */
-  public void addSymbol(SymbolBinding binding) throws RunTimeException, ParsingException;
+   * @throws ParsingError */
+  public void addSymbol(SymbolBinding binding) throws RunTimeError, SyntaxError;
+
 
   /** Returns all the symbols stored in the container This returns all of the symbols sorted.
    * 
@@ -80,13 +81,13 @@ public interface Container
       {
         f = b.get(this);
       }
-      catch(RunTimeException e)
+      catch(RunTimeError e)
       {
         System.out.println(space + b.getKey() + " : RunTimeException");
         e.printStackTrace();
         continue;
       }
-      catch(ParsingException e)
+      catch(SyntaxError e)
       {
         System.out.println(space + b.getKey() + " : ParsingException");
         e.printStackTrace();
