@@ -49,7 +49,7 @@ public class IntegerFrunction extends NativeFrunction
     {
       @Override protected void defineType(Frunction type_frunction) throws RunTimeException, ParsingException
       {
-        type_frunction.setType("native");
+        type_frunction.setType(NativeFrunction.TYPE);
         type_frunction.addSymbol(IntegerFrunction.methodEquals(type_frunction));
         type_frunction.addSymbol(IntegerFrunction.methodNegative(type_frunction));
         type_frunction.addSymbol(IntegerFrunction.methodString(type_frunction));

@@ -10,6 +10,8 @@ import net.samongi.frunction.frunction.Frunction;
 
 public abstract class NativeFrunction extends DynamicFrunction
 {
+  public static final String TYPE = "native";
+  
   /** Will attempt to parse a symbol and try to forulate a literal from it. This will return null if it could not
    * forumate a frunction fro the symbol.
    * 

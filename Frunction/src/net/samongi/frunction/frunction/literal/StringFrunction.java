@@ -3,13 +3,13 @@ package net.samongi.frunction.frunction.literal;
 import net.samongi.frunction.binding.SymbolBinding;
 import net.samongi.frunction.exceptions.parsing.ExpressionException;
 import net.samongi.frunction.exceptions.parsing.ParsingException;
-import net.samongi.frunction.exceptions.runtime.FrunctionNotEvaluatedException;
 import net.samongi.frunction.exceptions.runtime.RunTimeException;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
 import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
 import net.samongi.frunction.frunction.literal.method.NativeExpression;
+import net.samongi.frunction.frunction.type.TypeDefiner;
 
 public class StringFrunction extends NativeFrunction
 {
@@ -39,6 +39,29 @@ public class StringFrunction extends NativeFrunction
     }
     return null;
   }
+  
+  public static TypeDefiner getTypeDefiner()
+  {
+    return new TypeDefiner(TYPE)
+    {
+      @Override protected void defineType(Frunction type_frunction) throws RunTimeException, ParsingException
+      {
+        type_frunction.setType(NativeFrunction.TYPE);
+        type_frunction.addSymbol(StringFrunction.methodEquals(type_frunction));
+        
+        type_frunction.addSymbol(StringFrunction.methodConcatinate(type_frunction));
+        type_frunction.addSymbol(StringFrunction.methodSubstring(type_frunction));
+
+        type_frunction.addSymbol(StringFrunction.methodLength(type_frunction));
+        
+        type_frunction.addSymbol(StringFrunction.methodPrint(type_frunction));
+        type_frunction.addSymbol(StringFrunction.methodPrintln(type_frunction));
+        
+        type_frunction.addSymbol(StringFrunction.methodString(type_frunction));
+        
+      }
+    };
+  }
 
   private final String state;
 
@@ -48,30 +71,6 @@ public class StringFrunction extends NativeFrunction
 
     // setting the state of the string
     this.state = state;
-
-    // Adding the methods
-    try
-    {
-      this.addMethods();
-    }
-    catch(FrunctionNotEvaluatedException e)
-    {
-      e.printStackTrace();
-    }
-  }
-
-  private void addMethods() throws ParsingException, RunTimeException
-  {
-    this.addSymbol(this.methodEquals());
-    this.addSymbol(this.methodString());
-    
-    this.addSymbol(this.methodPrint());
-    this.addSymbol(this.methodPrintln());
-
-    this.addSymbol(this.methodLength());
-    
-    this.addSymbol(this.methodConcatinate());
-    this.addSymbol(this.methodSubstring());
   }
 
   /** Will generate a method binding for determining if another method is equal.
@@ -79,7 +78,7 @@ public class StringFrunction extends NativeFrunction
    * @return 
    * @throws RunTimeException 
    * @throws ParsingException */
-  private SymbolBinding methodEquals() throws ParsingException, RunTimeException
+  private static SymbolBinding methodEquals(Frunction type_frunction) throws ParsingException, RunTimeException
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -106,10 +105,10 @@ public class StringFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("eq", this, input, types, condition);
+    return expression.getAsBinding("eq", type_frunction, input, types, condition);
   }
 
-  private SymbolBinding methodString() throws ParsingException, RunTimeException
+  private static SymbolBinding methodString(Frunction type_frunction) throws ParsingException, RunTimeException
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -128,10 +127,10 @@ public class StringFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("str", this, input, types, condition);
+    return expression.getAsBinding("str", type_frunction, input, types, condition);
   }
 
-  private SymbolBinding methodPrint() throws ParsingException, RunTimeException
+  private static SymbolBinding methodPrint(Frunction type_frunction) throws ParsingException, RunTimeException
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -157,10 +156,10 @@ public class StringFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("print", this, input, types, condition);
+    return expression.getAsBinding("print", type_frunction, input, types, condition);
   }
 
-  private SymbolBinding methodPrintln() throws ParsingException, RunTimeException
+  private static SymbolBinding methodPrintln(Frunction type_frunction) throws ParsingException, RunTimeException
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -186,10 +185,10 @@ public class StringFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("println", this, input, types, condition);
+    return expression.getAsBinding("println", type_frunction, input, types, condition);
   }
   
-  private SymbolBinding methodLength() throws ParsingException, RunTimeException
+  private static SymbolBinding methodLength(Frunction type_frunction) throws ParsingException, RunTimeException
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -212,10 +211,10 @@ public class StringFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("len", this, input, types, condition);
+    return expression.getAsBinding("len", type_frunction, input, types, condition);
   }
   
-  private SymbolBinding methodConcatinate() throws ParsingException, RunTimeException
+  private static SymbolBinding methodConcatinate(Frunction type_frunction) throws ParsingException, RunTimeException
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -242,10 +241,10 @@ public class StringFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("con", this, input, types, condition);
+    return expression.getAsBinding("con", type_frunction, input, types, condition);
   }
   
-  private SymbolBinding methodSubstring() throws ParsingException, RunTimeException
+  private static SymbolBinding methodSubstring(Frunction type_frunction) throws ParsingException, RunTimeException
   {
     // Generating the first method
     String[] input = new String[] { "start" , "end" };
@@ -276,7 +275,7 @@ public class StringFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("sub", this, input, types, condition);
+    return expression.getAsBinding("sub", type_frunction, input, types, condition);
   }
 
   @Override public String getType()

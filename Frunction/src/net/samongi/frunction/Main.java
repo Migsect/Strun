@@ -10,6 +10,8 @@ import net.samongi.frunction.file.FileUtil;
 import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
 import net.samongi.frunction.frunction.literal.IntegerFrunction;
+import net.samongi.frunction.frunction.literal.RealFrunction;
+import net.samongi.frunction.frunction.literal.StringFrunction;
 import net.samongi.frunction.parse.Commenting;
 import net.samongi.frunction.parse.ParseUtil;
 
@@ -34,6 +36,8 @@ public class Main
     {
       BooleanFrunction.getTypeDefiner().define();
       IntegerFrunction.getTypeDefiner().define();
+      RealFrunction.getTypeDefiner().define();
+      StringFrunction.getTypeDefiner().define();
     }
     catch(ParsingException | RunTimeException e)
     {
