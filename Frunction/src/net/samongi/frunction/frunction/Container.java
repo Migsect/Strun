@@ -36,15 +36,18 @@ public interface Container
    * 
    * @param symbol The symbol to retrieve
    * @return A SymbolBinding, otherwise null 
-   * @throws ExpressionError 
-   * @throws TokenError */
-  public SymbolBinding getSymbol(String symbol) throws SyntaxError, RunTimeError;
-
+   * @throws RunTimeError 
+   * @throws ParsingError */
+  public SymbolBinding getSymbol(String symbol) throws RunTimeError, SyntaxError;
+  
+  /** Gets the symbol binding for the corresponding symbol
   /** Adds the binding to this container
    * 
    * @param symbol The symbol's string to add
-   * @param binding The binding to add */
-  public void addSymbol(SymbolBinding binding) throws RunTimeError;
+   * @param binding The binding to add 
+   * @throws ParsingError */
+  public void addSymbol(SymbolBinding binding) throws RunTimeError, SyntaxError;
+
 
   /** Returns all the symbols stored in the container This returns all of the symbols sorted.
    * 
@@ -76,7 +79,7 @@ public interface Container
       Frunction f = null;
       try
       {
-        f = b.get();
+        f = b.get(this);
       }
       catch(RunTimeError e)
       {

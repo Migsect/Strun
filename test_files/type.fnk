@@ -1,0 +1,27 @@
+{
+  type : "type_a";
+  %type_val : "a's value";  
+};
+{
+  type : "type_b";  
+  %type : "type_a";
+  %type_val : "b's value";
+};
+{
+  type : "type_c";
+  %type : "type_a";
+};
+
+A : {
+  type : "type_a";
+};
+B : {
+  type : "type_b";
+};
+C : {
+  type : "type_c";
+};
+
+A.type_val.println();
+B.type_val.println();
+C.type_val.println();

@@ -4,6 +4,7 @@ import net.samongi.frunction.error.runtime.RunTimeError;
 import net.samongi.frunction.error.syntax.ExpressionError;
 import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.expression.types.Expression;
+import net.samongi.frunction.frunction.type.dictionary.TypeDictionary;
 
 public interface Frunction extends Container
 {
@@ -29,6 +30,39 @@ public interface Frunction extends Container
    * 
    * @return A string representing the type of the frunction */
   public String getType();
+  
+  /**Will attempt to retrieve the frunction that determines the type.
+   * This will return null if the type frunction is currently the frunction being called.
+   * This can occur if the type frunction is the empty-type's frunction. 
+   * 
+   * @return The type frunction
+   * @throws ParsingException
+   * @throws RunTimeException
+   */
+  public default Frunction getTypeFrunction() throws SyntaxError, RunTimeError
+  {
+    Frunction type_frunction = TypeDictionary.getInstance().getType(this.getType());
+    if(type_frunction == this) return null;
+    if(type_frunction.getType().equals(this.getType())) return null;
+    return type_frunction;
+  }
+  
+  /**Will clone the frunction and base it in the new specified environment
+   * 
+   * @param new_environment The new environment to base it in
+   * @return The new frunction that has a new environment
+   */
+  public Frunction clone(Container new_environment) throws SyntaxError, RunTimeError;
+  
+  /**Will check to see if there is an accessible symbol in the frunction.
+   * This also includes the frunction's type.
+   * 
+   * @param symbol
+   * @return
+   * @throws ParsingException
+   * @throws RunTimeException
+   */
+  public boolean hasAccessibleSymbol(String symbol) throws SyntaxError, RunTimeError;
 
   /** Returns the source of this frunction If there is no source returned (null or empty) then the frunction might very
    * well be a native frunction

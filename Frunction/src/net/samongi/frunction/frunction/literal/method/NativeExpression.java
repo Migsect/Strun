@@ -6,6 +6,7 @@ import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
 import net.samongi.frunction.error.runtime.FrunctionNotEvaluatedError;
 import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.runtime.SymbolNotFoundError;
 import net.samongi.frunction.error.syntax.ExpressionError;
 import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.expression.types.Expression;
@@ -39,7 +40,10 @@ public abstract class NativeExpression implements Expression
   {
     try
     {
-      return this.environment.getSymbol("^@").get();
+      SymbolBinding binding =  this.environment.getSymbol("^@");
+      if(binding == null) throw new SymbolNotFoundError("^@");
+      
+      return binding.get(this.environment);
     }
     catch(SyntaxError e)
     {
@@ -60,7 +64,10 @@ public abstract class NativeExpression implements Expression
   {
     try
     {
-      return this.environment.getSymbol(symbol).get();
+      SymbolBinding binding = this.environment.getSymbol(symbol);
+      if(binding == null) throw new SymbolNotFoundError(symbol);
+      
+      return binding.get(this.environment);
     }
     catch(SyntaxError e)
     {
@@ -87,7 +94,7 @@ public abstract class NativeExpression implements Expression
   {
     Frunction method_holder = new DynamicFrunction(environment);
 
-    MethodBinding method = new DynamicMethodBinding(environment, input, types, condition, this);
+    MethodBinding method = new DynamicMethodBinding(input, types, condition, this);
     try
     {
       method_holder.addMethod(method);
@@ -97,7 +104,7 @@ public abstract class NativeExpression implements Expression
       e.printStackTrace();
     }
 
-    SymbolBinding binding = new DynamicSymbolBinding(key, method_holder, environment);
+    SymbolBinding binding = new DynamicSymbolBinding(key, method_holder);
     binding.setCountable(false);
     return binding;
   }

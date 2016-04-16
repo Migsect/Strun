@@ -8,47 +8,42 @@ import net.samongi.frunction.error.syntax.ExpressionError;
 import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.file.FileUtil;
 import net.samongi.frunction.frunction.DynamicFrunction;
+import net.samongi.frunction.frunction.literal.BooleanFrunction;
+import net.samongi.frunction.frunction.literal.IntegerFrunction;
+import net.samongi.frunction.frunction.literal.RealFrunction;
+import net.samongi.frunction.frunction.literal.StringFrunction;
 import net.samongi.frunction.parse.Commenting;
 import net.samongi.frunction.parse.ParseUtil;
-
-import net.samongi.frunction.error.FrunctionError;
 
 public class Main
 {
 
   public static void main(String[] args)
-  {
-    try {
-      throw new FrunctionError(1234, 5);
-    }
-    catch (FrunctionError er) {
-      System.out.println(er.getFormattedMessage());
-    }
-    
+  { 
     
     if(args.length < 1) return;
     String file_loc = args[0];
-    // System.out.println("Attempting to parse: " + file_loc);
-
+    
     File file = new File(file_loc);
     String text_body = FileUtil.readFile(file);
 
-    // System.out.println("___Raw Text:");
-    // System.out.print(text_body);
-    // System.out.println();
-    // System.out.println();
-
     text_body = Commenting.removeComments(text_body);
 
-    // System.out.println("___Removed Comments Text:");
-    // System.out.print(text_body);
-    // System.out.println();
-    // System.out.println();
-
-    // System.out.println("___Starting Parsing:");
     text_body = ParseUtil.removeNextLines(text_body);
     text_body = ParseUtil.squeeze(text_body);
 
+    try
+    {
+      BooleanFrunction.getTypeDefiner().define();
+      IntegerFrunction.getTypeDefiner().define();
+      RealFrunction.getTypeDefiner().define();
+      StringFrunction.getTypeDefiner().define();
+    }
+    catch(SyntaxError | RunTimeError e)
+    {
+      e.printStackTrace();
+    }
+    
     DynamicFrunction main_frunction = new DynamicFrunction(null, text_body);
     try
     {
@@ -56,7 +51,6 @@ public class Main
     }
     catch(SyntaxError | RunTimeError e)
     {
-      // TODO Auto-generated catch block
       e.printStackTrace();
       if(e instanceof ExpressionError)
       {
@@ -67,9 +61,7 @@ public class Main
         System.out.println("Symbol Not Found : '" + ((SymbolNotFoundError) e).getSymbol() + "'");
       }
     }
-
-    // System.out.println("Displaying Mains Hierarchy:");
-    // main_frunction.displayHierarchy(2);
+    
   }
 
 }
