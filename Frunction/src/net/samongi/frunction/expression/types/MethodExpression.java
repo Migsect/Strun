@@ -49,7 +49,7 @@ public class MethodExpression implements Expression
       group_tokens[i].evaluate();
 
       // This is the expression that the method represents
-      Expression expr = Expression.parseTokens(group_tokens[i].getSource(), group_tokens[i].getTokens(), environment);;
+      Expression expr = Expression.parseTokens(group_tokens[i].getSource(), group_tokens[i].getTokens());;
       if(DEBUG) System.out.println("  M-Evaluate: GroupToken[" + i + "] source: '" + group_tokens[i].getSource() + "'");
       if(DEBUG) System.out.println("  M-Evaluate: GroupToken[" + i + "] types: '" + group_tokens[i].displayTypes() + "'");
 
@@ -83,7 +83,7 @@ public class MethodExpression implements Expression
 
     // Retrieving the method biniding.
     MethodBinding binding = eval.getMethod(types, evaluated_inputs);
-    if(DEBUG) System.out.println("  M-Left: " + left_expression.getDisplay());
+    //System.out.println("  M-Left: " + left_expression.getDisplay());
     if(binding == null) throw new NullPointerException();
 
     // The left expression is the container

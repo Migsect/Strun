@@ -20,26 +20,15 @@ public class DynamicMethodBinding implements MethodBinding
   private static final String COND_OPERATOR = "?";
   private static final String INPUT_SPLITTER = ",";
 
-  private final Container container;
-
-  private final String[] input_symbols;
-  private final String[] input_types; // TODO type checking
-
-  private final String source;
-  private final String condition_source;
-
-  private Expression condition = null;
-  private Expression expression = null;
 
   /** Parse a section of text and returns a method binding
    * 
    * @param text_section The section of text to parse
    * @param environment The environment the binding will be defined in
    * @return A dynamic symbol binding */
-  public static DynamicMethodBinding parseBinding(String section, Container environment)
+  public static DynamicMethodBinding parseBinding(String section)
   {
     if(section == null) throw new NullPointerException("'section' was null");
-    if(environment == null) throw new NullPointerException("'environment' was null");
 
     // System.out.println("Parsing for method: " + section);
     int i = 0; // indexer for the whole section
@@ -84,7 +73,7 @@ public class DynamicMethodBinding implements MethodBinding
     }
     if(condition == null) condition = ""; // making sure it aint null;
     
-    if(input_section.length() == 0) return new DynamicMethodBinding(environment, new String[0], new String[0], condition, expression);
+    if(input_section.length() == 0) return new DynamicMethodBinding(new String[0], new String[0], condition, expression);
 
     // Splitting the input
     String[] split_input = input_section.split(INPUT_SPLITTER);
@@ -92,30 +81,34 @@ public class DynamicMethodBinding implements MethodBinding
     String[] input_types = new String[split_input.length];
     for(int k = 0; k < split_input.length; k++)
     {
-      String part = split_input[k].trim(); // removing whitespace as well as
-                                           // squeezing
-      String[] parts = part.split(" +"); // splitting the part, this is how
-                                         // types are specified.
+      String part = split_input[k].trim();
+      String[] parts = part.split(" +"); 
 
-      input_symbols[k] = parts[0]; // first is going to be the symbol
-      if(parts.length > 1) input_types[k] = parts[1]; // second might be the
-                                                      // type if it exists
+      input_symbols[k] = parts[0];
+      if(parts.length > 1) input_types[k] = parts[1]; 
       else input_types[k] = "";;
     }
 
     // Time to return
-    return new DynamicMethodBinding(environment, input_symbols, input_types, condition, expression);
+    return new DynamicMethodBinding(input_symbols, input_types, condition, expression);
   }
+  
+  private final String[] input_symbols;
+  private final String[] input_types; // TODO type checking
 
-  public DynamicMethodBinding(Container container, String[] input_symbols, String[] input_types, Expression condition, Expression expression)
+  private final String source;
+  private final String condition_source;
+
+  private Expression condition = null;
+  private Expression expression = null;
+  
+  public DynamicMethodBinding(String[] input_symbols, String[] input_types, Expression condition, Expression expression)
   {
-    if(container == null) throw new NullPointerException("'container' was null");
     if(input_symbols == null) throw new NullPointerException("'input_symbols' was null");
     if(input_types == null) throw new NullPointerException("'input_types' was null");
     if(condition == null) throw new NullPointerException("'condition' was null");
     if(expression == null) throw new NullPointerException("'expression' was null");
     
-    this.container = container;
     this.input_symbols = input_symbols;
     this.input_types = input_types;
 
@@ -125,15 +118,13 @@ public class DynamicMethodBinding implements MethodBinding
     this.expression = expression;
   }
 
-  public DynamicMethodBinding(Container container, String[] input_symbols, String[] input_types, String cond_source, String source)
+  public DynamicMethodBinding(String[] input_symbols, String[] input_types, String cond_source, String source)
   {
-    if(container == null) throw new NullPointerException("'container' was null");
     if(input_symbols == null) throw new NullPointerException("'input_symbols' was null");
     if(input_types == null) throw new NullPointerException("'input_types' was null");
     if(cond_source == null) throw new NullPointerException("'cond_source' was null");
     if(source == null) throw new NullPointerException("'source' was null");
     
-    this.container = container;
     this.input_symbols = input_symbols;
     this.input_types = input_types;
 
@@ -154,7 +145,7 @@ public class DynamicMethodBinding implements MethodBinding
   {
     if(this.condition != null) return; // don't need to reparse the expression
     if(this.condition_source.length() == 0) this.condition = BooleanFrunction.getTautology();
-    else this.condition = Expression.parseString(condition_source, container);
+    else this.condition = Expression.parseString(condition_source);
   }
 
   @Override public Expression getConditional() throws SyntaxError
@@ -170,7 +161,7 @@ public class DynamicMethodBinding implements MethodBinding
   public void generateExpression() throws TokenError, ExpressionError
   {
     if(this.expression != null) return; // don't need to reparse the expression
-    this.expression = Expression.parseString(source, container);
+    this.expression = Expression.parseString(source);
     if(this.expression == null) throw new IllegalStateException();
 
   }
@@ -184,11 +175,6 @@ public class DynamicMethodBinding implements MethodBinding
   @Override public String getSource()
   {
     return this.source;
-  }
-
-  @Override public Container getContainer()
-  {
-    return this.container;
   }
 
   @Override public String toDisplay()
@@ -219,7 +205,9 @@ public class DynamicMethodBinding implements MethodBinding
     return this.input_types;
   }
 
-  @Override public void evaluate() throws SyntaxError
+  // Note that the environment is not needed to evaluate a method binding
+  // This is due to it never actually "touching" a frunction.
+  @Override public void evaluate(Container environment) throws SyntaxError
   {
     this.generateCondition();
     this.generateExpression();

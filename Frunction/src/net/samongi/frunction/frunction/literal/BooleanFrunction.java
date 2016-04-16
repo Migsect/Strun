@@ -9,6 +9,7 @@ import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
 import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
 import net.samongi.frunction.frunction.literal.method.NativeExpression;
+import net.samongi.frunction.frunction.type.TypeDefiner;
 
 public class BooleanFrunction extends NativeFrunction
 {
@@ -23,6 +24,22 @@ public class BooleanFrunction extends NativeFrunction
     if(symbol.toLowerCase().equals(FALSE_LITERAL)) return new BooleanFrunction(environment, false);
     return null;
   }
+  
+  public static TypeDefiner getTypeDefiner()
+  {
+    return new TypeDefiner(TYPE)
+    {
+      @Override protected void defineType(Frunction type_frunction) throws RunTimeError, SyntaxError
+      {
+        type_frunction.setType(NativeFrunction.TYPE);
+        type_frunction.addSymbol(BooleanFrunction.methodAnd(type_frunction));
+        type_frunction.addSymbol(BooleanFrunction.methodOr(type_frunction));
+        type_frunction.addSymbol(BooleanFrunction.methodEquals(type_frunction));
+        type_frunction.addSymbol(BooleanFrunction.methodNot(type_frunction));
+        type_frunction.addSymbol(BooleanFrunction.methodString(type_frunction));
+      }
+    };
+  }
 
   public static Frunction getCached(boolean bool)
   {
@@ -31,7 +48,7 @@ public class BooleanFrunction extends NativeFrunction
     else sym = FALSE_LITERAL;
     try
     {
-      return LiteralDictionary.getInstance().getSymbol(sym).get();
+      return LiteralDictionary.getInstance().getSymbol(sym).get(LiteralDictionary.getInstance());
     }
     catch(SyntaxError | RunTimeError e)
     {
@@ -50,7 +67,7 @@ public class BooleanFrunction extends NativeFrunction
     {
       @Override public Frunction evaluate() throws SyntaxError, RunTimeError
       {
-        return LiteralDictionary.getInstance().getSymbol(TRUE_LITERAL).get();
+        return LiteralDictionary.getInstance().getSymbol(TRUE_LITERAL).get(LiteralDictionary.getInstance());
       }
     };
   }
@@ -65,7 +82,7 @@ public class BooleanFrunction extends NativeFrunction
     {
       @Override public Frunction evaluate() throws SyntaxError, RunTimeError
       {
-        return LiteralDictionary.getInstance().getSymbol(FALSE_LITERAL).get();
+        return LiteralDictionary.getInstance().getSymbol(FALSE_LITERAL).get(LiteralDictionary.getInstance());
       }
     };
   }
@@ -79,33 +96,15 @@ public class BooleanFrunction extends NativeFrunction
 
     // Setting the state of the boolean.
     this.state = state;
-
-    // Adding the methods
-    try
-    {
-      this.addMethods();
-    }
-    catch(SyntaxError | RunTimeError e)
-    {
-      e.printStackTrace();
-    }
-  }
-
-  private void addMethods() throws SyntaxError, RunTimeError
-  {
-    this.addSymbol(this.methodEquals());
-    this.addSymbol(this.methodString());
-    this.addSymbol(this.methodAnd());
-    this.addSymbol(this.methodOr());
-    this.addSymbol(this.methodNot());
   }
 
   /** Will generate a method binding for determining if another method is equal.
    * 
-   * @return 
-   * @throws RunTimeError 
-   * @throws SyntaxError */
-  private SymbolBinding methodEquals() throws SyntaxError, RunTimeError
+   * @return
+   * @throws RunTimeException 
+   * @throws ParsingException */
+  private static SymbolBinding methodEquals(Frunction type_frunction) throws SyntaxError, RunTimeError
+
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -132,10 +131,11 @@ public class BooleanFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("eq", this, input, types, condition);
+    return expression.getAsBinding("eq", type_frunction, input, types, condition);
   }
 
-  private SymbolBinding methodString() throws SyntaxError, RunTimeError
+  private static SymbolBinding methodString(Frunction type_frunction) throws SyntaxError, RunTimeError
+
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -156,10 +156,10 @@ public class BooleanFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("str", this, input, types, condition);
+    return expression.getAsBinding("str", type_frunction, input, types, condition);
   }
   
-  private SymbolBinding methodOr() throws SyntaxError, RunTimeError
+  private static SymbolBinding methodOr(Frunction type_frunction) throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -186,10 +186,10 @@ public class BooleanFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("or", this, input, types, condition);
+    return expression.getAsBinding("or", type_frunction, input, types, condition);
   }
   
-  private SymbolBinding methodAnd() throws SyntaxError, RunTimeError
+  private static SymbolBinding methodAnd(Frunction type_frunction) throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -216,10 +216,10 @@ public class BooleanFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("and", this, input, types, condition);
+    return expression.getAsBinding("and", type_frunction, input, types, condition);
   }
   
-  private SymbolBinding methodNot() throws SyntaxError, RunTimeError
+  private static SymbolBinding methodNot(Frunction type_frunction) throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -241,7 +241,7 @@ public class BooleanFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("not", this, input, types, condition);
+    return expression.getAsBinding("not", type_frunction, input, types, condition);
   }
 
   

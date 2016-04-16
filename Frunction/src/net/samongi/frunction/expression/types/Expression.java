@@ -28,8 +28,7 @@ public interface Expression
     METHOD,
     FRUNCTION,
     NATIVE,
-    FRUNCTION_CONVERSION,
-    MEMORY;
+    FRUNCTION_CONVERSION;
   }
 
   /** Parses a string to make an expression this uses Token.parseTokens and Expression.parseExpression to do so As such
@@ -38,16 +37,15 @@ public interface Expression
    * @param source
    * @param environment
    * @return
-   * @throws TokenError
-   * @throws ExpressionError */
-  public static Expression parseString(String source, Container environment) throws TokenError, ExpressionError
+   * @throws TokenException
+   * @throws ExpressionException */
+  public static Expression parseString(String source) throws TokenError, ExpressionError
   {
     if(source == null) throw new NullPointerException("'source' was null");
-    if(environment == null) throw new NullPointerException("'environment' was null");
 
     source = source.trim();
     GroupToken token = Token.parseTokens(source);
-    return Expression.parseTokens(source, token.getTokens(), environment);
+    return Expression.parseTokens(source, token.getTokens());
   }
 
   /** Parses tokens to make an expression object
@@ -57,9 +55,8 @@ public interface Expression
    * @param environment The environment the tokens are being parsed in
    * @return An expression parsed from the tokens
    * @throws TokenError */
-  public static Expression parseTokens(String source, Token[] tokens, Container environment) throws TokenError, ExpressionError
+  public static Expression parseTokens(String source, Token[] tokens) throws TokenError, ExpressionError
   {
-    if(environment == null) throw new NullPointerException("'environment' was null");
     if(tokens == null) throw new NullPointerException("'tokens' was null");
     
     // Note that the left expression is null.
@@ -69,8 +66,6 @@ public interface Expression
     {
 
       Token t = tokens[i];
-      // System.out.println("Token is of type: " + t.getType().toString() +
-      // " with source '" + t.getSource() + "'");
       // Case 1: We have a token without an accessor before it.
       // This means that it is accessing the current environment
       // This only occurs if we start on a symbol
@@ -121,7 +116,7 @@ public interface Expression
         System.out.println("  For some reason there was a group token?!?!");
         if(i != 0) throw new ExpressionError(Expression.Type.GENERIC, source);
         GroupToken g_t = (GroupToken) t;
-        Expression expr = Expression.parseTokens(source, g_t.getTokens(), environment);
+        Expression expr = Expression.parseTokens(source, g_t.getTokens());
         left_expr = expr; // setting it to be the left expression
         i += 1;
       }

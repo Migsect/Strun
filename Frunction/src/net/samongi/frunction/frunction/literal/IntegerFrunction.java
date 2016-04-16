@@ -9,6 +9,7 @@ import net.samongi.frunction.frunction.Container;
 import net.samongi.frunction.frunction.Frunction;
 import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
 import net.samongi.frunction.frunction.literal.method.NativeExpression;
+import net.samongi.frunction.frunction.type.TypeDefiner;
 
 public class IntegerFrunction extends NativeFrunction
 {
@@ -33,13 +34,35 @@ public class IntegerFrunction extends NativeFrunction
     String sym = "" + integer;
     try
     {
-      return LiteralDictionary.getInstance().getSymbol(sym).get();
+      return LiteralDictionary.getInstance().getSymbol(sym).get(LiteralDictionary.getInstance());
     }
     catch(SyntaxError | RunTimeError e)
     {
       e.printStackTrace();
     }
     return null;
+  }
+  
+  public static TypeDefiner getTypeDefiner()
+  {
+    return new TypeDefiner(TYPE)
+    {
+      @Override protected void defineType(Frunction type_frunction) throws RunTimeError, SyntaxError
+      {
+        type_frunction.setType(NativeFrunction.TYPE);
+        type_frunction.addSymbol(IntegerFrunction.methodEquals(type_frunction));
+        type_frunction.addSymbol(IntegerFrunction.methodNegative(type_frunction));
+        type_frunction.addSymbol(IntegerFrunction.methodString(type_frunction));
+        type_frunction.addSymbol(IntegerFrunction.methodAbsolute(type_frunction));
+        type_frunction.addSymbol(IntegerFrunction.methodAddition(type_frunction));
+        type_frunction.addSymbol(IntegerFrunction.methodDivision(type_frunction));
+        type_frunction.addSymbol(IntegerFrunction.methodGreater(type_frunction));
+        type_frunction.addSymbol(IntegerFrunction.methodLesser(type_frunction));
+        type_frunction.addSymbol(IntegerFrunction.methodReal(type_frunction));
+        type_frunction.addSymbol(IntegerFrunction.methodRemainder(type_frunction));
+        type_frunction.addSymbol(IntegerFrunction.methodMultiplication(type_frunction));
+      }
+    };
   }
 
   private final long state;
@@ -49,31 +72,6 @@ public class IntegerFrunction extends NativeFrunction
     super(environment);
 
     this.state = state;
-
-    // Adding the methods
-    try
-    {
-      this.addMethods();
-    }
-    catch(SyntaxError | RunTimeError e)
-    {
-      e.printStackTrace();
-    }
-  }
-
-  private void addMethods() throws SyntaxError, RunTimeError
-  {
-    this.addSymbol(this.methodEquals());
-    this.addSymbol(this.methodString());
-    this.addSymbol(this.methodReal());
-    this.addSymbol(this.methodGreater());
-    this.addSymbol(this.methodLesser());
-    this.addSymbol(this.methodNegative());
-    this.addSymbol(this.methodAbsolute());
-    this.addSymbol(this.methodAddition());
-    this.addSymbol(this.methodMultiplication());
-    this.addSymbol(this.methodDivision());
-    this.addSymbol(this.methodRemainder());
   }
 
   /** Will generate a method binding for determining if another method is equal.
@@ -81,7 +79,7 @@ public class IntegerFrunction extends NativeFrunction
    * @return 
    * @throws RunTimeError 
    * @throws SyntaxError */
-  private SymbolBinding methodEquals() throws SyntaxError, RunTimeError
+  private static SymbolBinding methodEquals(Frunction type_frunction) throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -108,10 +106,10 @@ public class IntegerFrunction extends NativeFrunction
         return BooleanFrunction.getCached(i_left.getNative() == i_right.getNative());
       }
     };
-    return expression.getAsBinding("eq", this, input, types, condition);
+    return expression.getAsBinding("eq", type_frunction, input, types, condition);
   }
 
-  private SymbolBinding methodString() throws SyntaxError, RunTimeError
+  private static SymbolBinding methodString(Frunction type_frunction) throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -133,10 +131,10 @@ public class IntegerFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("str", this, input, types, condition);
+    return expression.getAsBinding("str", type_frunction, input, types, condition);
   }
   
-  private SymbolBinding methodReal() throws SyntaxError, RunTimeError
+  private static SymbolBinding methodReal(Frunction type_frunction) throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -158,10 +156,10 @@ public class IntegerFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("real", this, input, types, condition);
+    return expression.getAsBinding("real", type_frunction, input, types, condition);
   }
   
-  private SymbolBinding methodGreater() throws SyntaxError, RunTimeError
+  private static SymbolBinding methodGreater(Frunction type_frunction) throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -188,10 +186,10 @@ public class IntegerFrunction extends NativeFrunction
         return BooleanFrunction.getCached(i_left.getNative() > i_right.getNative());
       }
     };
-    return expression.getAsBinding("grtr", this, input, types, condition);
+    return expression.getAsBinding("gt", type_frunction, input, types, condition);
   }
   
-  private SymbolBinding methodLesser() throws SyntaxError, RunTimeError
+  private static SymbolBinding methodLesser(Frunction type_frunction) throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -218,10 +216,10 @@ public class IntegerFrunction extends NativeFrunction
         return BooleanFrunction.getCached(i_left.getNative() < i_right.getNative());
       }
     };
-    return expression.getAsBinding("lssr", this, input, types, condition);
+    return expression.getAsBinding("lt", type_frunction, input, types, condition);
   }
   
-  private SymbolBinding methodNegative() throws SyntaxError, RunTimeError
+  private static SymbolBinding methodNegative(Frunction type_frunction) throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -242,10 +240,10 @@ public class IntegerFrunction extends NativeFrunction
         return IntegerFrunction.getCached(-i_left.getNative());
       }
     };
-    return expression.getAsBinding("neg", this, input, types, condition);
+    return expression.getAsBinding("neg", type_frunction, input, types, condition);
   }
   
-  private SymbolBinding methodAbsolute() throws SyntaxError, RunTimeError
+  private static SymbolBinding methodAbsolute(Frunction type_frunction)throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] {};
@@ -266,10 +264,10 @@ public class IntegerFrunction extends NativeFrunction
         return IntegerFrunction.getCached(Math.abs(i_left.getNative()));
       }
     };
-    return expression.getAsBinding("abs", this, input, types, condition);
+    return expression.getAsBinding("abs", type_frunction, input, types, condition);
   }
   
-  private SymbolBinding methodAddition() throws SyntaxError, RunTimeError
+  private static SymbolBinding methodAddition(Frunction type_frunction) throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -296,10 +294,10 @@ public class IntegerFrunction extends NativeFrunction
         return IntegerFrunction.getCached(i_left.getNative() + i_right.getNative());
       }
     };
-    return expression.getAsBinding("add", this, input, types, condition);
+    return expression.getAsBinding("add", type_frunction, input, types, condition);
   }
   
-  private SymbolBinding methodMultiplication() throws SyntaxError, RunTimeError
+  private static SymbolBinding methodMultiplication(Frunction type_frunction) throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -326,10 +324,10 @@ public class IntegerFrunction extends NativeFrunction
         return IntegerFrunction.getCached(i_left.getNative() * i_right.getNative());
       }
     };
-    return expression.getAsBinding("mult", this, input, types, condition);
+    return expression.getAsBinding("mult", type_frunction, input, types, condition);
   }
   
-  private SymbolBinding methodDivision() throws SyntaxError, RunTimeError
+  private static SymbolBinding methodDivision(Frunction type_frunction) throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -356,10 +354,10 @@ public class IntegerFrunction extends NativeFrunction
         return IntegerFrunction.getCached(i_left.getNative() / i_right.getNative());
       }
     };
-    return expression.getAsBinding("div", this, input, types, condition);
+    return expression.getAsBinding("div", type_frunction, input, types, condition);
   }
   
-  private SymbolBinding methodRemainder() throws SyntaxError, RunTimeError
+  private static SymbolBinding methodRemainder(Frunction type_frunction) throws SyntaxError, RunTimeError
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -386,7 +384,7 @@ public class IntegerFrunction extends NativeFrunction
         return IntegerFrunction.getCached(i_left.getNative() % i_right.getNative());
       }
     };
-    return expression.getAsBinding("rem", this, input, types, condition);
+    return expression.getAsBinding("rem", type_frunction, input, types, condition);
   }
 
   @Override public String getType()

@@ -13,14 +13,9 @@ public interface Binding
    * @return */
   public String getSource();
 
-  /** Returns the container of the binding
-   * 
-   * @return */
-  public Container getContainer();
-
   /** Will force an evaluation of the symbol's expressions
    * 
    * @throws ExpressionError 
    * @throws SyntaxError */
-  public void evaluate() throws SyntaxError;
+  public void evaluate(Container environment) throws SyntaxError;
 }

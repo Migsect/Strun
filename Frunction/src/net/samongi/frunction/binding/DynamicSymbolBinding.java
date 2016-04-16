@@ -29,7 +29,6 @@ public class DynamicSymbolBinding implements SymbolBinding
   public static DynamicSymbolBinding parseBinding(String text_section, Container environment) throws SyntaxError, RunTimeError
   {
     if(text_section == null) throw new NullPointerException("'text_section' was null");
-    if(environment == null) throw new NullPointerException("'environment' was null");
     
     int i = 0;
     
@@ -37,7 +36,7 @@ public class DynamicSymbolBinding implements SymbolBinding
     String prior = ParseUtil.getSection(text_section, i, BINDING, Token.getScopeOpenIdentifiers(), Token.getScopeCloseIdentifiers(), Token.getScopeeToggleIdentifiers());
     i += prior.length();
     prior.trim();
-    // Removing the binding if it exists
+    // Removing the binding operator if it exists
     if(prior.endsWith(BINDING)) prior = prior.substring(0, prior.length() - BINDING.length()).trim();
     
     // if i == text_section.length then that means prior represents everything
@@ -54,71 +53,85 @@ public class DynamicSymbolBinding implements SymbolBinding
       source = text_section.substring(i);
     }
     
-    // Splitting the section based on the first bound binding operator
-    /*
-    String[] split_section = text_section.split(BINDING, 2);
-    if(split_section.length < 2) 
-    {
-      key = DEF_KEY;
-      source = split_section[0].trim(); 
-    }
-    else
-    {
-      key = split_section[0].trim();
-      source = split_section[1].trim();
-    }
-    */
     if(key == null) throw new NullPointerException("'key' was null");
     if(source == null) throw new NullPointerException("'source' was null");
 
     boolean do_eval = !key.startsWith(DELAY_EVAL);
-    if(!do_eval) key = key.replaceFirst(DELAY_EVAL, "");
+    if(!do_eval) key = key.substring(DELAY_EVAL.length());
 
-    DynamicSymbolBinding binding = new DynamicSymbolBinding(key, source, environment);
-    if(do_eval) binding.collapse();
+    DynamicSymbolBinding binding = new DynamicSymbolBinding(key, source);
+    if(do_eval) binding.collapse(environment);
 
     return binding;
   }
 
-  private final String key;
+  private String key;
   private final String source;
-  private final boolean is_private = false; // TODO implement binding privacy
+  
+  private boolean is_private = false;
   private boolean countable = true;
 
   private Expression expression = null;
   private Frunction collapsed = null;
 
-  // The container of this
-  private final Container environment;
-
-  public DynamicSymbolBinding(String key, String source, Container environment)
+  public DynamicSymbolBinding(String key, String source)
   {
     if(key == null) throw new NullPointerException("'key' was null");
-    if(environment == null) throw new NullPointerException("environment was null");
     if(source == null) throw new NullPointerException("'source' was null");
 
     this.key = key;
     this.source = source;
-    this.environment = environment;
   }
 
-  public DynamicSymbolBinding(String key, Frunction evaluated, Container environment)
+  public DynamicSymbolBinding(String key, Frunction evaluated)
   {
-    if(key == null) throw new NullPointerException("key was null");
-    if(evaluated == null) throw new NullPointerException("evaluated was null");
-    if(environment == null) throw new NullPointerException("environment was null");
+    if(key == null) throw new NullPointerException("'key' was null");
+    if(evaluated == null) throw new NullPointerException("'evaluated' was null");
 
     this.key = key;
-    this.environment = environment;
     this.collapsed = evaluated;
     this.expression = evaluated.toExpression();
     this.source = "";
-
+  }
+  
+  /**The clone constructor
+   * 
+   * @param binding
+   */
+  public DynamicSymbolBinding(DynamicSymbolBinding binding)
+  {
+    if(binding == null) throw new NullPointerException("'binding' was null");
+    
+    this.key = binding.key;
+    this.collapsed = binding.collapsed;
+    this.expression = binding.expression;
+    this.source = binding.source;
+  }
+  
+  /**The clone-change key constructor
+   * 
+   * @param key The key to set as the binding
+   * @param binding
+   */
+  public DynamicSymbolBinding(String key, DynamicSymbolBinding binding)
+  {
+    if(key == null) throw new NullPointerException("'key' was null");
+    if(binding == null) throw new NullPointerException("'binding' was null");
+    
+    this.key = key;
+    this.collapsed = binding.collapsed;
+    this.expression = binding.expression;
+    this.source = binding.source;
   }
 
   @Override public String getKey()
   {
     return this.key;
+  }
+  
+  @Override public SymbolBinding clone(String new_key)
+  {
+    return new DynamicSymbolBinding(new_key, this);
   }
 
   @Override public String getSource()
@@ -130,6 +143,11 @@ public class DynamicSymbolBinding implements SymbolBinding
   {
     return this.is_private;
   }
+  
+  @Override public void setPrivate(boolean state)
+  {
+    this.is_private = state;
+  }
 
   /** Returns the expression this binding relates to This will force the binding to update it's expression given it
    * hasn't created one yet.
@@ -137,16 +155,11 @@ public class DynamicSymbolBinding implements SymbolBinding
    * @return An expression object
    * @throws TokenError
    * @throws ExpressionError */
-  @Override public Expression getExpression() throws SyntaxError
+  @Override public Expression getExpression(Container environment) throws SyntaxError
   {
-    if(this.expression == null) this.evaluate();
+    if(this.expression == null) this.evaluate(environment);
     if(this.expression == null) throw new IllegalStateException();
     return this.expression;
-  }
-
-  @Override public Container getContainer()
-  {
-    return this.environment;
   }
 
   @Override public String toDisplay()
@@ -155,11 +168,11 @@ public class DynamicSymbolBinding implements SymbolBinding
     return display;
   }
 
-  @Override public void evaluate() throws SyntaxError
+  @Override public void evaluate(Container environment) throws SyntaxError
   {
     if(this.expression == null) try
     {
-      this.expression = Expression.parseString(this.source, this.environment);
+      this.expression = Expression.parseString(this.source);
     }
     catch (SyntaxError e)
     {
@@ -169,18 +182,18 @@ public class DynamicSymbolBinding implements SymbolBinding
     if(this.expression == null) throw new IllegalStateException();
   }
 
-  @Override public void collapse() throws SyntaxError, RunTimeError
+  @Override public void collapse(Container environment) throws SyntaxError, RunTimeError
   {
     // First we need to evaluate the symbol.
-    this.evaluate();
+    this.evaluate(environment);
     // Now we need to set collapsed
-    if(this.collapsed == null) this.collapsed = this.expression.evaluate(this.environment);
+    if(this.collapsed == null) this.collapsed = this.expression.evaluate(environment);
   }
 
-  @Override public Frunction get() throws SyntaxError, RunTimeError
+  @Override public Frunction get(Container environment) throws SyntaxError, RunTimeError
   {
     if(this.collapsed != null) return this.collapsed;
-    this.collapse();
+    this.collapse(environment);
     return this.collapsed;
   }
 

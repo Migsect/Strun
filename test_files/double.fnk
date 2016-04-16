@@ -1,16 +1,92 @@
-a : 123.456;
+
+type_test : {
+  type: "test";
+  %binding_1 : "This is a type binding";
+};
+
+type_test.binding_1.println();
+
+not_type_test : {
+  type: "test";
+};
+not_type_test.binding_1.println();
+
+Coord : {
+  typing : { 
+    type : "coord";
+    %message : "I am me the type";
+    %self : {() -> ^@;};
+    %str : {() -> "(".con(^@.x.str().con(", ").con(^@.y.str()).con(")"));};
+    %add : {(other) -> Coord(^@.x.add(other.x),^@.y.add(other.y));};
+  };
+  (x, y) -> {
+    type : "coord";
+    message : "Will be shown";
+    x : x;
+    y : y;
+  };
+};
+
+a : Coord(10,20);
+a.x.str().println();
+a.y.str().println();
 a.str().println();
-a.neg().str().println();
-a.round().str().println();
-a.ceil().str().println();
-a.floor().str().println();
-a.round().int().str().println();
 
-b : 456.789;
-a.mult(b).str().println();
-a.div(b).str().println();
+b : Coord(1,2);
+b.str().println();
 
-"hello".con(" world").println();
+a.add(b).str().println();
 
-s1 : "foobar";
-s1_l : s1.len();
+#a.message.println();
+#a.self().message.println();
+#a.self().x.str().println();
+
+"1====================================================".println();
+A : {
+  type : "a";
+  %a : "foo";
+  %f : {() -> ^@.a.println();};
+};
+"2====================================================".println();
+
+a : {
+  type : "a";
+  a : "bar";
+  %g : {
+    () -> ^@.a.println();
+  };
+};
+"3====================================================".println();
+
+a.a.println();
+"4====================================================".println();
+a.f();
+a.g();
+
+A : {
+  type : "1";
+  string : "This is type-1's string";
+};
+A2 : {
+  type : "1";
+};
+B : {
+  type : "2";
+  %type : "1";
+};
+C : {
+  type : "3";
+  %type : "1";
+};
+
+A2.string.println();
+
+A.type.println();
+B.type.println();
+B.%type.println();
+C.type.println();
+C.%type.println();
+
+
+
+B.string.println();

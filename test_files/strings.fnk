@@ -6,7 +6,7 @@ a.println();
 
 count_str : {
   (n) ?(n.lssr(1))-> n.str();
-  (n) -> n.str().con(count_str(n.add(-1)));
+  (n)             -> n.str().con(count_str(n.add(-1)));
 };
 count_str_print : {
   (n) -> count_str(n).println();
@@ -17,7 +17,29 @@ for : {
   (n, f)             -> {f(n); for(n.add(-1),f)}; 
 };
 
-#b : count_str(9);
-#b.println();
+for(125, count_str_print);
 
-for(1000, count_str_print);
+A : {
+  foo : 10;
+  bar : 15;
+  a : {
+    h : foo;
+    j : bar.add(foo);
+  };
+};
+
+Coord : {
+  type : "coord";
+  $add : {
+    (other) -> Coord(^@.x_pos.add(other.x_pos), ^@.y_pos.add(other.y_pos));
+  };
+  (x, y) -> {
+    type : "coord";
+    x_pos : x;
+    y_pos : y;
+  };
+};
+
+c1 : Coord(4,5);
+c2 : Coord(7,8);
+c3 : c1.add(c2);

@@ -34,7 +34,7 @@ public class MethodContainer implements Container
   {
     if(frunction == null) throw new NullPointerException("'frunction' was null");
     
-    SymbolBinding s_binding = new DynamicSymbolBinding(symbol, frunction, this);
+    SymbolBinding s_binding = new DynamicSymbolBinding(symbol, frunction);
     this.addSymbol(s_binding);
   }
 

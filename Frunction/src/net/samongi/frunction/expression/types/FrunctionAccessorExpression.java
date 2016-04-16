@@ -2,6 +2,7 @@ package net.samongi.frunction.expression.types;
 
 import net.samongi.frunction.binding.SymbolBinding;
 import net.samongi.frunction.error.runtime.RunTimeError;
+import net.samongi.frunction.error.runtime.SymbolNotFoundError;
 import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.expression.tokens.SymbolToken;
 import net.samongi.frunction.frunction.Container;
@@ -45,10 +46,11 @@ public class FrunctionAccessorExpression implements Expression
     String symbol = token.getSource();
     // Getting the binding associated with the symbol.
     SymbolBinding l_binding = eval.getSymbol(symbol);
+    if(l_binding == null) throw new SymbolNotFoundError(symbol);
     
     // We can now evaluate the expression.
     // This is using the environment of the frunction it is apart of.
-    Frunction accessed = l_binding.get();;
+    Frunction accessed = l_binding.get(eval);
     if(DEBUG) System.out.println("  A-Evaluate accessed_source: " + accessed.getSource());
 
     // Returning the accessed expression

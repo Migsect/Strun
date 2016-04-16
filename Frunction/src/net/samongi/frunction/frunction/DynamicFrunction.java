@@ -9,14 +9,16 @@ import java.util.TreeMap;
 import net.samongi.frunction.binding.Binding;
 import net.samongi.frunction.binding.DynamicMethodBinding;
 import net.samongi.frunction.binding.DynamicSymbolBinding;
+import net.samongi.frunction.binding.EnvironmentChangeSymbolBinding;
 import net.samongi.frunction.binding.MethodBinding;
 import net.samongi.frunction.binding.SymbolBinding;
 import net.samongi.frunction.error.runtime.FrunctionNotEvaluatedError;
 import net.samongi.frunction.error.runtime.RunTimeError;
-import net.samongi.frunction.error.runtime.SymbolNotFoundError;
 import net.samongi.frunction.error.syntax.SyntaxError;
+import net.samongi.frunction.exceptions.runtime.InvalidTypeException;
 import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
+import net.samongi.frunction.frunction.literal.StringFrunction;
 import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
 import net.samongi.frunction.parse.ParseUtil;
 
@@ -25,7 +27,11 @@ public class DynamicFrunction implements Frunction
   public static final boolean DEBUG = false;
 
   private static final String SELF_SYMBOL = "@";
-  private static final String CONTAINER_ENV_SYMBOL = "^";
+  private static final String CONTAINER_RAISE_SYMBOL = "^";
+  private static final String ABSOLUTE_RAISE_SYMBOL = "$";
+  private static final String TYPE_RAISE_SYMBOL = "%";
+  
+  private static final String TYPE_KEY = "type";
 
   /** A frunction consists of a Map of symbol bindings */
   private Map<String, SymbolBinding> symbol_bindings = null;
@@ -67,10 +73,31 @@ public class DynamicFrunction implements Frunction
   public DynamicFrunction(Container environment) throws SyntaxError, RunTimeError
   {
     this.environment = environment;
-    this.source = null;
+    this.source = "";
     this.evaluate();
   }
+  
+  /**Creates a copy of the base frunction with the new environment
+   * 
+   * @param environment The new environment to set it to
+   * @param base The base to base it off of.
+   * @throws ParsingException
+   * @throws RunTimeException
+   */
+  public DynamicFrunction(Container environment, DynamicFrunction base) throws SyntaxError, RunTimeError
+  {
+    this.environment = environment;
+    this.source = base.source;
+    this.type = base.type;
+    this.method_bindings = base.method_bindings;
+    this.symbol_bindings = base.symbol_bindings;
+  }
 
+  @Override public Frunction clone(Container new_environment) throws SyntaxError, RunTimeError
+  {
+    return new DynamicFrunction(new_environment, this);
+  }
+  
   @Override public void evaluate() throws SyntaxError, RunTimeError
   {
     if(this.isEvaluated()) return;
@@ -94,7 +121,7 @@ public class DynamicFrunction implements Frunction
       if(section.endsWith(Binding.BINDING_SEPERATOR)) section = section.substring(0, section.length() - Binding.BINDING_SEPERATOR.length());
       // Now we have a clean binding defintion.
 
-      MethodBinding met_binding = DynamicMethodBinding.parseBinding(section, this);
+      MethodBinding met_binding = DynamicMethodBinding.parseBinding(section);
       if(met_binding != null)
       {
         this.addMethod(met_binding);
@@ -259,14 +286,12 @@ public class DynamicFrunction implements Frunction
     return null;
   }
 
-  @Override public void addMethod(MethodBinding binding) throws FrunctionNotEvaluatedError
+  @Override public void addMethod(MethodBinding binding) throws RunTimeError
   {
     if(!this.isEvaluated()) throw new FrunctionNotEvaluatedError();
 
     String[] types = binding.getTypes();
     if(DEBUG) System.out.println("  Adding with types:" + ParseUtil.concatStringArray(types));
-    // System.out.println("Binding with types: " +
-    // ParseUtil.concatStringArray(types));
     // Generating the list if it doesn't exist
     if(!this.method_bindings.containsKey(types.length)) this.method_bindings.put(types.length, new ArrayList<MethodBinding>());
     // Retrieving the list
@@ -276,68 +301,90 @@ public class DynamicFrunction implements Frunction
     if(DEBUG) System.out.println("    List size: " + binding_list.size());
   }
 
+  // We need to grab the symbol
   @Override public SymbolBinding getSymbol(String symbol) throws SyntaxError, RunTimeError
   {
+    // cleaning up the symbol
     symbol = symbol.trim();
+    // Evaluating the frunction if it isn't already
     if(!this.isEvaluated()) this.evaluate();
 
-    // First step is to consult if the symbol is a literal
+    // <<< Check to see if it is a literal >>>
     if(LiteralDictionary.getInstance().isLiteral(symbol)) return LiteralDictionary.getInstance().getSymbol(symbol);
 
-    if(symbol.equals(SELF_SYMBOL)) // time to create the self binding that will
-                                   // need to be accessed.
+    // <<< Check to see if it is the self-binding >>>
+    if(symbol.equals(SELF_SYMBOL)) 
     {
-      // System.out.println("  Frunction: getSymbol > Symbol was self accessor");
-      SymbolBinding self_bind = new DynamicSymbolBinding(SELF_SYMBOL, this, this);
+      SymbolBinding self_bind = new DynamicSymbolBinding(SELF_SYMBOL, this);
       self_bind.setCountable(false); // it shouldn't be countable
-
-      // Adding the new symbol for the self
-      try
-      {
-        this.addSymbol(self_bind);
-      }
-      catch(FrunctionNotEvaluatedError e)
-      {
-        e.printStackTrace();
-      }
+      self_bind.setPrivate(true);
+      
+      this.addSymbol(self_bind);
+    }
+    
+    
+    // <<< Starts with the raise modifier >>>
+    if(symbol.startsWith(CONTAINER_RAISE_SYMBOL) && this.environment != null)
+    {
+      return this.environment.getSymbol(symbol.substring(CONTAINER_RAISE_SYMBOL.length()));
+    }
+    // <<< Starts with the type raise modifier >>>
+    if(symbol.startsWith(TYPE_RAISE_SYMBOL))
+    {
+      Frunction type_frunction = this.getTypeFrunction();
+      if(type_frunction == null) return null;
+      return new EnvironmentChangeSymbolBinding((DynamicSymbolBinding) type_frunction.getSymbol(symbol.substring(TYPE_RAISE_SYMBOL.length())), this);
+    }
+    // <<< Starts with the absolute raise modifier >>>
+    if(symbol.startsWith(ABSOLUTE_RAISE_SYMBOL))
+    {
+      if(this.environment == null) return this.getSymbol(symbol.substring(ABSOLUTE_RAISE_SYMBOL.length()));
+      else return this.environment.getSymbol(symbol);
     }
 
     SymbolBinding binding = null;
-    // First case is to check if it will force an environment pop-up
-    if(symbol.startsWith(CONTAINER_ENV_SYMBOL))
-    {
-      // System.out.println("  .  .  Found use of '^', upping the environment. New Sym: '"
-      // + symbol.substring(CONTAINER_ENV_SYMBOL.length()) + "'");
-      if(this.environment == null) throw new SymbolNotFoundError(symbol);
-      binding = this.environment.getSymbol(symbol.substring(CONTAINER_ENV_SYMBOL.length()));
-    }
-    else
-    {
-      binding = this.symbol_bindings.get(symbol);
-      if(binding == null)
-      {
-        // this.displayHierarchy(2);
-        if(this.environment == null) throw new SymbolNotFoundError(symbol);
-        binding = this.environment.getSymbol(symbol);
-      }
-    }
-
-    if(binding == null) { throw new SymbolNotFoundError(symbol); }
+    // <<< Local environment check >>>
+    binding = this.symbol_bindings.get(symbol);
+    if(binding != null) return binding;
+    
+    // <<< Type environment check >>>
+    Frunction type_frunction = this.getTypeFrunction();
+    // TODO possible problems here if we ever have another base type of symbol binding.
+    if(type_frunction != null) binding = type_frunction.getSymbol(symbol); 
+    if(binding != null) return new EnvironmentChangeSymbolBinding((DynamicSymbolBinding) binding, this);
+    
+    // <<< Raise environment check >>>
+    if(this.environment == null) return null;
+    binding = this.environment.getSymbol(symbol);
 
     // Returning the binding, it may be null
     return binding;
   }
 
-  @Override public void addSymbol(SymbolBinding binding) throws FrunctionNotEvaluatedError
+  @Override public void addSymbol(SymbolBinding binding) throws RunTimeError, SyntaxError
   {
     if(binding == null) throw new NullPointerException("'binding' was null");
     if(!this.isEvaluated()) throw new FrunctionNotEvaluatedError();
-
+    
+    // Setting the native-based identifier of type if it is a type.
+    if(binding.getKey().toLowerCase().equals(TYPE_KEY))
+    {
+      Frunction inner = binding.get(this);
+      if(!(inner instanceof StringFrunction)) throw new InvalidTypeException(inner);
+      StringFrunction s_inner = (StringFrunction) inner;
+      this.setType(s_inner.getNative().toLowerCase());
+    }
+    
+    // Checking if the binding should be set to the type
+    if(binding.getKey().startsWith(TYPE_RAISE_SYMBOL))
+    {
+      Frunction type_frunction = this.getTypeFrunction();
+      type_frunction.addSymbol(binding.clone(binding.getKey().substring(TYPE_RAISE_SYMBOL.length())));
+    }
+    else this.symbol_bindings.put(binding.getKey(), binding);
     // Simply adding the symbol
     // This will override any existing symbols in that place, but it is expected
-    // System.out.println("  Adding sym with key '" + binding.getKey() +
-    // "' to frunction with type '" + this.getType() + "'");
-    this.symbol_bindings.put(binding.getKey(), binding);
+    
   }
 
   @Override public void setType(String type)
@@ -359,7 +406,58 @@ public class DynamicFrunction implements Frunction
   {
     return this.source;
   }
-
+  
+  /**Checks to see if the frunction contains the symbol.
+   * This will detect any symbol and does not take into account "countable"
+   * 
+   * @param symbol The symbol to check for
+   * @return True if the frunction has the symbol
+   */
+  public boolean hasLocalSymbol(String symbol)
+  {
+    return this.symbol_bindings.containsKey(symbol);
+  }
+  /**Will check to see if it has either a local symbol or a type symbol.
+   * 
+   * @param symbol
+   * @return
+   * @throws RunTimeException 
+   * @throws ParsingException 
+   */
+  @Override public boolean hasAccessibleSymbol(String symbol) throws RunTimeError, SyntaxError
+  {
+    if(this.symbol_bindings.containsKey(symbol)) return true;
+    Frunction type_frunction = this.getTypeFrunction();
+    if(type_frunction != null && type_frunction.hasAccessibleSymbol(symbol)) return true;
+    return false;
+  }
+  
+  /**Will count the symbols in the frunction.
+   * This will take into account if a symbol is "countable" or not.
+   * The symbol will specify if it is countable or not.
+   * 
+   * @return The number of countable symbols
+   */
+  public int countSymbols()
+  {
+    int sum = 0;
+    for(SymbolBinding b : this.symbol_bindings.values())
+    {
+      if(b.isCountable()) sum ++;
+    }
+    return sum;
+  }
+  /**Will return the total amount of symbols in this frunction
+   * These symbols will be defined to this frunction and not the
+   * type frunction.
+   * 
+   * @return The total number of symbols
+   */
+  public int countAllSymbols()
+  {
+    return this.symbol_bindings.size();
+  }
+  
   @Override public List<MethodBinding> getMethods()
   {
     TreeMap<Integer, List<MethodBinding>> sorted_bindings = new TreeMap<>();
