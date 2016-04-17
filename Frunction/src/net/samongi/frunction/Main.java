@@ -9,6 +9,7 @@ import net.samongi.frunction.error.syntax.ExpressionError;
 import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.file.FileUtil;
 import net.samongi.frunction.frunction.DynamicFrunction;
+import net.samongi.frunction.frunction.library.ArgumentFrunction;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
 import net.samongi.frunction.frunction.literal.EmptyFrunction;
 import net.samongi.frunction.frunction.literal.IntegerFrunction;
@@ -28,15 +29,13 @@ public class Main
     String file_loc = args[0];
     
     File file = new File(file_loc);
-    String text_body = FileUtil.readFile(file);
-    
-    // System.out.println(text_body);
+    String text_body = FileUtil.readFile(file); // Reading in the file
 
-    text_body = Commenting.removeComments(text_body);
+    text_body = Commenting.removeComments(text_body); // Removing comments
+    text_body = ParseUtil.removeNextLines(text_body); // Removing nextlines
+    text_body = ParseUtil.squeeze(text_body); // Squeezing white space
 
-    text_body = ParseUtil.removeNextLines(text_body);
-    text_body = ParseUtil.squeeze(text_body);
-
+    // Definition of the types
     try
     {
       EmptyFrunction.getTypeDefiner().define();
@@ -51,7 +50,20 @@ public class Main
       e.printStackTrace();
     }
     
+    // Creating the main_frunction
+    // It will not evaluate yet
     DynamicFrunction main_frunction = new DynamicFrunction(null, text_body);
+    main_frunction.initialize();
+    // Adding the libraries to the main frunction
+    try
+    {
+      main_frunction.addSymbol(ArgumentFrunction.getConstructor(args).asBinding("Args", main_frunction));
+    }
+    catch(SyntaxError | RunTimeError e)
+    {
+      e.printStackTrace();
+    }
+    
     try
     {
       main_frunction.evaluate();

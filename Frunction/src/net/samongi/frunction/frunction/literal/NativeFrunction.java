@@ -90,7 +90,7 @@ public abstract class NativeFrunction extends DynamicFrunction
       }
 
     };
-    return expression.getAsBinding("str", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("str", type_frunction, input, types, condition);
   }
 
   // Native Frunctions have no source

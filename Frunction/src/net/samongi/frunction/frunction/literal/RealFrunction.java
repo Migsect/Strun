@@ -110,7 +110,7 @@ public class RealFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("eq", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("eq", type_frunction, input, types, condition);
   }
 
   private static SymbolBinding methodInt(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -134,7 +134,7 @@ public class RealFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("int", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("int", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodRound(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -158,7 +158,7 @@ public class RealFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("round", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("round", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodFloor(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -182,7 +182,7 @@ public class RealFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("floor", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("floor", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodCeiling(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -206,7 +206,7 @@ public class RealFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("ceil", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("ceil", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodNegative(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -230,7 +230,7 @@ public class RealFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("neg", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("neg", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodAbsolute(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -254,7 +254,7 @@ public class RealFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("abs", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("abs", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodGreater(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -284,7 +284,7 @@ public class RealFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("gt", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("gt", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodLesser(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -314,7 +314,7 @@ public class RealFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("lt", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("lt", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodAddition(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -344,7 +344,7 @@ public class RealFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("add", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("add", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodMultiplication(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -375,7 +375,7 @@ public class RealFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("mult", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("mult", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodDivision(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -406,7 +406,7 @@ public class RealFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("div", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("div", type_frunction, input, types, condition);
   }
 
   @Override public String getType()

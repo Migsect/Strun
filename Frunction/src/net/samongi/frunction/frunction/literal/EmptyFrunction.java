@@ -49,7 +49,7 @@ public class EmptyFrunction
       }
 
     };
-    return expression.getAsBinding("size", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("size", type_frunction, input, types, condition);
   }
   private static SymbolBinding methodEmpty(Frunction type_frunction) throws SyntaxError, RunTimeError
   {
@@ -70,7 +70,7 @@ public class EmptyFrunction
       }
 
     };
-    return expression.getAsBinding("empt", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("empt", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodSymbolSize(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -91,7 +91,7 @@ public class EmptyFrunction
       }
 
     };
-    return expression.getAsBinding("ssize", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("ssize", type_frunction, input, types, condition);
   }
   private static SymbolBinding methodMethodSize(Frunction type_frunction) throws SyntaxError, RunTimeError
   {
@@ -111,7 +111,7 @@ public class EmptyFrunction
       }
 
     };
-    return expression.getAsBinding("msize", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("msize", type_frunction, input, types, condition);
   }
   /*
   private static SymbolBinding methodType(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -160,7 +160,7 @@ public class EmptyFrunction
       }
 
     };
-    return expression.getAsBinding("inst", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("inst", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodIsAccessible(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -188,6 +188,6 @@ public class EmptyFrunction
       }
 
     };
-    return expression.getAsBinding("accs", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("accs", type_frunction, input, types, condition);
   }
 }

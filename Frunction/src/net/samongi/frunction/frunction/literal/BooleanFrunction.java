@@ -104,7 +104,6 @@ public class BooleanFrunction extends NativeFrunction
    * @throws RunTimeException 
    * @throws ParsingException */
   private static SymbolBinding methodEquals(Frunction type_frunction) throws SyntaxError, RunTimeError
-
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -131,7 +130,7 @@ public class BooleanFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("eq", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("eq", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodOr(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -161,7 +160,7 @@ public class BooleanFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("or", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("or", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodAnd(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -191,7 +190,7 @@ public class BooleanFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("and", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("and", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodNot(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -216,7 +215,7 @@ public class BooleanFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("not", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("not", type_frunction, input, types, condition);
   }
 
   

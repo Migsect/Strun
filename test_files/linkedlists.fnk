@@ -17,9 +17,6 @@ List : {
 };
 
 list1 : List(5);
-list1.hd.str().println();
-list1.tl.empt().str().println();
-list1.eol().str().println();
 
 list2 : List(5)(4)(3)(2)(1);
 list3 : list2.map({(n) -> n.mult(2);});

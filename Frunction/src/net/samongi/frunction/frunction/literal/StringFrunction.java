@@ -103,7 +103,7 @@ public class StringFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("eq", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("eq", type_frunction, input, types, condition);
   }
 
   private static SymbolBinding methodPrint(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -132,7 +132,7 @@ public class StringFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("print", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("print", type_frunction, input, types, condition);
   }
 
   private static SymbolBinding methodPrintln(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -161,7 +161,7 @@ public class StringFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("println", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("println", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodLength(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -187,7 +187,7 @@ public class StringFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("len", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("len", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodConcatinate(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -217,7 +217,7 @@ public class StringFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("con", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("con", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodSubstring(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -251,7 +251,7 @@ public class StringFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("sub", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("sub", type_frunction, input, types, condition);
   }
 
   @Override public String getType()

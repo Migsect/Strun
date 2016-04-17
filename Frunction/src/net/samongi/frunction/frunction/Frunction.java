@@ -4,7 +4,6 @@ import net.samongi.frunction.error.runtime.RunTimeError;
 import net.samongi.frunction.error.syntax.ExpressionError;
 import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.expression.types.Expression;
-import net.samongi.frunction.frunction.literal.EmptyFrunction;
 import net.samongi.frunction.frunction.type.dictionary.TypeDictionary;
 
 public interface Frunction extends Container

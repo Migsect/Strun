@@ -1,0 +1,5 @@
+Args.len().str().println();
+Args(0).println();
+Args(1).println();
+Args(2).println();
+Args(3).println();

@@ -41,6 +41,8 @@ public class DynamicFrunction implements Frunction
    * 
    * There can be multiple method bindings to a set of types. */
   private Map<Integer, List<MethodBinding>> method_bindings = null;
+  
+  private boolean is_evaluated = false;
 
   /** A set will represent the type that a frunction is. */
   private String type = EmptyFrunction.TYPE;
@@ -99,14 +101,22 @@ public class DynamicFrunction implements Frunction
     return new DynamicFrunction(new_environment, this);
   }
   
+  public void initialize()
+  {
+    this.symbol_bindings = new HashMap<String, SymbolBinding>();
+    this.method_bindings = new HashMap<Integer, List<MethodBinding>>();
+  }
+  
   @Override public void evaluate() throws SyntaxError, RunTimeError
   {
     if(this.isEvaluated()) return;
 
     // Creating the hashmaps
-    this.symbol_bindings = new HashMap<String, SymbolBinding>();
-    this.method_bindings = new HashMap<Integer, List<MethodBinding>>();
+    if(this.symbol_bindings == null) this.symbol_bindings = new HashMap<String, SymbolBinding>();
+    if(this.method_bindings == null) this.method_bindings = new HashMap<Integer, List<MethodBinding>>();
 
+    this.is_evaluated = true;
+    
     if(source == null) return;
     if(source.length() <= 0) return;
 
@@ -144,9 +154,7 @@ public class DynamicFrunction implements Frunction
 
   @Override public boolean isEvaluated()
   {
-    if(this.symbol_bindings == null) return false;
-    if(this.method_bindings == null) return false;
-    return true;
+    return this.is_evaluated;
   }
 
   @Override public MethodBinding getMethod(String[] types, Frunction[] inputs) throws SyntaxError, RunTimeError
@@ -289,7 +297,7 @@ public class DynamicFrunction implements Frunction
 
   @Override public void addMethod(MethodBinding binding) throws RunTimeError
   {
-    if(!this.isEvaluated()) throw new FrunctionNotEvaluatedError();
+    if(this.method_bindings == null) throw new FrunctionNotEvaluatedError();
 
     String[] types = binding.getTypes();
     if(DEBUG) System.out.println("  Adding with types:" + ParseUtil.concatStringArray(types));
@@ -365,7 +373,7 @@ public class DynamicFrunction implements Frunction
   @Override public void addSymbol(SymbolBinding binding) throws RunTimeError, SyntaxError
   {
     if(binding == null) throw new NullPointerException("'binding' was null");
-    if(!this.isEvaluated()) throw new FrunctionNotEvaluatedError();
+    if(this.symbol_bindings == null) throw new FrunctionNotEvaluatedError();
     
     // Setting the native-based identifier of type if it is a type.
     if(binding.getKey().toLowerCase().equals(TYPE_KEY))

@@ -90,7 +90,7 @@ public abstract class NativeExpression implements Expression
    * @return A symbol binding. 
    * @throws RunTimeError 
    * @throws SyntaxError */
-  public SymbolBinding getAsBinding(String key, Container environment, String[] input, String[] types, Expression condition) throws SyntaxError, RunTimeError
+  public SymbolBinding getAsSymbolBinding(String key, Container environment, String[] input, String[] types, Expression condition) throws SyntaxError, RunTimeError
   {
     Frunction method_holder = new DynamicFrunction(environment);
 
@@ -106,6 +106,18 @@ public abstract class NativeExpression implements Expression
 
     SymbolBinding binding = new DynamicSymbolBinding(key, method_holder);
     binding.setCountable(false);
+    return binding;
+  }
+  /**Will get the expression as a simple method binding
+   * 
+   * @param input The inputs of the binding
+   * @param types The types of the binding
+   * @param condition The condition
+   * @return A method Binding
+   */
+  public MethodBinding getAsMethodBinding(String[] input, String[] types, Expression condition)
+  {
+    MethodBinding binding = new DynamicMethodBinding(input, types, condition, this);
     return binding;
   }
 
