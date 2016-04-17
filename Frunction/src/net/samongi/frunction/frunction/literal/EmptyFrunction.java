@@ -11,7 +11,7 @@ import net.samongi.frunction.frunction.type.TypeDefiner;
 
 public class EmptyFrunction
 {
-  private static final String TYPE = "";
+  public static final String TYPE = "nil";
   
   public static TypeDefiner getTypeDefiner()
   {
@@ -19,7 +19,7 @@ public class EmptyFrunction
     {
       @Override protected void defineType(Frunction type_frunction) throws RunTimeError, SyntaxError
       {
-        type_frunction.setType(EmptyFrunction.TYPE);
+        type_frunction.setType("");
         type_frunction.addSymbol(EmptyFrunction.methodInstanceOf(type_frunction));
         type_frunction.addSymbol(EmptyFrunction.methodIsAccessible(type_frunction));
 
@@ -64,8 +64,8 @@ public class EmptyFrunction
       {
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
-        System.out.println("Syms: '" + left.countLocalSymbols() + "'");
-        System.out.println("Meth: '" + left.countLocalMethods() + "'");
+        //System.out.println("Syms: '" + left.countLocalSymbols() + "'");
+        //System.out.println("Meth: '" + left.countLocalMethods() + "'");
         return BooleanFrunction.getCached(0 == (left.countLocalMethods() + left.countLocalSymbols()));
       }
 

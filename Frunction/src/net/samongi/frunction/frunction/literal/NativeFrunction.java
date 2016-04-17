@@ -50,7 +50,7 @@ public abstract class NativeFrunction extends DynamicFrunction
     {
       @Override protected void defineType(Frunction type_frunction) throws RunTimeError, SyntaxError
       {
-        type_frunction.setType("");
+        type_frunction.setType(EmptyFrunction.TYPE);
         type_frunction.addSymbol(NativeFrunction.methodString(type_frunction));
         
       }

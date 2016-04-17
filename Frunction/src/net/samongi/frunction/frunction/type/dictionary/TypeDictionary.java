@@ -32,6 +32,7 @@ public class TypeDictionary extends DynamicFrunction
   private TypeDictionary() throws SyntaxError, RunTimeError
   {
     super(null);
+    this.setType("");
   }
   
   public boolean containsType(String type)
@@ -50,6 +51,7 @@ public class TypeDictionary extends DynamicFrunction
    */
   public void generateType(String type) throws SyntaxError, RunTimeError
   {
+    if(type == null) return;
     // The environment of the type frunction will be the type dictionary
     Frunction type_frunction = new DynamicFrunction(this);
     SymbolBinding binding = new DynamicSymbolBinding(type, type_frunction);
@@ -57,7 +59,10 @@ public class TypeDictionary extends DynamicFrunction
   }
   public Frunction getType(String type) throws SyntaxError, RunTimeError
   {
+    if(type == null) return null;
     if(!this.containsType(type)) this.generateType(type);
+    if(!this.containsType(type)) return null;
+    
     SymbolBinding binding = this.getSymbol(type);
     return binding.get(this);
   }
