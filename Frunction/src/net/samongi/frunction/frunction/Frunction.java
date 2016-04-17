@@ -31,6 +31,21 @@ public interface Frunction extends Container
    * @return A string representing the type of the frunction */
   public String getType();
   
+  public default boolean isType(String string)
+  {
+    if(this.getType().equals(string)) return true;
+    try
+    {
+      if(this.getTypeFrunction().isType(string)) return true;
+    }
+    catch(SyntaxError | RunTimeError e)
+    {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return false;
+  }
+  
   /**Will attempt to retrieve the frunction that determines the type.
    * This will return null if the type frunction is currently the frunction being called.
    * This can occur if the type frunction is the empty-type's frunction. 

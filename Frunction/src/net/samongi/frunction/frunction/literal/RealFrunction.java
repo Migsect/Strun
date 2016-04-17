@@ -56,7 +56,6 @@ public class RealFrunction extends NativeFrunction
         type_frunction.addSymbol(RealFrunction.methodNegative(type_frunction));
         type_frunction.addSymbol(RealFrunction.methodAbsolute(type_frunction));
         
-        type_frunction.addSymbol(RealFrunction.methodString(type_frunction));
         type_frunction.addSymbol(RealFrunction.methodInt(type_frunction));
         
         type_frunction.addSymbol(RealFrunction.methodFloor(type_frunction));
@@ -114,30 +113,6 @@ public class RealFrunction extends NativeFrunction
     return expression.getAsBinding("eq", type_frunction, input, types, condition);
   }
 
-  private static SymbolBinding methodString(Frunction type_frunction) throws SyntaxError, RunTimeError
-  {
-    // Generating the first method
-    String[] input = new String[] {};
-    String[] types = new String[] {};
-    Expression condition = BooleanFrunction.getTautology();
-
-    NativeExpression expression = new NativeExpression()
-    {
-      @Override public Frunction evaluate()
-      {
-        // Getting the left argument which should be the "@" self binding.
-        Frunction left = this.getSelf();
-
-        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null; 
-        RealFrunction r_left = (RealFrunction) left;
-        // Performing the native operation.
-        return StringFrunction.getCached("" + r_left.getNative());
-      }
-
-    };
-    return expression.getAsBinding("str", type_frunction, input, types, condition);
-  }
-  
   private static SymbolBinding methodInt(Frunction type_frunction) throws SyntaxError, RunTimeError
   {
     // Generating the first method
@@ -152,7 +127,7 @@ public class RealFrunction extends NativeFrunction
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
 
-        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null; 
+        if(!left.isType(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null; 
         RealFrunction r_left = (RealFrunction) left;
         // Performing the native operation.
         return IntegerFrunction.getCached((long)r_left.getNative());
@@ -176,7 +151,7 @@ public class RealFrunction extends NativeFrunction
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
 
-        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null;
+        if(!left.isType(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null;
         RealFrunction r_left = (RealFrunction) left;
         // Performing the native operation.
         return RealFrunction.getCached(Math.round(r_left.getNative()));
@@ -200,7 +175,7 @@ public class RealFrunction extends NativeFrunction
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
 
-        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null;
+        if(!left.isType(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null;
         RealFrunction r_left = (RealFrunction) left;
         // Performing the native operation.
         return RealFrunction.getCached(Math.floor(r_left.getNative()));
@@ -224,7 +199,7 @@ public class RealFrunction extends NativeFrunction
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
 
-        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null;
+        if(!left.isType(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null;
         RealFrunction r_left = (RealFrunction) left;
         // Performing the native operation.
         return RealFrunction.getCached(Math.ceil(r_left.getNative()));
@@ -248,7 +223,7 @@ public class RealFrunction extends NativeFrunction
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
 
-        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null; 
+        if(!left.isType(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null; 
         RealFrunction r_left = (RealFrunction) left;
         // Performing the native operation.
         return RealFrunction.getCached( -r_left.getNative());
@@ -272,7 +247,7 @@ public class RealFrunction extends NativeFrunction
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
 
-        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null; 
+        if(!left.isType(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null; 
         RealFrunction r_left = (RealFrunction) left;
         // Performing the native operation.
         return RealFrunction.getCached(Math.abs(r_left.getNative()));
@@ -300,8 +275,8 @@ public class RealFrunction extends NativeFrunction
         // defined
         Frunction right = this.getInput("other");
 
-        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null; 
-        if(!right.getType().equals(RealFrunction.TYPE) || !(right instanceof RealFrunction)) return null; 
+        if(!left.isType(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null; 
+        if(!right.isType(RealFrunction.TYPE) || !(right instanceof RealFrunction)) return null; 
         RealFrunction r_left = (RealFrunction) left;
         RealFrunction r_right = (RealFrunction) right;
         // Performing the native operation.
@@ -330,8 +305,8 @@ public class RealFrunction extends NativeFrunction
         // defined
         Frunction right = this.getInput("other");
 
-        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null;   
-        if(!right.getType().equals(RealFrunction.TYPE) || !(right instanceof RealFrunction)) return null;         
+        if(!left.isType(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null;   
+        if(!right.isType(RealFrunction.TYPE) || !(right instanceof RealFrunction)) return null;         
         RealFrunction r_left = (RealFrunction) left;
         RealFrunction r_right = (RealFrunction) right;
         // Performing the native operation.
@@ -360,8 +335,8 @@ public class RealFrunction extends NativeFrunction
         // defined
         Frunction right = this.getInput("other");
 
-        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null; 
-        if(!right.getType().equals(RealFrunction.TYPE) || !(right instanceof RealFrunction)) return null; 
+        if(!left.isType(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null; 
+        if(!right.isType(RealFrunction.TYPE) || !(right instanceof RealFrunction)) return null; 
         RealFrunction r_left = (RealFrunction) left;
         RealFrunction r_right = (RealFrunction) right;
         // Performing the native operation.
@@ -390,16 +365,9 @@ public class RealFrunction extends NativeFrunction
         // defined
         Frunction right = this.getInput("other");
 
-        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) { return null; // We should
-                                                                                                          // technically
-                                                                                                          // never get to
-                                                                                                          // this stage.
-        }
-        if(!right.getType().equals(RealFrunction.TYPE) || !(right instanceof RealFrunction)) { return null; // We should
-                                                                                                            // technically
-                                                                                                            // never get to
-                                                                                                            // this stage.
-        }
+        if(!left.isType(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null; 
+        if(!right.isType(RealFrunction.TYPE) || !(right instanceof RealFrunction)) return null;
+        
         RealFrunction r_left = (RealFrunction) left;
         RealFrunction r_right = (RealFrunction) right;
         // Performing the native operation.
@@ -428,16 +396,9 @@ public class RealFrunction extends NativeFrunction
         // defined
         Frunction right = this.getInput("other");
 
-        if(!left.getType().equals(RealFrunction.TYPE) || !(left instanceof RealFrunction)) { return null; // We should
-                                                                                                          // technically
-                                                                                                          // never get to
-                                                                                                          // this stage.
-        }
-        if(!right.getType().equals(RealFrunction.TYPE) || !(right instanceof RealFrunction)) { return null; // We should
-                                                                                                            // technically
-                                                                                                            // never get to
-                                                                                                            // this stage.
-        }
+        if(!left.isType(RealFrunction.TYPE) || !(left instanceof RealFrunction)) return null;
+        if(!right.isType(RealFrunction.TYPE) || !(right instanceof RealFrunction)) return null;
+                                                                                         
         RealFrunction r_left = (RealFrunction) left;
         RealFrunction r_right = (RealFrunction) right;
         // Performing the native operation.
@@ -456,5 +417,10 @@ public class RealFrunction extends NativeFrunction
   public double getNative()
   {
     return this.state;
+  }
+  
+  @Override public String asString()
+  {
+    return "" + this.state;
   }
 }

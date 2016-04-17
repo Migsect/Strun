@@ -1,6 +1,7 @@
 package net.samongi.frunction.expression.types;
 
 import net.samongi.frunction.binding.MethodBinding;
+import net.samongi.frunction.error.runtime.MethodNotFoundError;
 import net.samongi.frunction.error.runtime.RunTimeError;
 import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.expression.tokens.GroupToken;
@@ -84,7 +85,7 @@ public class MethodExpression implements Expression
     // Retrieving the method biniding.
     MethodBinding binding = eval.getMethod(types, evaluated_inputs);
     //System.out.println("  M-Left: " + left_expression.getDisplay());
-    if(binding == null) throw new NullPointerException();
+    if(binding == null) throw new MethodNotFoundError(environment, types);
 
     // The left expression is the container
     // This method container will be used by a method to evaluate.

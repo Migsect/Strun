@@ -51,16 +51,18 @@ public class IntegerFrunction extends NativeFrunction
       {
         type_frunction.setType(NativeFrunction.TYPE);
         type_frunction.addSymbol(IntegerFrunction.methodEquals(type_frunction));
-        type_frunction.addSymbol(IntegerFrunction.methodNegative(type_frunction));
-        type_frunction.addSymbol(IntegerFrunction.methodString(type_frunction));
-        type_frunction.addSymbol(IntegerFrunction.methodAbsolute(type_frunction));
-        type_frunction.addSymbol(IntegerFrunction.methodAddition(type_frunction));
-        type_frunction.addSymbol(IntegerFrunction.methodDivision(type_frunction));
         type_frunction.addSymbol(IntegerFrunction.methodGreater(type_frunction));
         type_frunction.addSymbol(IntegerFrunction.methodLesser(type_frunction));
-        type_frunction.addSymbol(IntegerFrunction.methodReal(type_frunction));
-        type_frunction.addSymbol(IntegerFrunction.methodRemainder(type_frunction));
+        
+        type_frunction.addSymbol(IntegerFrunction.methodNegative(type_frunction));
+        type_frunction.addSymbol(IntegerFrunction.methodAbsolute(type_frunction));
+        
+        type_frunction.addSymbol(IntegerFrunction.methodAddition(type_frunction));
         type_frunction.addSymbol(IntegerFrunction.methodMultiplication(type_frunction));
+        type_frunction.addSymbol(IntegerFrunction.methodDivision(type_frunction));
+        type_frunction.addSymbol(IntegerFrunction.methodRemainder(type_frunction));
+        
+        type_frunction.addSymbol(IntegerFrunction.methodReal(type_frunction));
       }
     };
   }
@@ -107,31 +109,6 @@ public class IntegerFrunction extends NativeFrunction
       }
     };
     return expression.getAsBinding("eq", type_frunction, input, types, condition);
-  }
-
-  private static SymbolBinding methodString(Frunction type_frunction) throws SyntaxError, RunTimeError
-  {
-    // Generating the first method
-    String[] input = new String[] {};
-    String[] types = new String[] {};
-    Expression condition = BooleanFrunction.getTautology();
-
-    NativeExpression expression = new NativeExpression()
-    {
-      @Override public Frunction evaluate()
-      {
-        // Getting the left argument which should be the "@" self binding.
-        Frunction left = this.getSelf();
-
-        if(!left.getType().equals(IntegerFrunction.TYPE) || !(left instanceof IntegerFrunction)) throw new IllegalStateException();
-        
-        IntegerFrunction i_left = (IntegerFrunction) left;
-        // Performing the native operation.
-        return StringFrunction.getCached("" + i_left.getNative());
-      }
-
-    };
-    return expression.getAsBinding("str", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodReal(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -395,6 +372,11 @@ public class IntegerFrunction extends NativeFrunction
   public long getNative()
   {
     return this.state;
+  }
+
+  @Override public String asString()
+  {
+    return "" + this.state;
   }
 
 }

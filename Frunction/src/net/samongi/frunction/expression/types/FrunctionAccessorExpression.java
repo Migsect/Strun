@@ -46,7 +46,7 @@ public class FrunctionAccessorExpression implements Expression
     String symbol = token.getSource();
     // Getting the binding associated with the symbol.
     SymbolBinding l_binding = eval.getSymbol(symbol);
-    if(l_binding == null) throw new SymbolNotFoundError(symbol);
+    if(l_binding == null) throw new SymbolNotFoundError(environment, symbol);
     
     // We can now evaluate the expression.
     // This is using the environment of the frunction it is apart of.

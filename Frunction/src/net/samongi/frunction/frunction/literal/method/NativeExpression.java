@@ -41,7 +41,7 @@ public abstract class NativeExpression implements Expression
     try
     {
       SymbolBinding binding =  this.environment.getSymbol("^@");
-      if(binding == null) throw new SymbolNotFoundError("^@");
+      if(binding == null) throw new SymbolNotFoundError(this.environment, "^@");
       
       return binding.get(this.environment);
     }
@@ -65,7 +65,7 @@ public abstract class NativeExpression implements Expression
     try
     {
       SymbolBinding binding = this.environment.getSymbol(symbol);
-      if(binding == null) throw new SymbolNotFoundError(symbol);
+      if(binding == null) throw new SymbolNotFoundError(this.environment, symbol);
       
       return binding.get(this.environment);
     }

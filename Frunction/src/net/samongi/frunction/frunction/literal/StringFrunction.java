@@ -57,8 +57,6 @@ public class StringFrunction extends NativeFrunction
         type_frunction.addSymbol(StringFrunction.methodPrint(type_frunction));
         type_frunction.addSymbol(StringFrunction.methodPrintln(type_frunction));
         
-        type_frunction.addSymbol(StringFrunction.methodString(type_frunction));
-        
       }
     };
   }
@@ -70,7 +68,7 @@ public class StringFrunction extends NativeFrunction
     super(environment);
 
     // setting the state of the string
-    this.state = state;
+    this.state = state.replace("\\n", System.getProperty("line.separator"));
   }
 
   /** Will generate a method binding for determining if another method is equal.
@@ -96,8 +94,8 @@ public class StringFrunction extends NativeFrunction
         // defined
         Frunction right = this.getInput("other");
 
-        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null; 
-        if(!right.getType().equals(StringFrunction.TYPE) || !(right instanceof StringFrunction)) return null; 
+        if(!left.isType(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null; 
+        if(!right.isType(StringFrunction.TYPE) || !(right instanceof StringFrunction)) return null; 
         StringFrunction s_left = (StringFrunction) left;
         StringFrunction s_right = (StringFrunction) right;
         // Performing the native operation.
@@ -106,28 +104,6 @@ public class StringFrunction extends NativeFrunction
 
     };
     return expression.getAsBinding("eq", type_frunction, input, types, condition);
-  }
-
-  private static SymbolBinding methodString(Frunction type_frunction) throws SyntaxError, RunTimeError
-  {
-    // Generating the first method
-    String[] input = new String[] {};
-    String[] types = new String[] {};
-    Expression condition = BooleanFrunction.getTautology();
-
-    NativeExpression expression = new NativeExpression()
-    {
-      @Override public Frunction evaluate()
-      {
-        // Getting the left argument which should be the "@" self binding.
-        Frunction left = this.getSelf();
-
-        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null; 
-        return left;
-      }
-
-    };
-    return expression.getAsBinding("str", type_frunction, input, types, condition);
   }
 
   private static SymbolBinding methodPrint(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -144,7 +120,7 @@ public class StringFrunction extends NativeFrunction
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
 
-        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null;
+        if(!left.isType(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null;
 
         // Converting the type
         StringFrunction s_left = (StringFrunction) left;
@@ -173,7 +149,7 @@ public class StringFrunction extends NativeFrunction
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
 
-        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null; 
+        if(!left.isType(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null; 
 
         // Converting the type
         StringFrunction s_left = (StringFrunction) left;
@@ -202,7 +178,7 @@ public class StringFrunction extends NativeFrunction
         // Getting the left argument which should be the "@" self binding.
         Frunction left = this.getSelf();
 
-        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null;
+        if(!left.isType(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null;
 
         // Converting the type
         StringFrunction s_left = (StringFrunction) left;
@@ -232,8 +208,8 @@ public class StringFrunction extends NativeFrunction
         // defined
         Frunction right = this.getInput("other");
 
-        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null; 
-        if(!right.getType().equals(StringFrunction.TYPE) || !(right instanceof StringFrunction)) return null; 
+        if(!left.isType(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null; 
+        if(!right.isType(StringFrunction.TYPE) || !(right instanceof StringFrunction)) return null; 
         StringFrunction s_left = (StringFrunction) left;
         StringFrunction s_right = (StringFrunction) right;
         // Performing the native operation.
@@ -263,9 +239,9 @@ public class StringFrunction extends NativeFrunction
         Frunction start = this.getInput("start");
         Frunction end = this.getInput("end");
 
-        if(!left.getType().equals(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null; 
-        if(!start.getType().equals(IntegerFrunction.TYPE) || !(start instanceof IntegerFrunction)) return null; 
-        if(!end.getType().equals(IntegerFrunction.TYPE) || !(end instanceof IntegerFrunction)) return null; 
+        if(!left.isType(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null; 
+        if(!start.isType(IntegerFrunction.TYPE) || !(start instanceof IntegerFrunction)) return null; 
+        if(!end.isType(IntegerFrunction.TYPE) || !(end instanceof IntegerFrunction)) return null; 
         
         StringFrunction s_left = (StringFrunction) left;
         IntegerFrunction i_start = (IntegerFrunction) start;
@@ -284,6 +260,11 @@ public class StringFrunction extends NativeFrunction
   }
 
   public String getNative()
+  {
+    return this.state;
+  }
+  
+  @Override public String asString()
   {
     return this.state;
   }
