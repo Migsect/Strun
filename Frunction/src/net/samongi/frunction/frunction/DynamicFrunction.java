@@ -432,32 +432,6 @@ public class DynamicFrunction implements Frunction
     return false;
   }
   
-  /**Will count the symbols in the frunction.
-   * This will take into account if a symbol is "countable" or not.
-   * The symbol will specify if it is countable or not.
-   * 
-   * @return The number of countable symbols
-   */
-  public int countSymbols()
-  {
-    int sum = 0;
-    for(SymbolBinding b : this.symbol_bindings.values())
-    {
-      if(b.isCountable()) sum ++;
-    }
-    return sum;
-  }
-  /**Will return the total amount of symbols in this frunction
-   * These symbols will be defined to this frunction and not the
-   * type frunction.
-   * 
-   * @return The total number of symbols
-   */
-  public int countAllSymbols()
-  {
-    return this.symbol_bindings.size();
-  }
-  
   @Override public List<MethodBinding> getMethods()
   {
     TreeMap<Integer, List<MethodBinding>> sorted_bindings = new TreeMap<>();
@@ -487,5 +461,21 @@ public class DynamicFrunction implements Frunction
     }
 
     return sorted_list;
+  }
+
+  @Override public int countLocalSymbols()
+  {
+    int sum = 0;
+    for(SymbolBinding b : this.symbol_bindings.values())
+    {
+      if(b.isCountable()) sum ++;
+    }
+    return sum;
+  }
+
+  @Override public int countLocalMethods()
+  {
+    // TODO Auto-generated method stub
+    return this.method_bindings.size();
   }
 }

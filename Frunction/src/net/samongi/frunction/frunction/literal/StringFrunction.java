@@ -15,7 +15,7 @@ public class StringFrunction extends NativeFrunction
 {
   public static final String STRING_CAPSULE = "\"";
 
-  private static final String TYPE = "string";
+  public static final String TYPE = "string";
 
   public static Frunction parseLiteral(String symbol, Container environment) throws SyntaxError, RunTimeError
   {

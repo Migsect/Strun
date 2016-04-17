@@ -26,4 +26,4 @@ rand_stream : {
 
 r1 : rand_stream(1234, 1000000, 123456789, 987654321);
 r2 : rand_stream(r1.get(10), 10000, r1.get(11), r1.get(12));
-r2.println(100);
+r2.println(500);

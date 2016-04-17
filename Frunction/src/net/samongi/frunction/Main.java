@@ -10,6 +10,7 @@ import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.file.FileUtil;
 import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
+import net.samongi.frunction.frunction.literal.EmptyFrunction;
 import net.samongi.frunction.frunction.literal.IntegerFrunction;
 import net.samongi.frunction.frunction.literal.NativeFrunction;
 import net.samongi.frunction.frunction.literal.RealFrunction;
@@ -38,6 +39,7 @@ public class Main
 
     try
     {
+      EmptyFrunction.getTypeDefiner().define();
       NativeFrunction.getTypeDefiner().define();
       BooleanFrunction.getTypeDefiner().define();
       IntegerFrunction.getTypeDefiner().define();
