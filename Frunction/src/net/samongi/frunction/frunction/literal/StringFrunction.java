@@ -6,6 +6,7 @@ import net.samongi.frunction.error.syntax.ExpressionError;
 import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.expression.types.Expression;
 import net.samongi.frunction.frunction.Container;
+import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.frunction.Frunction;
 import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
 import net.samongi.frunction.frunction.literal.method.NativeExpression;
@@ -56,6 +57,10 @@ public class StringFrunction extends NativeFrunction
         
         type_frunction.addSymbol(StringFrunction.methodPrint(type_frunction));
         type_frunction.addSymbol(StringFrunction.methodPrintln(type_frunction));
+        
+        type_frunction.addSymbol(StringFrunction.methodBool(type_frunction));
+        type_frunction.addSymbol(StringFrunction.methodInt(type_frunction));
+        type_frunction.addSymbol(StringFrunction.methodReal(type_frunction));
         
       }
     };
@@ -253,6 +258,136 @@ public class StringFrunction extends NativeFrunction
     };
     return expression.getAsSymbolBinding("sub", type_frunction, input, types, condition);
   }
+  
+  private static SymbolBinding methodInt(Frunction type_frunction) throws SyntaxError, RunTimeError
+  {
+    // Generating the first method
+    String[] input = new String[] {};
+    String[] types = new String[] {};
+    Expression condition = BooleanFrunction.getTautology();
+
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+
+        if(!left.isType(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null;
+
+        // Converting the type
+        StringFrunction s_left = (StringFrunction) left;
+        
+        Long parsed = null;
+        try
+        {
+          parsed = Long.parseLong(s_left.getNative());
+        }
+        catch(NumberFormatException e)
+        {
+          try
+          {
+            return new DynamicFrunction(type_frunction);
+          }
+          catch(SyntaxError | RunTimeError e1)
+          {
+            e1.printStackTrace();
+          }
+        }
+        
+        return IntegerFrunction.getCached(parsed);
+      }
+
+    };
+    return expression.getAsSymbolBinding("int", type_frunction, input, types, condition);
+  }
+  
+  private static SymbolBinding methodBool(Frunction type_frunction) throws SyntaxError, RunTimeError
+  {
+    // Generating the first method
+    String[] input = new String[] {};
+    String[] types = new String[] {};
+    Expression condition = BooleanFrunction.getTautology();
+
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+
+        if(!left.isType(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null;
+
+        // Converting the type
+        StringFrunction s_left = (StringFrunction) left;
+        
+        Boolean parsed = null;
+        try
+        {
+          parsed = Boolean.parseBoolean(s_left.getNative());
+        }
+        catch(NumberFormatException e)
+        {
+          try
+          {
+            return new DynamicFrunction(type_frunction);
+          }
+          catch(SyntaxError | RunTimeError e1)
+          {
+            e1.printStackTrace();
+          }
+        }
+        
+        return BooleanFrunction.getCached(parsed);
+      }
+
+    };
+    return expression.getAsSymbolBinding("bool", type_frunction, input, types, condition);
+  }
+  
+  private static SymbolBinding methodReal(Frunction type_frunction) throws SyntaxError, RunTimeError
+  {
+    // Generating the first method
+    String[] input = new String[] {};
+    String[] types = new String[] {};
+    Expression condition = BooleanFrunction.getTautology();
+
+    NativeExpression expression = new NativeExpression()
+    {
+      @Override public Frunction evaluate()
+      {
+        // Getting the left argument which should be the "@" self binding.
+        Frunction left = this.getSelf();
+
+        if(!left.isType(StringFrunction.TYPE) || !(left instanceof StringFrunction)) return null;
+
+        // Converting the type
+        StringFrunction s_left = (StringFrunction) left;
+        
+        Double parsed = null;
+        try
+        {
+          parsed = Double.parseDouble(s_left.getNative());
+        }
+        catch(NumberFormatException e)
+        {
+          try
+          {
+            return new DynamicFrunction(type_frunction);
+          }
+          catch(SyntaxError | RunTimeError e1)
+          {
+            e1.printStackTrace();
+          }
+        }
+        
+        return RealFrunction.getCached(parsed);
+      }
+
+    };
+    return expression.getAsSymbolBinding("real", type_frunction, input, types, condition);
+  }
+
 
   @Override public String getType()
   {
