@@ -1,6 +1,8 @@
-"Hello World".println();
-5.str().println();
 
+large_int_1 : 123456789;
+large_int_2 : 234567891;
+
+# generates a random stream
 rand_stream : {
   (n, m, a, b) -> {
     val : n.rem(m);
@@ -13,10 +15,12 @@ rand_stream : {
         () -> str().con("\n").con(next);
       }();
     };
+    # prints out the stream
     println : {
       ()  -> str().println();
       (n) -> str(n).println();
     };
+    # gets the nth value in the stream
     get : {
       (n) ?(n.lt(1))-> val;
       (n) -> ^@().get(n.add(-1));
@@ -24,6 +28,7 @@ rand_stream : {
   };
 };
 
-r1 : rand_stream(1234, 1000000, 123456789, 987654321);
-r2 : rand_stream(r1.get(10), 10000, r1.get(11), r1.get(12));
-r2.println(100);
+seed : 345678912; 
+max  : 1000000;
+rs : rand_stream(seed, max, large_int_1, large_int_2);
+rs.println(100);

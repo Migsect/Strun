@@ -8,6 +8,14 @@ a.neg().str().println();
 b.neg().str().println();
 c.str().println();
 
+structure : {
+  a : 10;
+  b : 12;
+  (n) : a.add(b).add(n);
+};
+
+s1 : structure(10);
+
 F : {
   (n) ?(n.lssr(2))-> 1;
   (n) -> F(n.add(-1)).add(F(n.add(-2)));  
