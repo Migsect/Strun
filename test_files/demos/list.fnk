@@ -1,0 +1,51 @@
+List : {
+  (hd, tl) -> {
+    type : "list";
+    hd : hd;
+    tl : tl;
+    (prior) -> List(prior, @);
+  };
+  (hd) -> List(hd, {});
+  # defining the list type
+  type_def : {
+    type : "list";
+    %length : {
+      () ?(tl.empt())-> 1;
+      () -> tl.size().add(1);
+    };
+    %first : {-> hd;};
+    %last : {
+      ?(tl.empt())-> hd;
+      -> tl.last();
+    };
+    %map : {
+      (f) ?(tl.empt())-> List(f(hd));
+      (f) -> List(f(hd), tl.map(f));
+    };
+    %append : {
+      (end) ?(tl.empt()) -> List(hd, end);
+      (end) -> List(hd, tl.append(end));
+    };
+    %select : {
+      (f) ?(f(hd).and(tl.empt()))-> ^@;
+      (f) ?(tl.empt()) -> {};
+      (f) ?(f(hd)) -> List(hd, tl.select(f));
+      (f) -> tl.select(f);
+    };
+    %reverse : {
+      () -> reverse({});
+      (prev) ?(prev.empt().and(tl.empt()))-> ^@;
+      (prev) ?(prev.empt())-> tl.reverse(List(hd));
+      (prev) ?(tl.empt())-> List(hd, prev);
+      (prev) -> tl.reverse(List(hd, prev));
+    };
+  };
+};
+
+a0 : List(0);
+a1 : List(20)(19)(18)(17)(16)(15)(14)(13)(12)(11)(10)(9)(8)(7)(6)(5)(4)(3)(2)(1);
+
+a2 : a1.select({(n) -> n.rem(2).eq(0);});
+a1.reverse().map({(n) -> n.str().println();});
+
+#a1.append(a2).map({(n) -> n.str().println();});
