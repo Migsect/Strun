@@ -1,0 +1,34 @@
+
+large_int_1 : 123456789;
+large_int_2 : 234567891;
+
+# generates a random stream
+rand_stream : {
+  (n, m, a, b) -> {
+    val : n.rem(m);
+    () -> rand_stream(a.mult(n).add(b).rem(m), m, a, b);
+    str : {
+      ()  -> val.str();
+      (n) ?(n.lt(2))-> str();
+      (n) -> {
+        next : ^^@().str(n.add(-1));
+        () -> str().con("\n").con(next);
+      }();
+    };
+    # prints out the stream
+    println : {
+      ()  -> str().println();
+      (n) -> str(n).println();
+    };
+    # gets the nth value in the stream
+    get : {
+      (n) ?(n.lt(1))-> val;
+      (n) -> ^@().get(n.add(-1));
+    };
+  };
+};
+
+seed : 345678912; 
+max  : 1000000;
+rs : rand_stream(seed, max, large_int_1, large_int_2);
+rs.println(100);

@@ -37,7 +37,7 @@ public class ContainerAccessorExpression implements Expression
     String symbol = token.getSource();
     // Getting the binding associated with the symbol.
     SymbolBinding l_binding = environment.getSymbol(symbol);
-    if(l_binding == null) throw new SymbolNotFoundError(symbol);
+    if(l_binding == null) throw new SymbolNotFoundError(environment, symbol);
 
     // Getting the binded expression
 

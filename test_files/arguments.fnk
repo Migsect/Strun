@@ -1,0 +1,8 @@
+Args.len().str().println();
+Args(0).println();
+arg1 : Args(1).println().int();
+arg2 : Args(2).println().int();
+arg3 : Args(3).println().int();
+
+sum : arg1.add(arg2).add(arg3);
+sum.str().println();

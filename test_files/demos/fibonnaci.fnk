@@ -1,0 +1,40 @@
+fib : {
+  (n) ?(n.lt(2))-> 1;
+  (n) -> fib(n.add(-1)).add(fib(n.add(-2)));
+};
+
+"".println();
+":==== Fib ====:".println();
+fib(0).str().println();
+fib(1).str().println();
+fib(2).str().println();
+fib(3).str().println();
+fib(4).str().println();
+fib(5).str().println();
+fib(6).str().println();
+fib(7).str().println();
+fib(8).str().println();
+fib(9).str().println();
+fib(10).str().println();
+"".println();
+
+fib_fast : {
+  (n) ?(n.lt(2))-> 1;
+  (n) -> fib_fast(n, 1, 1);
+  (n, n-1, n-2) ?(n.lt(3))-> n-1.add(n-2);
+  (n, n-1, n-2) -> fib_fast(n.add(-1), n-1.add(n-2), n-1);
+}; 
+
+":==== Fast Fib ====:".println();
+fib_fast(0).str().println();
+fib_fast(1).str().println();
+fib_fast(2).str().println();
+fib_fast(3).str().println();
+fib_fast(4).str().println();
+fib_fast(5).str().println();
+fib_fast(6).str().println();
+fib_fast(7).str().println();
+fib_fast(8).str().println();
+fib_fast(9).str().println();
+fib_fast(10).str().println();
+"".println();

@@ -18,6 +18,7 @@ import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.exceptions.runtime.InvalidTypeException;
 import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
+import net.samongi.frunction.frunction.literal.EmptyFrunction;
 import net.samongi.frunction.frunction.literal.StringFrunction;
 import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
 import net.samongi.frunction.parse.ParseUtil;
@@ -40,9 +41,11 @@ public class DynamicFrunction implements Frunction
    * 
    * There can be multiple method bindings to a set of types. */
   private Map<Integer, List<MethodBinding>> method_bindings = null;
+  
+  private boolean is_evaluated = false;
 
   /** A set will represent the type that a frunction is. */
-  private String type = "";
+  private String type = EmptyFrunction.TYPE;
 
   /** A Frunction will have a parent environment in which it was defined in. This environment is also a frunction */
   private final Container environment;
@@ -98,14 +101,22 @@ public class DynamicFrunction implements Frunction
     return new DynamicFrunction(new_environment, this);
   }
   
+  public void initialize()
+  {
+    this.symbol_bindings = new HashMap<String, SymbolBinding>();
+    this.method_bindings = new HashMap<Integer, List<MethodBinding>>();
+  }
+  
   @Override public void evaluate() throws SyntaxError, RunTimeError
   {
     if(this.isEvaluated()) return;
 
     // Creating the hashmaps
-    this.symbol_bindings = new HashMap<String, SymbolBinding>();
-    this.method_bindings = new HashMap<Integer, List<MethodBinding>>();
+    if(this.symbol_bindings == null) this.symbol_bindings = new HashMap<String, SymbolBinding>();
+    if(this.method_bindings == null) this.method_bindings = new HashMap<Integer, List<MethodBinding>>();
 
+    this.is_evaluated = true;
+    
     if(source == null) return;
     if(source.length() <= 0) return;
 
@@ -143,9 +154,7 @@ public class DynamicFrunction implements Frunction
 
   @Override public boolean isEvaluated()
   {
-    if(this.symbol_bindings == null) return false;
-    if(this.method_bindings == null) return false;
-    return true;
+    return this.is_evaluated;
   }
 
   @Override public MethodBinding getMethod(String[] types, Frunction[] inputs) throws SyntaxError, RunTimeError
@@ -288,7 +297,7 @@ public class DynamicFrunction implements Frunction
 
   @Override public void addMethod(MethodBinding binding) throws RunTimeError
   {
-    if(!this.isEvaluated()) throw new FrunctionNotEvaluatedError();
+    if(this.method_bindings == null) throw new FrunctionNotEvaluatedError();
 
     String[] types = binding.getTypes();
     if(DEBUG) System.out.println("  Adding with types:" + ParseUtil.concatStringArray(types));
@@ -364,7 +373,7 @@ public class DynamicFrunction implements Frunction
   @Override public void addSymbol(SymbolBinding binding) throws RunTimeError, SyntaxError
   {
     if(binding == null) throw new NullPointerException("'binding' was null");
-    if(!this.isEvaluated()) throw new FrunctionNotEvaluatedError();
+    if(this.symbol_bindings == null) throw new FrunctionNotEvaluatedError();
     
     // Setting the native-based identifier of type if it is a type.
     if(binding.getKey().toLowerCase().equals(TYPE_KEY))
@@ -432,32 +441,6 @@ public class DynamicFrunction implements Frunction
     return false;
   }
   
-  /**Will count the symbols in the frunction.
-   * This will take into account if a symbol is "countable" or not.
-   * The symbol will specify if it is countable or not.
-   * 
-   * @return The number of countable symbols
-   */
-  public int countSymbols()
-  {
-    int sum = 0;
-    for(SymbolBinding b : this.symbol_bindings.values())
-    {
-      if(b.isCountable()) sum ++;
-    }
-    return sum;
-  }
-  /**Will return the total amount of symbols in this frunction
-   * These symbols will be defined to this frunction and not the
-   * type frunction.
-   * 
-   * @return The total number of symbols
-   */
-  public int countAllSymbols()
-  {
-    return this.symbol_bindings.size();
-  }
-  
   @Override public List<MethodBinding> getMethods()
   {
     TreeMap<Integer, List<MethodBinding>> sorted_bindings = new TreeMap<>();
@@ -487,5 +470,21 @@ public class DynamicFrunction implements Frunction
     }
 
     return sorted_list;
+  }
+
+  @Override public int countLocalSymbols()
+  {
+    int sum = 0;
+    for(SymbolBinding b : this.symbol_bindings.values())
+    {
+      if(b.isCountable()) sum ++;
+    }
+    return sum;
+  }
+
+  @Override public int countLocalMethods()
+  {
+    // TODO Auto-generated method stub
+    return this.method_bindings.size();
   }
 }

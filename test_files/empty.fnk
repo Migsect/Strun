@@ -1,0 +1,27 @@
+a : {};
+a.empt().str().println();
+a : {
+  a: 1;
+};
+a.empt().str().println();
+
+record : {
+  type : "record";
+  %type : "collection";
+  [0] : 1;
+  [1] : 2;
+  [2] : 3;
+  [3] : 4;
+  [4] : 5;
+};
+
+record.size().str().println();
+record.ssize().str().println();
+record.msize().str().println();
+
+record.accs("[0]").str().println()l;
+
+record.inst("record").str().println();
+record.inst("collection").str().println();
+record.inst("list").str().println();
+

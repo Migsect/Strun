@@ -31,6 +31,23 @@ public interface Frunction extends Container
    * @return A string representing the type of the frunction */
   public String getType();
   
+  public default boolean isType(String string)
+  {
+    if(this.getType().equals(string)) return true;
+    try
+    {
+      Frunction type_frunction = this.getTypeFrunction();
+      if(type_frunction == null) return false;
+      if(this.getTypeFrunction().isType(string)) return true;
+    }
+    catch(SyntaxError | RunTimeError e)
+    {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return false;
+  }
+  
   /**Will attempt to retrieve the frunction that determines the type.
    * This will return null if the type frunction is currently the frunction being called.
    * This can occur if the type frunction is the empty-type's frunction. 
@@ -42,7 +59,8 @@ public interface Frunction extends Container
   public default Frunction getTypeFrunction() throws SyntaxError, RunTimeError
   {
     Frunction type_frunction = TypeDictionary.getInstance().getType(this.getType());
-    if(type_frunction == this) return null;
+    
+    if(this.getType().equals("")) return null;
     if(type_frunction.getType().equals(this.getType())) return null;
     return type_frunction;
   }
@@ -57,12 +75,25 @@ public interface Frunction extends Container
   /**Will check to see if there is an accessible symbol in the frunction.
    * This also includes the frunction's type.
    * 
-   * @param symbol
-   * @return
-   * @throws ParsingException
-   * @throws RunTimeException
+   * @param symbol The symbol to check if it is accessible
+   * @return True if the symbol can be accessed from this frunction
+   * @throws SyntaxError
+   * @throws RunTimeError
    */
   public boolean hasAccessibleSymbol(String symbol) throws SyntaxError, RunTimeError;
+  
+  /**Will count the number of local symbols in the frunction
+   * Local symbols are defined defined specifcally the frunction.
+   * 
+   * @return The number of local Symbols
+   */
+  public int countLocalSymbols();
+  /**Will count the number of local methods in the frunction.
+   * Local methods are defined specifically in the method.
+   * 
+   * @return The number of local Methods
+   */
+  public int countLocalMethods();
 
   /** Returns the source of this frunction If there is no source returned (null or empty) then the frunction might very
    * well be a native frunction

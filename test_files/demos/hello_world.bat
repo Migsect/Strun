@@ -1,0 +1,1 @@
+..\..\builds\strun.bat .\hello_world.fnk

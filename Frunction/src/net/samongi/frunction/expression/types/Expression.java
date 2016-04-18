@@ -96,6 +96,7 @@ public interface Expression
       else if(t.getType().equals(Token.Type.FRUNCTION))
       {
         if(i != 0) new UnexpectedExpressionError(Expression.Type.FRUNCTION, source);
+        
         FrunctionExpression expr = new FrunctionExpression((FrunctionToken) t);
         left_expr = expr; // setting it to be the left expression
         i += 1;
@@ -105,6 +106,7 @@ public interface Expression
       else if(t.getType().equals(Token.Type.INPUT))
       {
         if(left_expr == null) throw new MissingLeftExpressionError(Expression.Type.METHOD, source);
+        
         MethodExpression expr = new MethodExpression(left_expr, (InputToken) t);
         left_expr = expr; // setting it to be the left expression
         i += 1;
@@ -115,6 +117,7 @@ public interface Expression
       {
         System.out.println("  For some reason there was a group token?!?!");
         if(i != 0) throw new ExpressionError(Expression.Type.GENERIC, source);
+        
         GroupToken g_t = (GroupToken) t;
         Expression expr = Expression.parseTokens(source, g_t.getTokens());
         left_expr = expr; // setting it to be the left expression

@@ -34,9 +34,9 @@ public class BooleanFrunction extends NativeFrunction
         type_frunction.setType(NativeFrunction.TYPE);
         type_frunction.addSymbol(BooleanFrunction.methodAnd(type_frunction));
         type_frunction.addSymbol(BooleanFrunction.methodOr(type_frunction));
+        
         type_frunction.addSymbol(BooleanFrunction.methodEquals(type_frunction));
         type_frunction.addSymbol(BooleanFrunction.methodNot(type_frunction));
-        type_frunction.addSymbol(BooleanFrunction.methodString(type_frunction));
       }
     };
   }
@@ -104,7 +104,6 @@ public class BooleanFrunction extends NativeFrunction
    * @throws RunTimeException 
    * @throws ParsingException */
   private static SymbolBinding methodEquals(Frunction type_frunction) throws SyntaxError, RunTimeError
-
   {
     // Generating the first method
     String[] input = new String[] { "other" };
@@ -122,8 +121,8 @@ public class BooleanFrunction extends NativeFrunction
         // defined
         Frunction right = this.getInput("other");
 
-        if(!left.getType().equals(BooleanFrunction.TYPE) || !(left instanceof BooleanFrunction)) throw new IllegalStateException();
-        if(!right.getType().equals(BooleanFrunction.TYPE) || !(right instanceof BooleanFrunction)) throw new IllegalStateException();
+        if(!left.isType(BooleanFrunction.TYPE) || !(left instanceof BooleanFrunction)) throw new IllegalStateException();
+        if(!right.isType(BooleanFrunction.TYPE) || !(right instanceof BooleanFrunction)) throw new IllegalStateException();
         BooleanFrunction b_left = (BooleanFrunction) left;
         BooleanFrunction b_right = (BooleanFrunction) right;
         // Performing the native operation.
@@ -131,32 +130,7 @@ public class BooleanFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("eq", type_frunction, input, types, condition);
-  }
-
-  private static SymbolBinding methodString(Frunction type_frunction) throws SyntaxError, RunTimeError
-
-  {
-    // Generating the first method
-    String[] input = new String[] {};
-    String[] types = new String[] {};
-    Expression condition = BooleanFrunction.getTautology();
-
-    NativeExpression expression = new NativeExpression()
-    {
-      @Override public Frunction evaluate()
-      {
-        // Getting the left argument which should be the "@" self binding.
-        Frunction left = this.getSelf();
-
-        if(!left.getType().equals(BooleanFrunction.TYPE) || !(left instanceof BooleanFrunction)) throw new IllegalStateException();
-        BooleanFrunction b_left = (BooleanFrunction) left;
-        // Performing the native operation.
-        return StringFrunction.getCached("" + b_left.getNative());
-      }
-
-    };
-    return expression.getAsBinding("str", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("eq", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodOr(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -177,8 +151,8 @@ public class BooleanFrunction extends NativeFrunction
         // defined
         Frunction right = this.getInput("other");
 
-        if(!left.getType().equals(BooleanFrunction.TYPE) || !(left instanceof BooleanFrunction)) throw new IllegalStateException();
-        if(!right.getType().equals(BooleanFrunction.TYPE) || !(right instanceof BooleanFrunction)) throw new IllegalStateException();
+        if(!left.isType(BooleanFrunction.TYPE) || !(left instanceof BooleanFrunction)) throw new IllegalStateException();
+        if(!right.isType(BooleanFrunction.TYPE) || !(right instanceof BooleanFrunction)) throw new IllegalStateException();
         BooleanFrunction b_left = (BooleanFrunction) left;
         BooleanFrunction b_right = (BooleanFrunction) right;
         // Performing the native operation.
@@ -186,7 +160,7 @@ public class BooleanFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("or", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("or", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodAnd(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -207,8 +181,8 @@ public class BooleanFrunction extends NativeFrunction
         // defined
         Frunction right = this.getInput("other");
 
-        if(!left.getType().equals(BooleanFrunction.TYPE) || !(left instanceof BooleanFrunction)) throw new IllegalStateException();
-        if(!right.getType().equals(BooleanFrunction.TYPE) || !(right instanceof BooleanFrunction)) throw new IllegalStateException();
+        if(!left.isType(BooleanFrunction.TYPE) || !(left instanceof BooleanFrunction)) throw new IllegalStateException();
+        if(!right.isType(BooleanFrunction.TYPE) || !(right instanceof BooleanFrunction)) throw new IllegalStateException();
         BooleanFrunction b_left = (BooleanFrunction) left;
         BooleanFrunction b_right = (BooleanFrunction) right;
         // Performing the native operation.
@@ -216,7 +190,7 @@ public class BooleanFrunction extends NativeFrunction
       }
 
     };
-    return expression.getAsBinding("and", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("and", type_frunction, input, types, condition);
   }
   
   private static SymbolBinding methodNot(Frunction type_frunction) throws SyntaxError, RunTimeError
@@ -234,14 +208,14 @@ public class BooleanFrunction extends NativeFrunction
         Frunction left = this.getSelf();
 
 
-        if(!left.getType().equals(BooleanFrunction.TYPE) || !(left instanceof BooleanFrunction)) throw new IllegalStateException();
+        if(!left.isType(BooleanFrunction.TYPE) || !(left instanceof BooleanFrunction)) throw new IllegalStateException();
         BooleanFrunction b_left = (BooleanFrunction) left;
         // Performing the native operation.
         return BooleanFrunction.getCached(!b_left.getNative());
       }
 
     };
-    return expression.getAsBinding("not", type_frunction, input, types, condition);
+    return expression.getAsSymbolBinding("not", type_frunction, input, types, condition);
   }
 
   
@@ -254,5 +228,10 @@ public class BooleanFrunction extends NativeFrunction
   public boolean getNative()
   {
     return this.state;
+  }
+  
+  @Override public String asString()
+  {
+    return "" + this.state;
   }
 }
