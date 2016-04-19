@@ -9,9 +9,9 @@ import net.samongi.frunction.frunction.Frunction;
 import net.samongi.frunction.frunction.literal.method.NativeExpression;
 import net.samongi.frunction.frunction.type.TypeDefiner;
 
-public class EmptyFrunction
+public class BaseFrunction
 {
-  public static final String TYPE = "nil";
+  public static final String TYPE = "struct";
   
   public static TypeDefiner getTypeDefiner()
   {
@@ -20,13 +20,13 @@ public class EmptyFrunction
       @Override protected void defineType(Frunction type_frunction) throws RunTimeError, SyntaxError
       {
         type_frunction.setType("");
-        type_frunction.addSymbol(EmptyFrunction.methodInstanceOf(type_frunction));
-        type_frunction.addSymbol(EmptyFrunction.methodIsAccessible(type_frunction));
+        type_frunction.addSymbol(BaseFrunction.methodInstanceOf(type_frunction));
+        type_frunction.addSymbol(BaseFrunction.methodIsAccessible(type_frunction));
 
-        type_frunction.addSymbol(EmptyFrunction.methodSize(type_frunction));
-        type_frunction.addSymbol(EmptyFrunction.methodMethodSize(type_frunction));
-        type_frunction.addSymbol(EmptyFrunction.methodSymbolSize(type_frunction));
-        type_frunction.addSymbol(EmptyFrunction.methodEmpty(type_frunction));
+        type_frunction.addSymbol(BaseFrunction.methodSize(type_frunction));
+        type_frunction.addSymbol(BaseFrunction.methodMethodSize(type_frunction));
+        type_frunction.addSymbol(BaseFrunction.methodSymbolSize(type_frunction));
+        type_frunction.addSymbol(BaseFrunction.methodEmpty(type_frunction));
       }
     };
   }

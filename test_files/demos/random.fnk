@@ -1,9 +1,7 @@
 
-large_int_1 : 123456789;
-large_int_2 : 234567891;
-
-# generates a random stream
+# random stream constructor
 rand_stream : {
+  (seed, max) -> rand_stream(seed, seed.mult(seed).rem(max), seed.mult(seed),seed.add(seed).mult(seed));
   (n, m, a, b) -> {
     val : n.rem(m);
     () -> rand_stream(a.mult(n).add(b).rem(m), m, a, b);
@@ -28,7 +26,10 @@ rand_stream : {
   };
 };
 
+large_int_1 : 123456789;
+large_int_2 : 234567891;
 seed : 345678912; 
 max  : 1000000;
 rs : rand_stream(seed, max, large_int_1, large_int_2);
+
 rs.println(100);

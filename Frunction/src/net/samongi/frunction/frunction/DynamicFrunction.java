@@ -18,7 +18,7 @@ import net.samongi.frunction.error.syntax.SyntaxError;
 import net.samongi.frunction.exceptions.runtime.InvalidTypeException;
 import net.samongi.frunction.expression.tokens.Token;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
-import net.samongi.frunction.frunction.literal.EmptyFrunction;
+import net.samongi.frunction.frunction.literal.BaseFrunction;
 import net.samongi.frunction.frunction.literal.StringFrunction;
 import net.samongi.frunction.frunction.literal.dictionary.LiteralDictionary;
 import net.samongi.frunction.parse.ParseUtil;
@@ -45,7 +45,7 @@ public class DynamicFrunction implements Frunction
   private boolean is_evaluated = false;
 
   /** A set will represent the type that a frunction is. */
-  private String type = EmptyFrunction.TYPE;
+  private String type = BaseFrunction.TYPE;
 
   /** A Frunction will have a parent environment in which it was defined in. This environment is also a frunction */
   private final Container environment;

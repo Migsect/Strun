@@ -1,0 +1,27 @@
+5.inst("native").str().println();
+{}.inst("native").str().println();
+{}.inst("nil").str().println();
+
+# Let expression
+a : {
+  a : 2784;
+  b : 18923;
+  ()-> a.mult(b).add(b);
+}();
+a.str().println();
+
+List : {
+  () -> {
+    type : "list";
+  };
+  
+};
+
+a : {
+  d : 20;
+  b : {
+    c : 10;
+  };
+};
+
+a.b.c.d.str().println();

@@ -11,7 +11,7 @@ import net.samongi.frunction.file.FileUtil;
 import net.samongi.frunction.frunction.DynamicFrunction;
 import net.samongi.frunction.frunction.library.ArgumentFrunction;
 import net.samongi.frunction.frunction.literal.BooleanFrunction;
-import net.samongi.frunction.frunction.literal.EmptyFrunction;
+import net.samongi.frunction.frunction.literal.BaseFrunction;
 import net.samongi.frunction.frunction.literal.IntegerFrunction;
 import net.samongi.frunction.frunction.literal.NativeFrunction;
 import net.samongi.frunction.frunction.literal.RealFrunction;
@@ -38,7 +38,7 @@ public class Main
     // Definition of the types
     try
     {
-      EmptyFrunction.getTypeDefiner().define();
+      BaseFrunction.getTypeDefiner().define();
       NativeFrunction.getTypeDefiner().define();
       BooleanFrunction.getTypeDefiner().define();
       IntegerFrunction.getTypeDefiner().define();

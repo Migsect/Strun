@@ -1,4 +1,7 @@
 List : {
+  () -> {
+    type : "list";
+  };
   (hd, tl) -> {
     type : "list";
     hd : hd;
@@ -10,6 +13,7 @@ List : {
   type_def : {
     type : "list";
     %length : {
+      () ?(^@.empt()) -> 0;
       () ?(tl.empt())-> 1;
       () -> tl.size().add(1);
     };
@@ -43,14 +47,24 @@ List : {
       (n) ?(tl.empt())-> {};
       (n) ?(n.lt(1))-> ^@;
       (n) -> tl.sub(n.add(-1));
-    }
+    };
+    %removeAt : {
+      (n) ?(tl.empt().and(n.lt(1)))-> {};
+      (n) ?(tl.empt())-> ^@;
+      (n) ?(n.lt(1))-> tl.removeAt(n.add(-1));
+      (n) -> List(hd, tl.removeAt(n.add(-1)));
+    };
   };
 };
 
 a0 : List(0);
 a1 : List(20)(19)(18)(17)(16)(15)(14)(13)(12)(11)(10)(9)(8)(7)(6)(5)(4)(3)(2)(1);
+a2 : List(5)(4)(3)(2)(1);
 
-a2 : a1.select({(n) -> n.rem(2).eq(0);});
-a1.sub(0).reverse().map({(n) -> n.str().println();});
+a3 : a2.removeAt(0);
+a3.map({(n) -> n.str().println();});
+
+#a2 : a1.select({(n) -> n.rem(2).eq(0);});
+#a1.sub(0).reverse().map({(n) -> n.str().println();});
 
 #a1.append(a2).map({(n) -> n.str().println();});
